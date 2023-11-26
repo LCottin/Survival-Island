@@ -16,11 +16,13 @@ set(SOURCES
     ${SOURCE_DIR}/main.cpp
     ${SOURCE_DIR}/Character.cpp
     ${SOURCE_DIR}/CharacterData.cpp
+    ${SOURCE_DIR}/Player.cpp
 )
 
 set(HEADERS
     ${INCLUDE_DIR}/Character.hpp
     ${INCLUDE_DIR}/CharacterData.hpp
+    ${INCLUDE_DIR}/Player.hpp
 )
 
 # Set the output directory for the binary

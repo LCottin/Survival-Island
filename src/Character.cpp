@@ -60,7 +60,7 @@ json Character::_loadFromJson(const string filename) const
 
 /**
  * @brief Initialize the attributes of the character from the JSON file
- *
+ * @warning This function only initializes the attributes that are common to all characters
  */
 void Character::_initAttributes(const string filename)
 {
