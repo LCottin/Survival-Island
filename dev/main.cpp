@@ -33,7 +33,7 @@ int main()
     RenderWindow window(VideoMode(MAP_WIDTH, MAP_HEIGHT), "SFML window");
 
     Texture tilesetTexture;
-    tilesetTexture.loadFromFile("../assets/tileset.png");
+    tilesetTexture.loadFromFile("../assets/images/tileset.png");
 
     // Define the size of each tile in the tileset
     Vector2u tileSize(TILE_SIZE, TILE_SIZE);

@@ -3,27 +3,27 @@ cmake_minimum_required(VERSION 3.15)
 project(Survival-Island)
 
 find_package(nlohmann_json REQUIRED)
-find_package(SFML COMPONENTS graphics window REQUIRED)
+find_package(SFML 2.6.1 COMPONENTS graphics window REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 
 # Define directories
-set(SOURCE_DIR  ${CMAKE_SOURCE_DIR}/src)
-set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
-set(BIN_DIR     ${CMAKE_BINARY_DIR})
+set(DEV_DIR ${CMAKE_SOURCE_DIR}/dev)
+set(BIN_DIR ${CMAKE_BINARY_DIR})
 
 # Collect source files
 set(SOURCES
-    ${SOURCE_DIR}/main.cpp
-    ${SOURCE_DIR}/Character.cpp
-    ${SOURCE_DIR}/CharacterData.cpp
-    ${SOURCE_DIR}/Player.cpp
+    ${DEV_DIR}/main.cpp
+    ${DEV_DIR}/Character/src/Character.cpp
+    ${DEV_DIR}/Character/src/CharacterData.cpp
+    ${DEV_DIR}/Player/src/Player.cpp
 )
 
+# Collect header files
 set(HEADERS
-    ${INCLUDE_DIR}/Character.hpp
-    ${INCLUDE_DIR}/CharacterData.hpp
-    ${INCLUDE_DIR}/Player.hpp
+    ${DEV_DIR}/Character/include/Character.hpp
+    ${DEV_DIR}/Character/include/CharacterData.hpp
+    ${DEV_DIR}/Player/include/Player.hpp
 )
 
 # Set the output directory for the binary
@@ -33,10 +33,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0" CACHE STRING "Minimum OS X deployment version" FORCE)
 
 # Add the executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME})
+
+# Add source and header files to the target
+target_sources(${PROJECT_NAME} PRIVATE ${SOURCES} ${HEADERS})
 
 # Add include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${DEV_DIR}/Character/include
+    ${DEV_DIR}/Player/include
+)
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_DL_LIBS} PRIVATE nlohmann_json::nlohmann_json)

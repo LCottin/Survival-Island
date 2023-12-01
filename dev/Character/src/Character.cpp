@@ -31,7 +31,7 @@ Character::~Character()
  */
 json Character::_loadFromJson(const string filename) const
 {
-    ifstream file("../assets/" + filename + ".json");
+    ifstream file("../assets/json/" + filename + ".json");
     json data;
 
     if (!file.is_open())
