@@ -22,7 +22,6 @@ Character::Character(const string name)
 // Destructor
 Character::~Character()
 {
-    cout << "Good bye!" << endl;
 }
 
 /**

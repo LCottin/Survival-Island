@@ -18,6 +18,7 @@ set(SOURCES
     ${DEV_DIR}/Character/src/CharacterData.cpp
     ${DEV_DIR}/Player/src/Player.cpp
     ${DEV_DIR}/Board/src/Board.cpp
+    ${DEV_DIR}/Screen/src/Screen.cpp
 )
 
 # Collect header files
@@ -26,6 +27,8 @@ set(HEADERS
     ${DEV_DIR}/Character/include/CharacterData.hpp
     ${DEV_DIR}/Player/include/Player.hpp
     ${DEV_DIR}/Board/include/Board.hpp
+    ${DEV_DIR}/Screen/include/Screen.hpp
+    ${DEV_DIR}/Screen/include/ScreenData.hpp
 )
 
 # Set the output directory for the binary
@@ -45,6 +48,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/Character/include
     ${DEV_DIR}/Player/include
     ${DEV_DIR}/Board/include
+    ${DEV_DIR}/Screen/include
 )
 
 # Link libraries
