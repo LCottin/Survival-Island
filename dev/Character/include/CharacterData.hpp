@@ -23,6 +23,15 @@ typedef enum
     CHARACTER_TYPE_COUNT,
 } CharacterType;
 
+typedef enum
+{
+    DIRECTION_UP,
+    DIRECTION_DOWN,
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT,
+    DIRECTION_COUNT,
+} DirectionType;
+
 extern const string CharacterTypeString[CHARACTER_TYPE_COUNT];
 
 extern const string CharacterDefaultName[CHARACTER_TYPE_COUNT];

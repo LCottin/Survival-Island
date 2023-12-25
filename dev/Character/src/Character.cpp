@@ -79,6 +79,11 @@ void Character::_initAttributes(const string filename)
                             .Defense    = characterData.contains("Defense")    ? characterData["Defense"].get<uint32_t>()    :  10U,
                             .Speed      = characterData.contains("Speed")      ? characterData["Speed"].get<uint32_t>()      :  10U,
                             .Age        = characterData.contains("Age")        ? characterData["Age"].get<uint32_t>()        :  25U };
+
+    _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<float_t>() : 0.0f;
+    _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : 0.0f;
+    _Sprite.setPosition(_Position);
+    _Sprite.scale(Vector2f(2.0f, 2.0f));
 }
 
 /**
@@ -162,6 +167,24 @@ uint32_t Character::getSpeed() const
 }
 
 /**
+ * @brief Get player current position
+ *
+ */
+Vector2f Character::getPosition() const
+{
+    return _Position;
+}
+
+/**
+ * @brief Get the current sprite
+ *
+ */
+Sprite& Character::getSprite()
+{
+    return _Sprite;
+}
+
+/**
  * @brief Check if the character is alive
  *
  * @return True if the character is alive, false otherwise
@@ -182,6 +205,28 @@ void Character::setName(const string name)
 }
 
 /**
+ * @brief Set new position of the player
+ *
+ * @param position Vector2f containing new position
+ */
+void Character::setPosition(const Vector2f position)
+{
+    _Position = position;
+}
+
+/**
+ * @brief Set new position of the player
+ *
+ * @param x New position on x axis
+ * @param y New position on y axis
+ */
+void Character::setPosition(const float_t x, const float_t y)
+{
+    _Position.x = x;
+    _Position.y = y;
+}
+
+/**
  * @brief The character says hello
  */
 void Character::sayHello() const
@@ -197,4 +242,15 @@ void Character::presentation() const
     cout << "Hello, my name is " << _Name << " and I am " << _Attributes.Age << " years old." << endl;
     cout << "I am level " << _Attributes.Level << " and I have " << _Attributes.Health << " health points." << endl;
     cout << "I have " << _Attributes.Strength << " strength points, " << _Attributes.Defense << " defense points and " << _Attributes.Speed << " speed points." << endl;
+}
+
+
+/**
+ * @brief Change the frame
+ *
+ * @param direction New direction to set, -1 to keep the same
+ */
+void Character::updateFrame(const int32_t direction)
+{
+    (void)direction;
 }

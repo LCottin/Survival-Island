@@ -2,11 +2,14 @@
 #define __PLAYER_HPP__
 
 #include "Character.hpp"
+#include "PlayerData.hpp"
 
 class Player: public Character
 {
     private:
         uint32_t _Money;
+
+        void _initPlayer();
 
     public:
         // Constructors
@@ -18,6 +21,8 @@ class Player: public Character
 
         // Member functions (setters)
         void setMoney(const uint32_t money);
+
+        void updateFrame(const int32_t direction);
 };
 
 #endif
