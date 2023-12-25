@@ -24,8 +24,8 @@ set(COMMON_COMPILE_DEFINITIONS DEBUG_MODE)
 set(DEBUG_COMPILE_DEFINITIONS DEBUG_EXTRA)
 set(RELEASE_COMPILE_DEFINITIONS RELEASE_EXTRA)
 
-set(COMMON_COMPILE_OPTIONS "-Wall" "-Wextra" "-march=native")
-set(DEBUG_COMPILE_OPTIONS "-g")
+set(COMMON_COMPILE_OPTIONS  "-Wall" "-Wextra" "-march=native")
+set(DEBUG_COMPILE_OPTIONS   "-g")
 set(RELEASE_COMPILE_OPTIONS "-O3")
 
 # Collect source files
@@ -43,7 +43,10 @@ set(HEADERS
     ${DEV_DIR}/Character/include/Character.hpp
     ${DEV_DIR}/Character/include/CharacterData.hpp
     ${DEV_DIR}/Player/include/Player.hpp
+    ${DEV_DIR}/Player/include/PlayerData.hpp
     ${DEV_DIR}/Board/include/Board.hpp
+    ${DEV_DIR}/Board/include/BoardData.hpp
+    ${DEV_DIR}/Board/include/TileType.hpp
     ${DEV_DIR}/Screen/include/Screen.hpp
     ${DEV_DIR}/Screen/include/ScreenData.hpp
 )
