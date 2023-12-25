@@ -7,6 +7,7 @@
 #include <SFML/Window.hpp>
 
 #include "Board.hpp"
+#include "Player.hpp"
 #include "ScreenData.hpp"
 
 using namespace std;
@@ -26,12 +27,14 @@ class Screen
         string       _WindowTitle;
 
         Board       &_Board;
+        Player      &_Player;
 
         void _computeVertices();
-        void _draw();
+        void _drawBoard();
+        void _drawPlayer();
 
     public:
-        Screen(Board &board, const string title = "Empty title");
+        Screen(Board &board, Player &player, const string title = "Empty title");
 
         uint32_t getWidthPixel() const;
         uint32_t getHeightPixel() const;

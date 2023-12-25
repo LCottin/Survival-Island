@@ -1,7 +1,7 @@
 #include "Screen.hpp"
 
-Screen::Screen(Board &board, const string title) :
-    _Board(board)
+Screen::Screen(Board &board, Player &player, const string title) :
+    _Board(board), _Player(player)
 {
     _WindowTitle = title;
     _TileSize    = Vector2u(16U, 16U);
@@ -45,8 +45,8 @@ void Screen::_computeVertices()
             }
 
             // Calculate the position of the current tile in the vertex array
-            float x = static_cast<float>(i * _TileSize.x);
-            float y = static_cast<float>(j * _TileSize.y);
+            float_t x = static_cast<float_t>(i * _TileSize.x);
+            float_t y = static_cast<float_t>(j * _TileSize.y);
 
             // Get a pointer to the current tile quad
             Vertex* quad = &_Vertices[(i + j * boardWidth) * 4];
@@ -58,8 +58,8 @@ void Screen::_computeVertices()
             quad[3].position = Vector2f(x              , y + _TileSize.y);
 
             // Calculate coordinate of the index in the image
-            float tile_x = static_cast<float>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
-            float tile_y = static_cast<float>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
+            float_t tile_x = static_cast<float_t>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
+            float_t tile_y = static_cast<float_t>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
 
             // Define its 4 texture coordinates
             quad[0].texCoords = Vector2f(tile_x              , tile_y);
@@ -73,11 +73,18 @@ void Screen::_computeVertices()
 /**
  * @brief Draw the board on the screen
  */
-void Screen::_draw()
+void Screen::_drawBoard()
 {
-    _Window.clear();
     _Window.draw(_Vertices, &_TilesetTexture);
-    _Window.display();
+}
+
+/**
+ * @brief Draw the player on the screen
+ * @warning Must be called after _draw() otherwise the player is behind the board
+ */
+void Screen::_drawPlayer()
+{
+    _Window.draw(_Player.getSprite());
 }
 
 /**
@@ -146,7 +153,10 @@ void Screen::render()
                 _Window.close();
         }
 
-        _draw();
+        _Window.clear();
+        _drawBoard();
+        _drawPlayer();
+        _Window.display();
     }
 }
 
