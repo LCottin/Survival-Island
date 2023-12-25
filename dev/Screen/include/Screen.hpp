@@ -30,8 +30,8 @@ class Screen
         Player      &_Player;
 
         void _computeVertices();
-        void _drawBoard();
-        void _drawPlayer();
+        void _draw();
+        void _HandleEvents();
 
     public:
         Screen(Board &board, Player &player, const string title = "Empty title");

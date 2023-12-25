@@ -56,17 +56,18 @@ class Character
         uint32_t getSpeed()      const;
         Vector2f getPosition()   const;
         Sprite&  getSprite();
+        Vector2f getScale()      const;
         bool     isAlive()       const;
 
         // Member functions (setters)
         void setName(const string name);
-        void setPosition(const Vector2f position);
-        void setPosition(const float_t x, const float_t y);
+        virtual void setPosition(const Vector2f position, const bool changeFrame);
+        virtual void setPosition(const float_t x, const float_t y, const bool changeFrame);
 
         // Member functions (others)
         void sayHello() const;
         void presentation() const;
-        virtual void updateFrame(const int32_t direction);
+        virtual void updateFrame(const uint32_t direction);
 };
 
 #endif // __CHARACTER_HPP__

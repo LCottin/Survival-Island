@@ -71,20 +71,105 @@ void Screen::_computeVertices()
 }
 
 /**
- * @brief Draw the board on the screen
+ * @brief Draw on the screen
+ *
  */
-void Screen::_drawBoard()
+void Screen::_draw()
 {
+    _Window.clear();
+
     _Window.draw(_Vertices, &_TilesetTexture);
+    _Window.draw(_Player.getSprite());
+
+    _Window.display();
 }
 
 /**
- * @brief Draw the player on the screen
- * @warning Must be called after _draw() otherwise the player is behind the board
+ * @brief Handle events on the screen
+ *
  */
-void Screen::_drawPlayer()
+void Screen::_HandleEvents()
 {
-    _Window.draw(_Player.getSprite());
+    Event event;
+    while (_Window.pollEvent(event))
+    {
+        /* Close window */
+        if (event.type == Event::Closed)
+            _Window.close();
+
+        /* Move player ... */
+        if (event.type == Event::KeyPressed)
+        {
+            Vector2f currentPos = _Player.getPosition();
+            bool updateFrame;
+
+            /* ... left */
+            if (Keyboard::isKeyPressed(Keyboard::Left))
+            {
+                if (currentPos.x - 10.0f >= 0)
+                {
+                    currentPos.x -= 10.0f;
+                    updateFrame   = true;
+                }
+                else
+                {
+                    /* Sprite out of bound, do not exceed window size */
+                    currentPos.x = 0.0f;
+                    updateFrame  = false;
+                }
+            }
+
+            /* ... right */
+            if (Keyboard::isKeyPressed(Keyboard::Right))
+            {
+                if (currentPos.x + 10.0f + FRAME_WIDTH*_Player.getScale().x <= _WidthPixel)
+                {
+                    currentPos.x += 10.0f;
+                    updateFrame   = true;
+                }
+                else
+                {
+                    /* Sprite out of bound, do not exceed window size */
+                    currentPos.x = (float_t)_WidthPixel - (float_t)FRAME_WIDTH*_Player.getScale().x;
+                    updateFrame  = false;
+                }
+            }
+
+            /* ... up */
+            if (Keyboard::isKeyPressed(Keyboard::Up))
+            {
+                if (currentPos.y - 10.0f >= 0)
+                {
+                    currentPos.y -= 10.0f;
+                    updateFrame   = true;
+                }
+                else
+                {
+                    /* Sprite out of bound, do not exceed window size */
+                    currentPos.y = 0.0f;
+                    updateFrame  = false;
+                }
+            }
+
+            /* ... down */
+            if (Keyboard::isKeyPressed(Keyboard::Down))
+            {
+                if (currentPos.y + 10.0f + FRAME_HEIGHT*_Player.getScale().y <= _HeightPixel)
+                {
+                    currentPos.y += 10.0f;
+                    updateFrame   = true;
+                }
+                else
+                {
+                    /* Sprite out of bound, do not exceed window size */
+                    currentPos.y = (float_t)_HeightPixel - (float_t)FRAME_HEIGHT*_Player.getScale().y;
+                    updateFrame  = false;
+                }
+            }
+
+            _Player.setPosition(currentPos, updateFrame);
+        }
+    }
 }
 
 /**
@@ -146,17 +231,9 @@ void Screen::render()
 {
     while (_Window.isOpen())
     {
-        Event event;
-        while (_Window.pollEvent(event))
-        {
-            if (event.type == Event::Closed)
-                _Window.close();
-        }
+        _HandleEvents();
 
-        _Window.clear();
-        _drawBoard();
-        _drawPlayer();
-        _Window.display();
+        _draw();
     }
 }
 

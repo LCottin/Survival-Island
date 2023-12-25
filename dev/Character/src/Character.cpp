@@ -59,7 +59,9 @@ json Character::_loadFromJson(const string filename) const
 
 /**
  * @brief Initialize the attributes of the character from the JSON file
+ *
  * @warning This function only initializes the attributes that are common to all characters
+ *
  */
 void Character::_initAttributes(const string filename)
 {
@@ -90,6 +92,7 @@ void Character::_initAttributes(const string filename)
  * @brief Get the name of the character
  *
  * @return Name of the character
+ *
  */
 string Character::getName() const
 {
@@ -100,6 +103,7 @@ string Character::getName() const
  * @brief Get the age of the character
  *
  * @return Age of the character
+ *
  */
 uint32_t Character::getAge() const
 {
@@ -110,6 +114,7 @@ uint32_t Character::getAge() const
  * @brief Get the health of the character
  *
  * @return Health of the character
+ *
  */
 uint32_t Character::getHealth() const
 {
@@ -120,6 +125,7 @@ uint32_t Character::getHealth() const
  * @brief Get the level of the character
  *
  * @return Level of the character
+ *
  */
 uint32_t Character::getLevel() const
 {
@@ -130,6 +136,7 @@ uint32_t Character::getLevel() const
  * @brief Get the experience of the character
  *
  * @return Experience of the character
+ *
  */
 uint32_t Character::getExperience() const
 {
@@ -140,6 +147,7 @@ uint32_t Character::getExperience() const
  * @brief Get the strength of the character
  *
  * @return Strength of the character
+ *
  */
 uint32_t Character::getStrength() const
 {
@@ -150,6 +158,7 @@ uint32_t Character::getStrength() const
  * @brief Get the defense of the character
  *
  * @return Defense of the character
+ *
  */
 uint32_t Character::getDefense() const
 {
@@ -160,6 +169,7 @@ uint32_t Character::getDefense() const
  * @brief Get the speed of the character
  *
  * @return Speed of the character
+ *
  */
 uint32_t Character::getSpeed() const
 {
@@ -176,6 +186,15 @@ Vector2f Character::getPosition() const
 }
 
 /**
+ * @brief Return play current scale
+ *
+ */
+Vector2f Character::getScale() const
+{
+    return _Sprite.getScale();
+}
+
+/**
  * @brief Get the current sprite
  *
  */
@@ -188,6 +207,7 @@ Sprite& Character::getSprite()
  * @brief Check if the character is alive
  *
  * @return True if the character is alive, false otherwise
+ *
  */
 bool Character::isAlive() const
 {
@@ -198,6 +218,7 @@ bool Character::isAlive() const
  * @brief Set the name of the character
  *
  * @param name Name of the character
+ *
  */
 void Character::setName(const string name)
 {
@@ -208,10 +229,14 @@ void Character::setName(const string name)
  * @brief Set new position of the player
  *
  * @param position Vector2f containing new position
+ * @param changeFrame Boolean to change the frame displayed
+ *
  */
-void Character::setPosition(const Vector2f position)
+void Character::setPosition(const Vector2f position, const bool changeFrame)
 {
+    (void)changeFrame;
     _Position = position;
+    _Sprite.setPosition(_Position);
 }
 
 /**
@@ -219,15 +244,20 @@ void Character::setPosition(const Vector2f position)
  *
  * @param x New position on x axis
  * @param y New position on y axis
+ * @param changeFrame Boolean to change the frame displayed
+ *
  */
-void Character::setPosition(const float_t x, const float_t y)
+void Character::setPosition(const float_t x, const float_t y, const bool changeFrame)
 {
+    (void)changeFrame;
     _Position.x = x;
     _Position.y = y;
+    _Sprite.setPosition(_Position);
 }
 
 /**
  * @brief The character says hello
+ *
  */
 void Character::sayHello() const
 {
@@ -236,6 +266,7 @@ void Character::sayHello() const
 
 /**
  * @brief The character presents himself
+ *
  */
 void Character::presentation() const
 {
@@ -248,9 +279,10 @@ void Character::presentation() const
 /**
  * @brief Change the frame
  *
- * @param direction New direction to set, -1 to keep the same
+ * @param direction New direction to set
+ *
  */
-void Character::updateFrame(const int32_t direction)
+void Character::updateFrame(const uint32_t direction)
 {
     (void)direction;
 }
