@@ -71,17 +71,32 @@ void Screen::_computeVertices()
 }
 
 /**
- * @brief Draw on the screen
+ * @brief Draw the board on the screen
  *
  */
-void Screen::_draw()
+void Screen::_drawBoard()
 {
-    _Window.clear();
-
     _Window.draw(_Vertices, &_TilesetTexture);
     _Window.draw(_Player.getSprite());
+}
 
-    _Window.display();
+/**
+ * @brief Draw the player on the screen
+ *
+ */
+void Screen::_drawPlayer()
+{
+    _Window.draw(_Player.getSprite());
+}
+
+/**
+ * @brief Draw indicators on the screen
+ *
+ */
+void Screen::_drawIndicators()
+{
+    _Player.updateHealthBar();
+    _Window.draw(_Player.getHealthBar());
 }
 
 /**
@@ -233,7 +248,11 @@ void Screen::render()
     {
         _HandleEvents();
 
-        _draw();
+        _Window.clear();
+        _drawBoard();
+        _drawPlayer();
+        _drawIndicators();
+        _Window.display();
     }
 }
 

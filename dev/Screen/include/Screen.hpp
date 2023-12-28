@@ -30,7 +30,9 @@ class Screen
         Player      &_Player;
 
         void _computeVertices();
-        void _draw();
+        void _drawBoard();
+        void _drawPlayer();
+        void _drawIndicators();
         void _HandleEvents();
 
     public:

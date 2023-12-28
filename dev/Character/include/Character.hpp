@@ -25,13 +25,14 @@ class Character
         Texture             _Texture;
         Sprite              _Sprite;
         Vector2f            _Position;
+        RectangleShape      _HealthBar;
 
         vector<IntRect>     _UpFrames;
         vector<IntRect>     _DownFrames;
         vector<IntRect>     _LeftFrames;
         vector<IntRect>     _RightFrames;
 
-        vector<IntRect>   * _CurrentFrames;
+        vector<IntRect>    *_CurrentFrames;
         uint8_t             _CurrentFrameIndex;
 
         void _initAttributes(const string filename);
@@ -46,18 +47,20 @@ class Character
         ~Character();
 
         // Member functions (getters)
-        string   getName()       const;
-        uint32_t getAge()        const;
-        uint32_t getHealth()     const;
-        uint32_t getLevel()      const;
-        uint32_t getExperience() const;
-        uint32_t getStrength()   const;
-        uint32_t getDefense()    const;
-        uint32_t getSpeed()      const;
-        Vector2f getPosition()   const;
-        Sprite&  getSprite();
-        Vector2f getScale()      const;
-        bool     isAlive()       const;
+        string          getName()       const;
+        uint32_t        getAge()        const;
+        uint32_t        getHealth()     const;
+        uint32_t        getMaxHealth()  const;
+        uint32_t        getLevel()      const;
+        uint32_t        getExperience() const;
+        uint32_t        getStrength()   const;
+        uint32_t        getDefense()    const;
+        uint32_t        getSpeed()      const;
+        Vector2f        getPosition()   const;
+        Vector2f        getScale()      const;
+        Sprite&         getSprite();
+        RectangleShape& getHealthBar();
+        bool            isAlive()       const;
 
         // Member functions (setters)
         void setName(const string name);
@@ -68,6 +71,7 @@ class Character
         void sayHello() const;
         void presentation() const;
         virtual void updateFrame(const uint32_t direction);
+        virtual void updateHealthBar();
 };
 
 #endif // __CHARACTER_HPP__

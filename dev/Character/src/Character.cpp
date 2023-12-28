@@ -75,6 +75,7 @@ void Character::_initAttributes(const string filename)
 
     auto characterData  = data[_Name];
     _Attributes         = { .Health     = characterData.contains("Health")     ? characterData["Health"].get<uint32_t>()     : 100U,
+                            .MaxHealth  = characterData.contains("Health")     ? characterData["Health"].get<uint32_t>()     : 100U,
                             .Level      = characterData.contains("Level")      ? characterData["Level"].get<uint32_t>()      :   1U,
                             .Experience = characterData.contains("Experience") ? characterData["Experience"].get<uint32_t>() :   0U,
                             .Strength   = characterData.contains("Strength")   ? characterData["Strength"].get<uint32_t>()   :  10U,
@@ -119,6 +120,17 @@ uint32_t Character::getAge() const
 uint32_t Character::getHealth() const
 {
     return _Attributes.Health;
+}
+
+/**
+ * @brief Get the maximum health of the character
+ *
+ * @return Maximum health of the character
+ *
+ */
+uint32_t Character::getMaxHealth() const
+{
+    return _Attributes.MaxHealth;
 }
 
 /**
@@ -204,6 +216,15 @@ Sprite& Character::getSprite()
 }
 
 /**
+ * @brief Get the healthBar
+ *
+ */
+RectangleShape& Character::getHealthBar()
+{
+    return _HealthBar;
+}
+
+/**
  * @brief Check if the character is alive
  *
  * @return True if the character is alive, false otherwise
@@ -275,7 +296,6 @@ void Character::presentation() const
     cout << "I have " << _Attributes.Strength << " strength points, " << _Attributes.Defense << " defense points and " << _Attributes.Speed << " speed points." << endl;
 }
 
-
 /**
  * @brief Change the frame
  *
@@ -285,4 +305,12 @@ void Character::presentation() const
 void Character::updateFrame(const uint32_t direction)
 {
     (void)direction;
+}
+
+/**
+ * @brief Change the health bar
+ *
+ */
+void Character::updateHealthBar()
+{
 }

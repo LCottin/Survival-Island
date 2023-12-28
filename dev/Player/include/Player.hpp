@@ -25,6 +25,7 @@ class Player: public Character
         void setPosition(const float_t x, const float_t y, const bool changeFrame);
 
         void updateFrame(const uint32_t direction);
+        void updateHealthBar();
 };
 
 #endif
