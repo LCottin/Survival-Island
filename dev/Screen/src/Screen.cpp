@@ -1,7 +1,7 @@
 #include "Screen.hpp"
 
-Screen::Screen(Board &board, const string title) :
-    _Board(board)
+Screen::Screen(Board &board, Player &player, const string title) :
+    _Board(board), _Player(player)
 {
     _WindowTitle = title;
     _TileSize    = Vector2u(16U, 16U);
@@ -45,8 +45,8 @@ void Screen::_computeVertices()
             }
 
             // Calculate the position of the current tile in the vertex array
-            float x = static_cast<float>(i * _TileSize.x);
-            float y = static_cast<float>(j * _TileSize.y);
+            float_t x = static_cast<float_t>(i * _TileSize.x);
+            float_t y = static_cast<float_t>(j * _TileSize.y);
 
             // Get a pointer to the current tile quad
             Vertex* quad = &_Vertices[(i + j * boardWidth) * 4];
@@ -58,8 +58,8 @@ void Screen::_computeVertices()
             quad[3].position = Vector2f(x              , y + _TileSize.y);
 
             // Calculate coordinate of the index in the image
-            float tile_x = static_cast<float>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
-            float tile_y = static_cast<float>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
+            float_t tile_x = static_cast<float_t>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
+            float_t tile_y = static_cast<float_t>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
 
             // Define its 4 texture coordinates
             quad[0].texCoords = Vector2f(tile_x              , tile_y);
@@ -72,12 +72,119 @@ void Screen::_computeVertices()
 
 /**
  * @brief Draw the board on the screen
+ *
  */
-void Screen::_draw()
+void Screen::_drawBoard()
 {
-    _Window.clear();
     _Window.draw(_Vertices, &_TilesetTexture);
-    _Window.display();
+    _Window.draw(_Player.getSprite());
+}
+
+/**
+ * @brief Draw the player on the screen
+ *
+ */
+void Screen::_drawPlayer()
+{
+    _Window.draw(_Player.getSprite());
+}
+
+/**
+ * @brief Draw indicators on the screen
+ *
+ */
+void Screen::_drawIndicators()
+{
+    _Player.updateHealthBar();
+    _Window.draw(_Player.getHealthBar());
+}
+
+/**
+ * @brief Handle events on the screen
+ *
+ */
+void Screen::_HandleEvents()
+{
+    Event event;
+    while (_Window.pollEvent(event))
+    {
+        /* Close window */
+        if (event.type == Event::Closed)
+            _Window.close();
+
+        /* Move player ... */
+        if (event.type == Event::KeyPressed)
+        {
+            Vector2f currentPos = _Player.getPosition();
+            bool updateFrame;
+
+            /* ... left */
+            if (Keyboard::isKeyPressed(Keyboard::Left))
+            {
+                if (currentPos.x - 10.0f >= 0)
+                {
+                    currentPos.x -= 10.0f;
+                    updateFrame   = true;
+                }
+                else
+                {
+                    /* Sprite out of bound, do not exceed window size */
+                    currentPos.x = 0.0f;
+                    updateFrame  = false;
+                }
+            }
+
+            /* ... right */
+            if (Keyboard::isKeyPressed(Keyboard::Right))
+            {
+                if (currentPos.x + 10.0f + FRAME_WIDTH*_Player.getScale().x <= _WidthPixel)
+                {
+                    currentPos.x += 10.0f;
+                    updateFrame   = true;
+                }
+                else
+                {
+                    /* Sprite out of bound, do not exceed window size */
+                    currentPos.x = (float_t)_WidthPixel - (float_t)FRAME_WIDTH*_Player.getScale().x;
+                    updateFrame  = false;
+                }
+            }
+
+            /* ... up */
+            if (Keyboard::isKeyPressed(Keyboard::Up))
+            {
+                if (currentPos.y - 10.0f >= 0)
+                {
+                    currentPos.y -= 10.0f;
+                    updateFrame   = true;
+                }
+                else
+                {
+                    /* Sprite out of bound, do not exceed window size */
+                    currentPos.y = 0.0f;
+                    updateFrame  = false;
+                }
+            }
+
+            /* ... down */
+            if (Keyboard::isKeyPressed(Keyboard::Down))
+            {
+                if (currentPos.y + 10.0f + FRAME_HEIGHT*_Player.getScale().y <= _HeightPixel)
+                {
+                    currentPos.y += 10.0f;
+                    updateFrame   = true;
+                }
+                else
+                {
+                    /* Sprite out of bound, do not exceed window size */
+                    currentPos.y = (float_t)_HeightPixel - (float_t)FRAME_HEIGHT*_Player.getScale().y;
+                    updateFrame  = false;
+                }
+            }
+
+            _Player.setPosition(currentPos, updateFrame);
+        }
+    }
 }
 
 /**
@@ -139,14 +246,13 @@ void Screen::render()
 {
     while (_Window.isOpen())
     {
-        Event event;
-        while (_Window.pollEvent(event))
-        {
-            if (event.type == Event::Closed)
-                _Window.close();
-        }
+        _HandleEvents();
 
-        _draw();
+        _Window.clear();
+        _drawBoard();
+        _drawPlayer();
+        _drawIndicators();
+        _Window.display();
     }
 }
 

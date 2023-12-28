@@ -23,7 +23,7 @@ int main()
     player.presentation();
 
     Board board;
-    Screen screen(board, "My first game");
+    Screen screen(board, player, "My first game");
     screen.render();
 
     return 0;

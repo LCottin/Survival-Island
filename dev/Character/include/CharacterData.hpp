@@ -9,6 +9,7 @@ typedef struct
 {
     uint32_t Age;
     uint32_t Health;
+    uint32_t MaxHealth;
     uint32_t Level;
     uint32_t Experience;
     uint32_t Strength;
@@ -22,6 +23,17 @@ typedef enum
     CHARACTER_TYPE_PLAYER,
     CHARACTER_TYPE_COUNT,
 } CharacterType;
+
+typedef enum
+{
+    DIRECTION_UP,
+    DIRECTION_DOWN,
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT,
+    DIRECTION_COUNT,
+} DirectionType;
+
+constexpr uint32_t HEALTH_BAR_HEIGHT =   8U;
 
 extern const string CharacterTypeString[CHARACTER_TYPE_COUNT];
 

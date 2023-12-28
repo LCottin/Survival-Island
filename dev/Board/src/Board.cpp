@@ -28,6 +28,14 @@ void Board::_initMap()
             _Map[i][j] = TILE_TYPE_WATER_FULL;
         }
     }
+
+   for (uint32_t j = 5; j < _HeightInTile - 5; j++)
+    {
+        for (uint32_t i = 5; i < _WidthInTile - 5; i++)
+        {
+            _Map[i][j] = TILE_TYPE_GRASS_FULL;
+        }
+    }
 }
 
 /**
