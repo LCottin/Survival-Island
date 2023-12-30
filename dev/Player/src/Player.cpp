@@ -169,27 +169,3 @@ void Player::updateFrame(const uint32_t direction)
     _CurrentFrameIndex = (_CurrentFrameIndex + 1U) % FRAMES_PER_DIRECTION;
     _Sprite.setTextureRect((*_CurrentFrames)[_CurrentFrameIndex]);
 }
-
-/**
- * @brief Change the health bar
- *
- */
-void Player::updateHealthBar()
-{
-    float_t barWidth = static_cast<float_t>(_Attributes.Health / _Attributes.MaxHealth * FRAME_WIDTH * _Sprite.getScale().x);
-    _HealthBar.setSize(Vector2f(barWidth, HEALTH_BAR_HEIGHT));
-    _HealthBar.setPosition(Vector2f(_Position.x, _Position.y - 10.0f));
-
-    if (_Attributes.Health < (_Attributes.MaxHealth / 3U))
-    {
-        _HealthBar.setFillColor(Color::Red);
-    }
-    else if (_Attributes.Health < (2U * _Attributes.MaxHealth / 3U))
-    {
-        _HealthBar.setFillColor(Color::Yellow);
-    }
-    else
-    {
-        _HealthBar.setFillColor(Color::Green);
-    }
-}

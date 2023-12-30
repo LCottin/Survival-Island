@@ -2,7 +2,6 @@
 #define __PLAYER_HPP__
 
 #include "Character.hpp"
-#include "PlayerData.hpp"
 
 class Player: public Character
 {
@@ -24,8 +23,8 @@ class Player: public Character
         void setPosition(const Vector2f position, const bool changeFrame);
         void setPosition(const float_t x, const float_t y, const bool changeFrame);
 
+        // Member functions (others)
         void updateFrame(const uint32_t direction);
-        void updateHealthBar();
 };
 
 #endif

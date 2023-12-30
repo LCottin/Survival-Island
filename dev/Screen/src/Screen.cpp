@@ -90,6 +90,58 @@ void Screen::_drawPlayer()
 }
 
 /**
+ * @brief Draw the NPCs on the screen after being moved randomly
+ *
+ */
+void Screen::_drawNPCs()
+{
+    random_device rd;
+    uniform_int_distribution<> number(-10, 10);
+    _Random = mt19937(rd());
+
+    for (auto &npc : _NPCs)
+    {
+        Vector2f currentPos = npc->getPosition();
+
+        float_t deltaX      = static_cast<float_t>(number(_Random));
+        float_t deltaY      = static_cast<float_t>(number(_Random));
+
+        float_t absDeltaX = abs(deltaX);
+        float_t absDeltaY = abs(deltaY);
+
+        if ((currentPos.x - absDeltaX) < 0)
+        {
+            currentPos.x = 0;
+        }
+        else if ((currentPos.x + absDeltaX + FRAME_WIDTH * npc->getScale().x) > _WidthPixel)
+        {
+            currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(FRAME_WIDTH) * npc->getScale().x;
+        }
+        else
+        {
+            currentPos.x += deltaX;
+        }
+
+        if ((currentPos.y - absDeltaY) < 0)
+        {
+            currentPos.y = 0;
+        }
+        else if ((currentPos.y + absDeltaY + FRAME_WIDTH * npc->getScale().y) > _WidthPixel)
+        {
+            currentPos.y = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(FRAME_WIDTH) * npc->getScale().y;
+        }
+        else
+        {
+            currentPos.y += deltaX;
+        }
+
+        npc->setPosition(currentPos);
+
+        _Window.draw(npc->getSprite());
+    }
+}
+
+/**
  * @brief Draw indicators on the screen
  *
  */
@@ -115,13 +167,13 @@ void Screen::_HandleEvents()
         /* Move player ... */
         if (event.type == Event::KeyPressed)
         {
-            Vector2f currentPos = _Player.getPosition();
             bool updateFrame;
+            Vector2f currentPos = _Player.getPosition();
 
             /* ... left */
             if (Keyboard::isKeyPressed(Keyboard::Left))
             {
-                if (currentPos.x - 10.0f >= 0)
+                if ((currentPos.x - 10.0f) >= 0)
                 {
                     currentPos.x -= 10.0f;
                     updateFrame   = true;
@@ -137,7 +189,7 @@ void Screen::_HandleEvents()
             /* ... right */
             if (Keyboard::isKeyPressed(Keyboard::Right))
             {
-                if (currentPos.x + 10.0f + FRAME_WIDTH*_Player.getScale().x <= _WidthPixel)
+                if ((currentPos.x + 10.0f + FRAME_WIDTH*_Player.getScale().x) <= _WidthPixel)
                 {
                     currentPos.x += 10.0f;
                     updateFrame   = true;
@@ -145,7 +197,7 @@ void Screen::_HandleEvents()
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
-                    currentPos.x = (float_t)_WidthPixel - (float_t)FRAME_WIDTH*_Player.getScale().x;
+                    currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(FRAME_WIDTH) * _Player.getScale().x;
                     updateFrame  = false;
                 }
             }
@@ -153,7 +205,7 @@ void Screen::_HandleEvents()
             /* ... up */
             if (Keyboard::isKeyPressed(Keyboard::Up))
             {
-                if (currentPos.y - 10.0f >= 0)
+                if ((currentPos.y - 10.0f) >= 0)
                 {
                     currentPos.y -= 10.0f;
                     updateFrame   = true;
@@ -169,7 +221,7 @@ void Screen::_HandleEvents()
             /* ... down */
             if (Keyboard::isKeyPressed(Keyboard::Down))
             {
-                if (currentPos.y + 10.0f + FRAME_HEIGHT*_Player.getScale().y <= _HeightPixel)
+                if ((currentPos.y + 10.0f + FRAME_HEIGHT*_Player.getScale().y) <= _HeightPixel)
                 {
                     currentPos.y += 10.0f;
                     updateFrame   = true;

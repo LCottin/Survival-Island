@@ -44,10 +44,10 @@ class Character
         Character(const string name);
 
         // Destructor
-        ~Character();
+        virtual ~Character();
 
         // Member functions (getters)
-        string          getName()       const;
+        string          getName()        const;
         uint32_t        getAge()        const;
         uint32_t        getHealth()     const;
         uint32_t        getMaxHealth()  const;
@@ -64,14 +64,16 @@ class Character
 
         // Member functions (setters)
         void setName(const string name);
+        virtual void setPosition(const Vector2f position);
+        virtual void setPosition(const float_t x, const float_t y);
         virtual void setPosition(const Vector2f position, const bool changeFrame);
         virtual void setPosition(const float_t x, const float_t y, const bool changeFrame);
 
         // Member functions (others)
         void sayHello() const;
         void presentation() const;
+        void updateHealthBar();
         virtual void updateFrame(const uint32_t direction);
-        virtual void updateHealthBar();
 };
 
 #endif // __CHARACTER_HPP__
