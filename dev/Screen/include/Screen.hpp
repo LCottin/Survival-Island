@@ -46,6 +46,7 @@ class Screen
         void setBoard(Board &board);
 
         void render();
+        void addNPC(shared_ptr<NPC> &NPC);
 
         ~Screen();
 };

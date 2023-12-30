@@ -241,6 +241,7 @@ void Screen::setBoard(Board &board)
 
 /**
  * @brief Render the board on the screen
+ *
  */
 void Screen::render()
 {
@@ -251,9 +252,21 @@ void Screen::render()
         _Window.clear();
         _drawBoard();
         _drawPlayer();
+        _drawNPCs();
         _drawIndicators();
         _Window.display();
     }
+}
+
+/**
+ * @brief Add a new NPC to the game
+ *
+ * @param &NPC Reference to the new NPC
+ *
+ */
+void Screen::addNPC(shared_ptr<NPC> &NPC)
+{
+    _NPCs.push_back(NPC);
 }
 
 Screen::~Screen()
