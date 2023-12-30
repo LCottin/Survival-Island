@@ -21,6 +21,7 @@ typedef enum
 {
     CHARACTER_TYPE_DEFAULT,
     CHARACTER_TYPE_PLAYER,
+    CHARACTER_TYPE_NPC,
     CHARACTER_TYPE_COUNT,
 } CharacterType;
 
