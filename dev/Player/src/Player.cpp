@@ -98,7 +98,8 @@ void Player::setPosition(const Vector2f position, const bool changeFrame)
         updateFrame(newDirection);
     }
 
-    _Position = position;
+    _PreviousPosition = _Position;
+    _Position         = position;
     _Sprite.setPosition(_Position);
 }
 
@@ -134,8 +135,9 @@ void Player::setPosition(const float_t x, const float_t y, const bool changeFram
         updateFrame(newDirection);
     }
 
-    _Position.x = x;
-    _Position.y = y;
+    _PreviousPosition = _Position;
+    _Position.x       = x;
+    _Position.y       = y;
     _Sprite.setPosition(_Position);
 }
 
