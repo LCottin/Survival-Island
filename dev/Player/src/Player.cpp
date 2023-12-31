@@ -37,10 +37,10 @@ void Player::_initPlayer()
     // Initialize frame sequences for each direction
     for (size_t i = 0; i < FRAMES_PER_DIRECTION; i++)
     {
-        _UpFrames.push_back(   IntRect(i * FRAME_WIDTH, 0 * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
-        _RightFrames.push_back(IntRect(i * FRAME_WIDTH, 1 * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
-        _LeftFrames.push_back( IntRect(i * FRAME_WIDTH, 2 * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
-        _DownFrames.push_back( IntRect(i * FRAME_WIDTH, 3 * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
+        _UpFrames.push_back(   IntRect(i * PLAYER_WIDTH, 0 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
+        _RightFrames.push_back(IntRect(i * PLAYER_WIDTH, 1 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
+        _LeftFrames.push_back( IntRect(i * PLAYER_WIDTH, 2 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
+        _DownFrames.push_back( IntRect(i * PLAYER_WIDTH, 3 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
     }
 
     // Set initial animation state

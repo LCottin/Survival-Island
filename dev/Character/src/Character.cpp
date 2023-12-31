@@ -350,7 +350,7 @@ void Character::updateFrame(const uint32_t direction)
  */
 void Character::updateHealthBar()
 {
-    float_t barWidth = static_cast<float_t>(_Attributes.Health / _Attributes.MaxHealth * FRAME_WIDTH * _Sprite.getScale().x);
+    float_t barWidth = static_cast<float_t>(_Attributes.Health / _Attributes.MaxHealth * PLAYER_WIDTH * _Sprite.getScale().x);
     _HealthBar.setSize(Vector2f(barWidth, HEALTH_BAR_HEIGHT));
     _HealthBar.setPosition(Vector2f(_Position.x, _Position.y - 10.0f));
 
