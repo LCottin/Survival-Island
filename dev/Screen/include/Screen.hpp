@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <memory>
-#include <random>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
@@ -12,6 +11,7 @@
 #include "Player.hpp"
 #include "NPC.hpp"
 #include "ScreenData.hpp"
+#include "Random.hpp"
 
 using namespace std;
 using namespace sf;
@@ -32,8 +32,6 @@ class Screen
         Board                   &_Board;
         Player                  &_Player;
         vector<shared_ptr<NPC>>  _NPCs;
-
-        mt19937 _Random;
 
         void _computeVertices();
         void _drawBoard();

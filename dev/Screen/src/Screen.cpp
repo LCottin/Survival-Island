@@ -95,45 +95,86 @@ void Screen::_drawPlayer()
  */
 void Screen::_drawNPCs()
 {
-    random_device rd;
-    uniform_int_distribution<> number(-10, 10);
-    _Random = mt19937(rd());
+    constexpr float_t changeDirThreshold = 0.6f;
 
     for (auto &npc : _NPCs)
     {
-        Vector2f currentPos = npc->getPosition();
+        float_t changeDirProbaX = Random::getRandomFloat(0.0f, 1.0f);
+        float_t changeDirProbaY = Random::getRandomFloat(0.0f, 1.0f);
+        float_t deltaX          = Random::getRandomInteger(0, 5);
+        float_t deltaY          = Random::getRandomInteger(0, 5);
+        float_t absDeltaX       = abs(deltaX);
+        float_t absDeltaY       = abs(deltaY);
 
-        float_t deltaX      = static_cast<float_t>(number(_Random));
-        float_t deltaY      = static_cast<float_t>(number(_Random));
+        Vector2f currentPos  = npc->getPosition();
+        Vector2f previousPos = npc->getPreviousPosition();
 
-        float_t absDeltaX = abs(deltaX);
-        float_t absDeltaY = abs(deltaY);
+        /* Compute new directions */
+        if (currentPos.x == (static_cast<float_t>(_WidthPixel) - static_cast<float_t>(NPC_WIDTH) * npc->getScale().x))
+        {
+            /* Force moving left */
+            deltaX = -deltaX;
+        }
+        else if (currentPos.x != 0)
+        {
+            /* Check X direction change probability */
+            if (changeDirProbaX < changeDirThreshold)
+            {
+                /* If npc has moved left, change sign to move in the same direction */
+                deltaX = (currentPos.x < previousPos.x) ? -deltaX : deltaX;
+            }
+            else
+            {
+                /* Move npc the opposite side than previous movement */
+                deltaX = (currentPos.x < previousPos.x) ? deltaX : -deltaX;
+            }
+        }
 
+        if (currentPos.y == (static_cast<float_t>(_HeightPixel) - static_cast<float_t>(NPC_HEIGHT) * npc->getScale().y))
+        {
+            /* Force moving up */
+            deltaY = -deltaY;
+        }
+        else if (currentPos.y != 0)
+        {
+            /* Check Y direction change probability */
+            if (changeDirProbaY < changeDirThreshold)
+            {
+                /* If npc has moved up, change sign to move in the same direction */
+                deltaY = (currentPos.y < previousPos.y) ? -deltaY : deltaY;
+            }
+            else
+            {
+                /* Move npc the opposite side than previous movement */
+                deltaY = (currentPos.y < previousPos.y) ? deltaY : -deltaY;
+            }
+        }
+
+        /* Update positions considering window bounds */
         if ((currentPos.x - absDeltaX) < 0)
         {
             currentPos.x = 0;
+            deltaX       = absDeltaX;
         }
-        else if ((currentPos.x + absDeltaX + FRAME_WIDTH * npc->getScale().x) > _WidthPixel)
+        else if ((currentPos.x + absDeltaX + NPC_WIDTH * npc->getScale().x) > _WidthPixel)
         {
-            currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(FRAME_WIDTH) * npc->getScale().x;
-        }
-        else
-        {
-            currentPos.x += deltaX;
+            currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(NPC_WIDTH) * npc->getScale().x;
+            deltaX       = -absDeltaX;
         }
 
         if ((currentPos.y - absDeltaY) < 0)
         {
             currentPos.y = 0;
+            deltaY       = absDeltaY;
         }
-        else if ((currentPos.y + absDeltaY + FRAME_WIDTH * npc->getScale().y) > _WidthPixel)
+        else if (((currentPos.y + absDeltaY + NPC_HEIGHT * npc->getScale().y) > _HeightPixel))
         {
-            currentPos.y = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(FRAME_WIDTH) * npc->getScale().y;
+            currentPos.y = static_cast<float_t>(_HeightPixel) - static_cast<float_t>(NPC_HEIGHT) * npc->getScale().y;
+            deltaY       = -absDeltaY;
         }
-        else
-        {
-            currentPos.y += deltaX;
-        }
+
+        currentPos.x += deltaX;
+        currentPos.y += deltaY;
 
         npc->setPosition(currentPos);
 
@@ -189,7 +230,7 @@ void Screen::_HandleEvents()
             /* ... right */
             if (Keyboard::isKeyPressed(Keyboard::Right))
             {
-                if ((currentPos.x + 10.0f + FRAME_WIDTH*_Player.getScale().x) <= _WidthPixel)
+                if ((currentPos.x + 10.0f + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
                 {
                     currentPos.x += 10.0f;
                     updateFrame   = true;
@@ -197,7 +238,7 @@ void Screen::_HandleEvents()
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
-                    currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(FRAME_WIDTH) * _Player.getScale().x;
+                    currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
                     updateFrame  = false;
                 }
             }
@@ -221,7 +262,7 @@ void Screen::_HandleEvents()
             /* ... down */
             if (Keyboard::isKeyPressed(Keyboard::Down))
             {
-                if ((currentPos.y + 10.0f + FRAME_HEIGHT*_Player.getScale().y) <= _HeightPixel)
+                if ((currentPos.y + 10.0f + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
                 {
                     currentPos.y += 10.0f;
                     updateFrame   = true;
@@ -229,7 +270,7 @@ void Screen::_HandleEvents()
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
-                    currentPos.y = (float_t)_HeightPixel - (float_t)FRAME_HEIGHT*_Player.getScale().y;
+                    currentPos.y = (float_t)_HeightPixel - (float_t)PLAYER_HEIGHT*_Player.getScale().y;
                     updateFrame  = false;
                 }
             }
@@ -318,6 +359,11 @@ void Screen::render()
  */
 void Screen::addNPC(shared_ptr<NPC> &NPC)
 {
+    Vector2f newPosition;
+    newPosition.x = (float_t)Random::getRandomInteger(0, _WidthPixel - NPC_WIDTH*NPC->getScale().x);
+    newPosition.y = (float_t)Random::getRandomInteger(0, _HeightPixel - NPC_HEIGHT*NPC->getScale().y);
+
+    NPC->setPosition(newPosition);
     _NPCs.push_back(NPC);
 }
 
