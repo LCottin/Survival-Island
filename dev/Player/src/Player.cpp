@@ -37,10 +37,10 @@ void Player::_initPlayer()
     // Initialize frame sequences for each direction
     for (size_t i = 0; i < FRAMES_PER_DIRECTION; i++)
     {
-        _UpFrames.push_back(   IntRect(i * FRAME_WIDTH, 0 * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
-        _RightFrames.push_back(IntRect(i * FRAME_WIDTH, 1 * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
-        _LeftFrames.push_back( IntRect(i * FRAME_WIDTH, 2 * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
-        _DownFrames.push_back( IntRect(i * FRAME_WIDTH, 3 * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
+        _UpFrames.push_back(   IntRect(i * PLAYER_WIDTH, 0 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
+        _RightFrames.push_back(IntRect(i * PLAYER_WIDTH, 1 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
+        _LeftFrames.push_back( IntRect(i * PLAYER_WIDTH, 2 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
+        _DownFrames.push_back( IntRect(i * PLAYER_WIDTH, 3 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
     }
 
     // Set initial animation state
@@ -98,7 +98,8 @@ void Player::setPosition(const Vector2f position, const bool changeFrame)
         updateFrame(newDirection);
     }
 
-    _Position = position;
+    _PreviousPosition = _Position;
+    _Position         = position;
     _Sprite.setPosition(_Position);
 }
 
@@ -134,8 +135,9 @@ void Player::setPosition(const float_t x, const float_t y, const bool changeFram
         updateFrame(newDirection);
     }
 
-    _Position.x = x;
-    _Position.y = y;
+    _PreviousPosition = _Position;
+    _Position.x       = x;
+    _Position.y       = y;
     _Sprite.setPosition(_Position);
 }
 
@@ -168,28 +170,4 @@ void Player::updateFrame(const uint32_t direction)
 
     _CurrentFrameIndex = (_CurrentFrameIndex + 1U) % FRAMES_PER_DIRECTION;
     _Sprite.setTextureRect((*_CurrentFrames)[_CurrentFrameIndex]);
-}
-
-/**
- * @brief Change the health bar
- *
- */
-void Player::updateHealthBar()
-{
-    float_t barWidth = static_cast<float_t>(_Attributes.Health / _Attributes.MaxHealth * FRAME_WIDTH * _Sprite.getScale().x);
-    _HealthBar.setSize(Vector2f(barWidth, HEALTH_BAR_HEIGHT));
-    _HealthBar.setPosition(Vector2f(_Position.x, _Position.y - 10.0f));
-
-    if (_Attributes.Health < (_Attributes.MaxHealth / 3U))
-    {
-        _HealthBar.setFillColor(Color::Red);
-    }
-    else if (_Attributes.Health < (2U * _Attributes.MaxHealth / 3U))
-    {
-        _HealthBar.setFillColor(Color::Yellow);
-    }
-    else
-    {
-        _HealthBar.setFillColor(Color::Green);
-    }
 }

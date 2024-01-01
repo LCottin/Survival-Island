@@ -25,6 +25,7 @@ class Character
         Texture             _Texture;
         Sprite              _Sprite;
         Vector2f            _Position;
+        Vector2f            _PreviousPosition;
         RectangleShape      _HealthBar;
 
         vector<IntRect>     _UpFrames;
@@ -44,34 +45,37 @@ class Character
         Character(const string name);
 
         // Destructor
-        ~Character();
+        virtual ~Character();
 
         // Member functions (getters)
-        string          getName()       const;
-        uint32_t        getAge()        const;
-        uint32_t        getHealth()     const;
-        uint32_t        getMaxHealth()  const;
-        uint32_t        getLevel()      const;
-        uint32_t        getExperience() const;
-        uint32_t        getStrength()   const;
-        uint32_t        getDefense()    const;
-        uint32_t        getSpeed()      const;
-        Vector2f        getPosition()   const;
-        Vector2f        getScale()      const;
+        string          getName()             const;
+        uint32_t        getAge()              const;
+        uint32_t        getHealth()           const;
+        uint32_t        getMaxHealth()        const;
+        uint32_t        getLevel()            const;
+        uint32_t        getExperience()       const;
+        uint32_t        getStrength()         const;
+        uint32_t        getDefense()          const;
+        uint32_t        getSpeed()            const;
+        Vector2f        getPosition()         const;
+        Vector2f        getPreviousPosition() const;
+        Vector2f        getScale()            const;
         Sprite&         getSprite();
         RectangleShape& getHealthBar();
-        bool            isAlive()       const;
+        bool            isAlive()             const;
 
         // Member functions (setters)
         void setName(const string name);
+        virtual void setPosition(const Vector2f position);
+        virtual void setPosition(const float_t x, const float_t y);
         virtual void setPosition(const Vector2f position, const bool changeFrame);
         virtual void setPosition(const float_t x, const float_t y, const bool changeFrame);
 
         // Member functions (others)
         void sayHello() const;
         void presentation() const;
+        void updateHealthBar();
         virtual void updateFrame(const uint32_t direction);
-        virtual void updateHealthBar();
 };
 
 #endif // __CHARACTER_HPP__

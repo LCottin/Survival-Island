@@ -21,6 +21,7 @@ typedef enum
 {
     CHARACTER_TYPE_DEFAULT,
     CHARACTER_TYPE_PLAYER,
+    CHARACTER_TYPE_NPC,
     CHARACTER_TYPE_COUNT,
 } CharacterType;
 
@@ -33,7 +34,14 @@ typedef enum
     DIRECTION_COUNT,
 } DirectionType;
 
-constexpr uint32_t HEALTH_BAR_HEIGHT =   8U;
+constexpr uint32_t HEALTH_BAR_HEIGHT    =  8U;
+
+constexpr uint32_t PLAYER_WIDTH         = 16U;
+constexpr uint32_t PLAYER_HEIGHT        = 24U;
+constexpr uint32_t FRAMES_PER_DIRECTION =  4U;
+
+constexpr uint32_t NPC_WIDTH            = 18U;
+constexpr uint32_t NPC_HEIGHT           = 26U;
 
 extern const string CharacterTypeString[CHARACTER_TYPE_COUNT];
 

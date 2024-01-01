@@ -3,12 +3,15 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
 #include "Board.hpp"
 #include "Player.hpp"
+#include "NPC.hpp"
 #include "ScreenData.hpp"
+#include "Random.hpp"
 
 using namespace std;
 using namespace sf;
@@ -26,12 +29,14 @@ class Screen
         uint32_t     _SizePixel;
         string       _WindowTitle;
 
-        Board       &_Board;
-        Player      &_Player;
+        Board                   &_Board;
+        Player                  &_Player;
+        vector<shared_ptr<NPC>>  _NPCs;
 
         void _computeVertices();
         void _drawBoard();
         void _drawPlayer();
+        void _drawNPCs();
         void _drawIndicators();
         void _HandleEvents();
 
@@ -46,6 +51,7 @@ class Screen
         void setBoard(Board &board);
 
         void render();
+        void addNPC(shared_ptr<NPC> &NPC);
 
         ~Screen();
 };

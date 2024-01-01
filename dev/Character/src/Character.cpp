@@ -198,6 +198,15 @@ Vector2f Character::getPosition() const
 }
 
 /**
+ * @brief Get player previous position
+ *
+ */
+Vector2f Character::getPreviousPosition() const
+{
+    return _PreviousPosition;
+}
+
+/**
  * @brief Return play current scale
  *
  */
@@ -244,6 +253,34 @@ bool Character::isAlive() const
 void Character::setName(const string name)
 {
     _Name = name;
+}
+
+/**
+ * @brief Set new position of the player
+ *
+ * @param position Vector2f containing new position
+ *
+ */
+void Character::setPosition(const Vector2f position)
+{
+    _PreviousPosition = _Position;
+    _Position         = position;
+    _Sprite.setPosition(_Position);
+}
+
+/**
+ * @brief Set new position of the player
+ *
+ * @param x New position on x axis
+ * @param y New position on y axis
+ *
+ */
+void Character::setPosition(const float_t x, const float_t y)
+{
+    _PreviousPosition = _Position;
+    _Position.x       = x;
+    _Position.y       = y;
+    _Sprite.setPosition(_Position);
 }
 
 /**
@@ -313,4 +350,20 @@ void Character::updateFrame(const uint32_t direction)
  */
 void Character::updateHealthBar()
 {
+    float_t barWidth = static_cast<float_t>(_Attributes.Health / _Attributes.MaxHealth * PLAYER_WIDTH * _Sprite.getScale().x);
+    _HealthBar.setSize(Vector2f(barWidth, HEALTH_BAR_HEIGHT));
+    _HealthBar.setPosition(Vector2f(_Position.x, _Position.y - 10.0f));
+
+    if (_Attributes.Health < (_Attributes.MaxHealth / 3U))
+    {
+        _HealthBar.setFillColor(Color::Red);
+    }
+    else if (_Attributes.Health < (2U * _Attributes.MaxHealth / 3U))
+    {
+        _HealthBar.setFillColor(Color::Yellow);
+    }
+    else
+    {
+        _HealthBar.setFillColor(Color::Green);
+    }
 }
