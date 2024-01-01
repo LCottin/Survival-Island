@@ -87,6 +87,17 @@ void Character::_initAttributes(const string filename)
     _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : 0.0f;
 
     _Sprite.setPosition(_Position);
+
+    _DamageTimer = seconds(1.0f);
+}
+
+/**
+ * @brief Restart cooldown timer after taking damage
+ *
+ */
+void Character::_restartTimer()
+{
+    _DamageCooldown.restart();
 }
 
 /**
@@ -265,6 +276,35 @@ void Character::setName(const string name)
 }
 
 /**
+ * @brief Decrease health when defending and update alive status
+ *
+ * @param damage Damage to take
+ * @return true if character is still alive, false if the character died
+ *
+ */
+bool Character::defend(const uint32_t damage)
+{
+    if (_DamageCooldown.getElapsedTime() >= _DamageTimer)
+    {
+        if (_Attributes.Health <= damage)
+        {
+            /* Kill the character */
+            _Attributes.Health = 0;
+            _IsAlive           = false;
+        }
+        else
+        {
+            _Attributes.Health -= damage;
+        }
+
+        updateHealthBar();
+        _restartTimer();
+    }
+
+    return _IsAlive;
+}
+
+/**
  * @brief Set new position of the player
  *
  * @param position Vector2f containing new position
@@ -354,20 +394,60 @@ void Character::updateFrame(const uint32_t direction)
 }
 
 /**
+ * @brief Attack someone, decrease both healths and update alive status
+ *
+ * @param defender Character attacked
+ * @return true if the attacker survived, else false
+ *
+ */
+bool Character::attack(Character &defender)
+{
+    bool stillAlive = defender.defend(_Attributes.Strength);
+
+    /* If defender is still alive, replicates with its defense stat when cooldown is over */
+    if ((stillAlive == true) && (_DamageCooldown.getElapsedTime() >= _DamageTimer))
+    {
+        uint32_t defense = defender.getDefense();
+
+        if (_Attributes.Health <= defense)
+        {
+            _Attributes.Health = 0;
+            _IsAlive           = false;
+        }
+        else
+        {
+            _Attributes.Health -= defense;
+        }
+
+        updateHealthBar();
+        _restartTimer();
+    }
+
+    return _IsAlive;
+}
+
+/**
  * @brief Change the health bar
  *
  */
 void Character::updateHealthBar()
 {
-    float_t barWidth = static_cast<float_t>(_Attributes.Health / _Attributes.MaxHealth * PLAYER_WIDTH * _Sprite.getScale().x);
+    /* Calculate the health percentage */
+    float_t healthPercentage = static_cast<float_t>(_Attributes.Health) / static_cast<float_t>(_Attributes.MaxHealth);
+
+    /* Calculate the width of the health bar based on the health percentage */
+    float_t barWidth = healthPercentage * _Size.x;
+
+    /* Set the size and position of the health bar */
     _HealthBar.setSize(Vector2f(barWidth, HEALTH_BAR_HEIGHT));
     _HealthBar.setPosition(Vector2f(_Position.x, _Position.y - 10.0f));
 
-    if (_Attributes.Health < (_Attributes.MaxHealth / 3U))
+    /* Set the fill color based on the health percentage */
+    if (healthPercentage < 0.33f)
     {
         _HealthBar.setFillColor(Color::Red);
     }
-    else if (_Attributes.Health < (2U * _Attributes.MaxHealth / 3U))
+    else if (healthPercentage < 0.66f)
     {
         _HealthBar.setFillColor(Color::Yellow);
     }

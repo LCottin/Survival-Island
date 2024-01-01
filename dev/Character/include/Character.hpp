@@ -29,6 +29,8 @@ class Character
         Vector2f            _Position;
         Vector2f            _PreviousPosition;
         RectangleShape      _HealthBar;
+        Clock               _DamageCooldown;
+        Time                _DamageTimer;
 
         vector<IntRect>     _UpFrames;
         vector<IntRect>     _DownFrames;
@@ -40,6 +42,7 @@ class Character
 
         void _initAttributes(const string filename);
         json _loadFromJson(const string filename) const;
+        void _restartTimer();
 
     public:
         // Constructors
@@ -66,9 +69,11 @@ class Character
         Sprite&         getSprite();
         RectangleShape& getHealthBar();
         bool            isAlive()             const;
+        bool            isCooldownElapsed()   const;
 
         // Member functions (setters)
         void setName(const string name);
+        bool defend(const uint32_t damage);
         virtual void setPosition(const Vector2f position);
         virtual void setPosition(const float_t x, const float_t y);
         virtual void setPosition(const Vector2f position, const bool changeFrame);
@@ -78,6 +83,7 @@ class Character
         void sayHello() const;
         void presentation() const;
         void updateHealthBar();
+        bool attack(Character &defender);
         virtual void updateFrame(const uint32_t direction);
 };
 
