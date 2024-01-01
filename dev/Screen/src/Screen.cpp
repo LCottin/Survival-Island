@@ -190,6 +190,12 @@ void Screen::_drawIndicators()
 {
     _Player.updateHealthBar();
     _Window.draw(_Player.getHealthBar());
+
+    for (auto &npc : _NPCs)
+    {
+        npc->updateHealthBar();
+        _Window.draw(npc->getHealthBar());
+    }
 }
 
 /**
