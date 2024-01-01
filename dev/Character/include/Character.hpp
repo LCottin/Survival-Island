@@ -24,6 +24,8 @@ class Character
 
         Texture             _Texture;
         Sprite              _Sprite;
+        Vector2f            _Size;
+        Vector2f            _Scale;
         Vector2f            _Position;
         Vector2f            _PreviousPosition;
         RectangleShape      _HealthBar;
@@ -60,6 +62,7 @@ class Character
         Vector2f        getPosition()         const;
         Vector2f        getPreviousPosition() const;
         Vector2f        getScale()            const;
+        Vector2f        getSize()             const;
         Sprite&         getSprite();
         RectangleShape& getHealthBar();
         bool            isAlive()             const;

@@ -45,5 +45,9 @@ void NPC::_initNPC()
         cerr << "Error loading NPC texture" << endl;
         exit(EXIT_FAILURE);
     }
+    _Scale = Vector2f(2.0f, 2.0f);
+    _Size  = Vector2f(NPC_WIDTH * _Scale.x, NPC_HEIGHT * _Scale.y);
+
+    _Sprite.scale(_Scale);
     _Sprite.setTexture(_Texture);
 }

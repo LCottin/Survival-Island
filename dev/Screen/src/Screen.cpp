@@ -106,11 +106,12 @@ void Screen::_drawNPCs()
         float_t absDeltaX       = abs(deltaX);
         float_t absDeltaY       = abs(deltaY);
 
+        Vector2f npcSize     = npc->getSize();
         Vector2f currentPos  = npc->getPosition();
         Vector2f previousPos = npc->getPreviousPosition();
 
         /* Compute new directions */
-        if (currentPos.x == (static_cast<float_t>(_WidthPixel) - static_cast<float_t>(NPC_WIDTH) * npc->getScale().x))
+        if (currentPos.x == (static_cast<float_t>(_WidthPixel) - npcSize.x))
         {
             /* Force moving left */
             deltaX = -deltaX;
@@ -130,7 +131,7 @@ void Screen::_drawNPCs()
             }
         }
 
-        if (currentPos.y == (static_cast<float_t>(_HeightPixel) - static_cast<float_t>(NPC_HEIGHT) * npc->getScale().y))
+        if (currentPos.y == (static_cast<float_t>(_HeightPixel) - npcSize.y))
         {
             /* Force moving up */
             deltaY = -deltaY;
@@ -156,9 +157,9 @@ void Screen::_drawNPCs()
             currentPos.x = 0;
             deltaX       = absDeltaX;
         }
-        else if ((currentPos.x + absDeltaX + NPC_WIDTH * npc->getScale().x) > _WidthPixel)
+        else if ((currentPos.x + absDeltaX + npcSize.x) > _WidthPixel)
         {
-            currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(NPC_WIDTH) * npc->getScale().x;
+            currentPos.x = static_cast<float_t>(_WidthPixel) - npcSize.x;
             deltaX       = -absDeltaX;
         }
 
@@ -167,9 +168,9 @@ void Screen::_drawNPCs()
             currentPos.y = 0;
             deltaY       = absDeltaY;
         }
-        else if (((currentPos.y + absDeltaY + NPC_HEIGHT * npc->getScale().y) > _HeightPixel))
+        else if (((currentPos.y + absDeltaY + npcSize.y) > _HeightPixel))
         {
-            currentPos.y = static_cast<float_t>(_HeightPixel) - static_cast<float_t>(NPC_HEIGHT) * npc->getScale().y;
+            currentPos.y = static_cast<float_t>(_HeightPixel) - npcSize.y;
             deltaY       = -absDeltaY;
         }
 

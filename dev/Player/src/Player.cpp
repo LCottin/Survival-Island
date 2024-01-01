@@ -32,7 +32,6 @@ void Player::_initPlayer()
         cerr << "Error loading player texture" << endl;
         exit(EXIT_FAILURE);
     }
-    _Sprite.setTexture(_Texture);
 
     // Initialize frame sequences for each direction
     for (size_t i = 0; i < FRAMES_PER_DIRECTION; i++)
@@ -46,6 +45,12 @@ void Player::_initPlayer()
     // Set initial animation state
     _CurrentFrames     = &_UpFrames;
     _CurrentFrameIndex = 0;
+
+    _Scale = Vector2f(3.0f, 3.0f);
+    _Size  = Vector2f(PLAYER_WIDTH * _Scale.x, PLAYER_HEIGHT * _Scale.y);
+
+    _Sprite.scale(_Scale);
+    _Sprite.setTexture(_Texture);
     _Sprite.setTextureRect((*_CurrentFrames)[_CurrentFrameIndex]);
 }
 

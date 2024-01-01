@@ -85,8 +85,8 @@ void Character::_initAttributes(const string filename)
 
     _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<float_t>() : 0.0f;
     _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : 0.0f;
+
     _Sprite.setPosition(_Position);
-    _Sprite.scale(Vector2f(2.0f, 2.0f));
 }
 
 /**
@@ -189,7 +189,7 @@ uint32_t Character::getSpeed() const
 }
 
 /**
- * @brief Get player current position
+ * @brief Get character current position
  *
  */
 Vector2f Character::getPosition() const
@@ -198,7 +198,7 @@ Vector2f Character::getPosition() const
 }
 
 /**
- * @brief Get player previous position
+ * @brief Get character previous position
  *
  */
 Vector2f Character::getPreviousPosition() const
@@ -207,12 +207,21 @@ Vector2f Character::getPreviousPosition() const
 }
 
 /**
- * @brief Return play current scale
+ * @brief Return character current scale
  *
  */
 Vector2f Character::getScale() const
 {
-    return _Sprite.getScale();
+    return _Scale;
+}
+
+/**
+ * @brief Return character current scaled size
+ *
+ */
+Vector2f Character::getSize() const
+{
+    return _Size;
 }
 
 /**
