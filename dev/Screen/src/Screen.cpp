@@ -103,14 +103,12 @@ void Screen::_drawPlayer()
  */
 void Screen::_drawNPCs()
 {
-    constexpr float_t changeDirThreshold = 0.6f;
-
     for (auto &npc : _NPCs)
     {
         float_t changeDirProbaX = Random::getRandomFloat(0.0f, 1.0f);
         float_t changeDirProbaY = Random::getRandomFloat(0.0f, 1.0f);
-        float_t deltaX          = Random::getRandomInteger(0, 5);
-        float_t deltaY          = Random::getRandomInteger(0, 5);
+        float_t deltaX          = Random::getRandomInteger(0, npc->getSpeed());
+        float_t deltaY          = Random::getRandomInteger(0, npc->getSpeed());
         float_t absDeltaX       = abs(deltaX);
         float_t absDeltaY       = abs(deltaY);
 
@@ -127,7 +125,7 @@ void Screen::_drawNPCs()
         else if (currentPos.x != 0)
         {
             /* Check X direction change probability */
-            if (changeDirProbaX < changeDirThreshold)
+            if (changeDirProbaX < CHANGE_DIRECTION_THRESHOLD)
             {
                 /* If npc has moved left, change sign to move in the same direction */
                 deltaX = (currentPos.x < previousPos.x) ? -deltaX : deltaX;
@@ -147,7 +145,7 @@ void Screen::_drawNPCs()
         else if (currentPos.y != 0)
         {
             /* Check Y direction change probability */
-            if (changeDirProbaY < changeDirThreshold)
+            if (changeDirProbaY < CHANGE_DIRECTION_THRESHOLD)
             {
                 /* If npc has moved up, change sign to move in the same direction */
                 deltaY = (currentPos.y < previousPos.y) ? -deltaY : deltaY;
@@ -240,13 +238,14 @@ void Screen::_HandleEvents()
             {
                 bool updateFrame;
                 Vector2f currentPos = _Player.getPosition();
+                float_t playerSpeed = static_cast<float_t>(_Player.getSpeed());
 
                 /* ... left */
                 if (Keyboard::isKeyPressed(Keyboard::Left))
                 {
-                    if ((currentPos.x - 10.0f) >= 0)
+                    if ((currentPos.x - playerSpeed) >= 0)
                     {
-                        currentPos.x -= 10.0f;
+                        currentPos.x -= playerSpeed;
                         updateFrame   = true;
                     }
                     else
@@ -260,9 +259,9 @@ void Screen::_HandleEvents()
                 /* ... right */
                 if (Keyboard::isKeyPressed(Keyboard::Right))
                 {
-                    if ((currentPos.x + 10.0f + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
+                    if ((currentPos.x + playerSpeed + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
                     {
-                        currentPos.x += 10.0f;
+                        currentPos.x += playerSpeed;
                         updateFrame   = true;
                     }
                     else
@@ -276,9 +275,9 @@ void Screen::_HandleEvents()
                 /* ... up */
                 if (Keyboard::isKeyPressed(Keyboard::Up))
                 {
-                    if ((currentPos.y - 10.0f) >= 0)
+                    if ((currentPos.y - playerSpeed) >= 0)
                     {
-                        currentPos.y -= 10.0f;
+                        currentPos.y -= playerSpeed;
                         updateFrame   = true;
                     }
                     else
@@ -292,9 +291,9 @@ void Screen::_HandleEvents()
                 /* ... down */
                 if (Keyboard::isKeyPressed(Keyboard::Down))
                 {
-                    if ((currentPos.y + 10.0f + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
+                    if ((currentPos.y + playerSpeed + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
                     {
-                        currentPos.y += 10.0f;
+                        currentPos.y += playerSpeed;
                         updateFrame   = true;
                     }
                     else
