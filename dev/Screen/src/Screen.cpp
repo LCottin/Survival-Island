@@ -86,7 +86,15 @@ void Screen::_drawBoard()
  */
 void Screen::_drawPlayer()
 {
-    _Window.draw(_Player.getSprite());
+    Sprite& sprite = _Player.getSprite();
+
+    /* Draw player on the screen only if alive, otherwise move sprite away */
+    if (_Player.isAlive() == false)
+    {
+        sprite.setPosition(-1000, -1000);
+    }
+
+    _Window.draw(sprite);
 }
 
 /**
@@ -106,11 +114,12 @@ void Screen::_drawNPCs()
         float_t absDeltaX       = abs(deltaX);
         float_t absDeltaY       = abs(deltaY);
 
+        Vector2f npcSize     = npc->getSize();
         Vector2f currentPos  = npc->getPosition();
         Vector2f previousPos = npc->getPreviousPosition();
 
         /* Compute new directions */
-        if (currentPos.x == (static_cast<float_t>(_WidthPixel) - static_cast<float_t>(NPC_WIDTH) * npc->getScale().x))
+        if (currentPos.x == (static_cast<float_t>(_WidthPixel) - npcSize.x))
         {
             /* Force moving left */
             deltaX = -deltaX;
@@ -130,7 +139,7 @@ void Screen::_drawNPCs()
             }
         }
 
-        if (currentPos.y == (static_cast<float_t>(_HeightPixel) - static_cast<float_t>(NPC_HEIGHT) * npc->getScale().y))
+        if (currentPos.y == (static_cast<float_t>(_HeightPixel) - npcSize.y))
         {
             /* Force moving up */
             deltaY = -deltaY;
@@ -156,9 +165,9 @@ void Screen::_drawNPCs()
             currentPos.x = 0;
             deltaX       = absDeltaX;
         }
-        else if ((currentPos.x + absDeltaX + NPC_WIDTH * npc->getScale().x) > _WidthPixel)
+        else if ((currentPos.x + absDeltaX + npcSize.x) > _WidthPixel)
         {
-            currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(NPC_WIDTH) * npc->getScale().x;
+            currentPos.x = static_cast<float_t>(_WidthPixel) - npcSize.x;
             deltaX       = -absDeltaX;
         }
 
@@ -167,9 +176,9 @@ void Screen::_drawNPCs()
             currentPos.y = 0;
             deltaY       = absDeltaY;
         }
-        else if (((currentPos.y + absDeltaY + NPC_HEIGHT * npc->getScale().y) > _HeightPixel))
+        else if (((currentPos.y + absDeltaY + npcSize.y) > _HeightPixel))
         {
-            currentPos.y = static_cast<float_t>(_HeightPixel) - static_cast<float_t>(NPC_HEIGHT) * npc->getScale().y;
+            currentPos.y = static_cast<float_t>(_HeightPixel) - npcSize.y;
             deltaY       = -absDeltaY;
         }
 
@@ -178,7 +187,13 @@ void Screen::_drawNPCs()
 
         npc->setPosition(currentPos);
 
-        _Window.draw(npc->getSprite());
+        _HandleInteractions();
+
+        /* Draw npc only if alive */
+        if (npc->isAlive() == true)
+        {
+            _Window.draw(npc->getSprite());
+        }
     }
 }
 
@@ -188,13 +203,20 @@ void Screen::_drawNPCs()
  */
 void Screen::_drawIndicators()
 {
-    _Player.updateHealthBar();
-    _Window.draw(_Player.getHealthBar());
+    if (_Player.isAlive() == true)
+    {
+        _Player.updateHealthBar();
+        _Window.draw(_Player.getHealthBar());
+    }
 
     for (auto &npc : _NPCs)
     {
-        npc->updateHealthBar();
-        _Window.draw(npc->getHealthBar());
+        /* Draw health bar is relevant */
+        if (npc->isAlive() == true)
+        {
+            npc->updateHealthBar();
+            _Window.draw(npc->getHealthBar());
+        }
     }
 }
 
@@ -214,74 +236,92 @@ void Screen::_HandleEvents()
         /* Move player ... */
         if (event.type == Event::KeyPressed)
         {
-            bool updateFrame;
-            Vector2f currentPos = _Player.getPosition();
-
-            /* ... left */
-            if (Keyboard::isKeyPressed(Keyboard::Left))
+            if (_Player.isAlive() == true)
             {
-                if ((currentPos.x - 10.0f) >= 0)
-                {
-                    currentPos.x -= 10.0f;
-                    updateFrame   = true;
-                }
-                else
-                {
-                    /* Sprite out of bound, do not exceed window size */
-                    currentPos.x = 0.0f;
-                    updateFrame  = false;
-                }
-            }
+                bool updateFrame;
+                Vector2f currentPos = _Player.getPosition();
 
-            /* ... right */
-            if (Keyboard::isKeyPressed(Keyboard::Right))
-            {
-                if ((currentPos.x + 10.0f + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
+                /* ... left */
+                if (Keyboard::isKeyPressed(Keyboard::Left))
                 {
-                    currentPos.x += 10.0f;
-                    updateFrame   = true;
+                    if ((currentPos.x - 10.0f) >= 0)
+                    {
+                        currentPos.x -= 10.0f;
+                        updateFrame   = true;
+                    }
+                    else
+                    {
+                        /* Sprite out of bound, do not exceed window size */
+                        currentPos.x = 0.0f;
+                        updateFrame  = false;
+                    }
                 }
-                else
-                {
-                    /* Sprite out of bound, do not exceed window size */
-                    currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
-                    updateFrame  = false;
-                }
-            }
 
-            /* ... up */
-            if (Keyboard::isKeyPressed(Keyboard::Up))
-            {
-                if ((currentPos.y - 10.0f) >= 0)
+                /* ... right */
+                if (Keyboard::isKeyPressed(Keyboard::Right))
                 {
-                    currentPos.y -= 10.0f;
-                    updateFrame   = true;
+                    if ((currentPos.x + 10.0f + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
+                    {
+                        currentPos.x += 10.0f;
+                        updateFrame   = true;
+                    }
+                    else
+                    {
+                        /* Sprite out of bound, do not exceed window size */
+                        currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
+                        updateFrame  = false;
+                    }
                 }
-                else
-                {
-                    /* Sprite out of bound, do not exceed window size */
-                    currentPos.y = 0.0f;
-                    updateFrame  = false;
-                }
-            }
 
-            /* ... down */
-            if (Keyboard::isKeyPressed(Keyboard::Down))
-            {
-                if ((currentPos.y + 10.0f + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
+                /* ... up */
+                if (Keyboard::isKeyPressed(Keyboard::Up))
                 {
-                    currentPos.y += 10.0f;
-                    updateFrame   = true;
+                    if ((currentPos.y - 10.0f) >= 0)
+                    {
+                        currentPos.y -= 10.0f;
+                        updateFrame   = true;
+                    }
+                    else
+                    {
+                        /* Sprite out of bound, do not exceed window size */
+                        currentPos.y = 0.0f;
+                        updateFrame  = false;
+                    }
                 }
-                else
-                {
-                    /* Sprite out of bound, do not exceed window size */
-                    currentPos.y = (float_t)_HeightPixel - (float_t)PLAYER_HEIGHT*_Player.getScale().y;
-                    updateFrame  = false;
-                }
-            }
 
-            _Player.setPosition(currentPos, updateFrame);
+                /* ... down */
+                if (Keyboard::isKeyPressed(Keyboard::Down))
+                {
+                    if ((currentPos.y + 10.0f + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
+                    {
+                        currentPos.y += 10.0f;
+                        updateFrame   = true;
+                    }
+                    else
+                    {
+                        /* Sprite out of bound, do not exceed window size */
+                        currentPos.y = (float_t)_HeightPixel - (float_t)PLAYER_HEIGHT*_Player.getScale().y;
+                        updateFrame  = false;
+                    }
+                }
+
+                _Player.setPosition(currentPos, updateFrame);
+            }
+        }
+    }
+}
+
+/**
+ * @brief Handle player and npcs interactions
+ *
+ */
+void Screen::_HandleInteractions()
+{
+    for (auto &npc : _NPCs)
+    {
+        if (areClose(_Player, *npc, _TileSize.x) == true)
+        {
+            npc->attack(_Player);
         }
     }
 }
@@ -346,13 +386,14 @@ void Screen::render()
 {
     while (_Window.isOpen())
     {
-        _HandleEvents();
-
         _Window.clear();
+
+        _HandleEvents();
         _drawBoard();
         _drawPlayer();
         _drawNPCs();
         _drawIndicators();
+
         _Window.display();
     }
 }
@@ -371,6 +412,29 @@ void Screen::addNPC(shared_ptr<NPC> &NPC)
 
     NPC->setPosition(newPosition);
     _NPCs.push_back(NPC);
+}
+
+/**
+ * @brief Indicate if player and NPC are close
+ *
+ * @param player Source of the distance
+ * @param npc Npc to compute the distance with
+ * @param threshold Threshold to determine of player and npc are close
+ * @return true if they are close, else false
+ *
+ */
+bool Screen::areClose(Player &player, NPC &npc, const uint32_t threshold) const
+{
+    Vector2f playerPos = player.getPosition();
+    Vector2f npcPos    = npc.getPosition();
+
+    Vector2f playerSize = player.getSize();
+    Vector2f npcSize    = npc.getSize();
+
+    float_t distanceX = abs(playerPos.x - npcPos.x) - (playerSize.x + npcSize.x) / 2.0f;
+    float_t distanceY = abs(playerPos.y - npcPos.y) - (playerSize.y + npcSize.y) / 2.0f;
+
+    return ((distanceX < threshold) && (distanceY < threshold));
 }
 
 Screen::~Screen()

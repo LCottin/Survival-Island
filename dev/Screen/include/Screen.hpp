@@ -39,19 +39,21 @@ class Screen
         void _drawNPCs();
         void _drawIndicators();
         void _HandleEvents();
+        void _HandleInteractions();
 
     public:
         Screen(Board &board, Player &player, const string title = "Empty title");
 
-        uint32_t getWidthPixel() const;
+        uint32_t getWidthPixel()  const;
         uint32_t getHeightPixel() const;
-        uint32_t getSizePixel() const;
+        uint32_t getSizePixel()   const;
 
         void setWindowTitle(const string title);
         void setBoard(Board &board);
 
         void render();
         void addNPC(shared_ptr<NPC> &NPC);
+        bool areClose(Player &player, NPC &npc, const uint32_t threshold) const;
 
         ~Screen();
 };
