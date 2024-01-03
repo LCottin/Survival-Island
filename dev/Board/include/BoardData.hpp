@@ -7,4 +7,4 @@ constexpr uint32_t BOARD_WIDTH_TILE  = 85U;
 constexpr uint32_t BOARD_HEIGHT_TILE = 52U;
 constexpr uint32_t BOARD_SIZE_TILE   = BOARD_WIDTH_TILE * BOARD_HEIGHT_TILE;
 
-#endif // __BOARD_DATA_HPP__
+#endif //__BOARD_DATA_HPP__

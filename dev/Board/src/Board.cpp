@@ -6,7 +6,7 @@ Board::Board()
     _HeightInTile = BOARD_HEIGHT_TILE;
     _SizeInTile   = BOARD_SIZE_TILE;
 
-    _Map.resize(_WidthInTile, vector<uint32_t>(_HeightInTile));
+    _Map.resize(_WidthInTile, vector<TileTypeBackground>(_HeightInTile));
 
     _initMap();
 }
@@ -21,19 +21,21 @@ Board::~Board()
  */
 void Board::_initMap()
 {
+    /* Fills map with water */
     for (uint32_t j = 0; j < _HeightInTile; j++)
     {
         for (uint32_t i = 0; i < _WidthInTile; i++)
         {
-            _Map[i][j] = TILE_TYPE_WATER_FULL;
+            _Map[i][j] = TileTypeBackground::WATER_FULL;
         }
     }
 
+    /* Sets a region of grass */
    for (uint32_t j = 5; j < _HeightInTile - 5; j++)
     {
         for (uint32_t i = 5; i < _WidthInTile - 5; i++)
         {
-            _Map[i][j] = TILE_TYPE_GRASS_FULL;
+            _Map[i][j] = TileTypeBackground::GRASS_FULL;
         }
     }
 }
@@ -51,7 +53,7 @@ int32_t Board::getTile(const uint32_t x, const uint32_t y) const
     {
         return -1;
     }
-    return (int32_t)_Map[x][y];
+    return static_cast<int32_t>(_Map[x][y]);
 }
 
 /**
@@ -92,7 +94,7 @@ uint32_t Board::getSizeInTile() const
  * @param tile The tile type to set
  * @return true if the tile has been set, false otherwise
  */
-bool Board::setTile(const uint32_t x, const uint32_t y, const uint32_t tile)
+bool Board::setTile(const uint32_t x, const uint32_t y, const TileTypeBackground tile)
 {
     if ((x >= _WidthInTile) || (y >= _HeightInTile))
     {
@@ -108,9 +110,9 @@ bool Board::setTile(const uint32_t x, const uint32_t y, const uint32_t tile)
  * @param value Value to fill the map with
  * @return true if the map is correctly filled, else false (error in value)
  */
-bool Board::fillMap(const uint32_t value)
+bool Board::fillMap(const TileTypeBackground value)
 {
-    if (value >= TILE_TYPE_COUNT)
+    if (value >= TileTypeBackground::TILE_COUNT)
     {
         return false;
     }
