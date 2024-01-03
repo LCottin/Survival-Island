@@ -4,9 +4,9 @@ Screen::Screen(Board &board, Player &player, const string title) :
     _Board(board), _Player(player)
 {
     _WindowTitle = title;
-    _TileSize    = Vector2u(16U, 16U);
+    _TileSize    = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
 
-    if (_TilesetTexture.loadFromFile("../assets/images/tileset.png") == false)
+    if (_TilesetTexture.loadFromFile(ConfigDev::tilesetImgPath) == false)
     {
         cerr << "Error loading tileset" << endl;
         exit(EXIT_FAILURE);
@@ -17,7 +17,7 @@ Screen::Screen(Board &board, Player &player, const string title) :
     _SizePixel   = _WidthPixel * _HeightPixel;
 
     _Window.create(VideoMode(_WidthPixel, _HeightPixel), _WindowTitle);
-    _Window.setFramerateLimit(10);
+    _Window.setFramerateLimit(ConfigDev::framerateLimit);
 
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
     _computeVertices();

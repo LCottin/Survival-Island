@@ -54,6 +54,8 @@ namespace ConfigUser
             throw runtime_error("Failed to parse configUser file.");
         }
 
+        configFile.close();
+
         return toReturn;
     }
 }

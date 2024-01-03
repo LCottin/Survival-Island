@@ -38,6 +38,8 @@ set(SOURCES
     ${DEV_DIR}/Board/src/Board.cpp
     ${DEV_DIR}/Screen/src/Screen.cpp
     ${DEV_DIR}/Random/src/Random.cpp
+    ${DEV_DIR}/Config/src/ConfigUser.cpp
+    ${DEV_DIR}/Config/src/ConfigDev.cpp
 )
 
 # Collect header files
@@ -52,6 +54,9 @@ set(HEADERS
     ${DEV_DIR}/Screen/include/Screen.hpp
     ${DEV_DIR}/Screen/include/ScreenData.hpp
     ${DEV_DIR}/Random/include/Random.hpp
+    ${DEV_DIR}/Config/include/ConfigUser.hpp
+    ${DEV_DIR}/Config/include/ConfigDev.hpp
+    ${DEV_DIR}/Config/include/ConfigData.hpp
 )
 
 # Set the output directory for the binary
@@ -74,6 +79,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/Screen/include
     ${DEV_DIR}/NPC/include
     ${DEV_DIR}/Random/include
+    ${DEV_DIR}/Config/include
 )
 
 # Link libraries

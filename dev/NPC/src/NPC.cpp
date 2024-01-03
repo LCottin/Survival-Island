@@ -38,7 +38,10 @@ NPC::NPC(const string name, const string color) : Character(name)
 
 void NPC::_initNPC()
 {
-    string path = "../assets/images/NPC_" + _Color + ".png";
+    /* Includes color in the path of the image */
+    string path = ConfigDev::NPCImgPath;
+    path.insert(ConfigDev::NPCImgPath.size() - string(".png").size(), string("_") + _Color);
+
     bool load   = _Texture.loadFromFile(path);
     if (load == false)
     {

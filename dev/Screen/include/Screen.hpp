@@ -13,6 +13,8 @@
 #include "ScreenData.hpp"
 #include "Random.hpp"
 
+#include "ConfigDev.hpp"
+
 using namespace std;
 using namespace sf;
 
@@ -42,7 +44,7 @@ class Screen
         void _HandleInteractions();
 
     public:
-        Screen(Board &board, Player &player, const string title = "Empty title");
+        Screen(Board &board, Player &player, const string title);
 
         uint32_t getWidthPixel()  const;
         uint32_t getHeightPixel() const;

@@ -10,6 +10,8 @@
 
 #include "CharacterData.hpp"
 
+#include "ConfigDev.hpp"
+
 using namespace std;
 using namespace sf;
 using json = nlohmann::json;

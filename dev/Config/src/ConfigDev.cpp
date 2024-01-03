@@ -81,5 +81,7 @@ namespace ConfigDev
         {
             throw runtime_error("Failed to parse configUser file.");
         }
+
+        configFile.close();
     }
 }

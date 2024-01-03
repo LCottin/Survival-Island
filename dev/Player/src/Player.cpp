@@ -26,7 +26,7 @@ Player::Player(const string name) : Character(name)
  */
 void Player::_initPlayer()
 {
-    bool load = _Texture.loadFromFile("../assets/images/player.png");
+    bool load = _Texture.loadFromFile(ConfigDev::playerImgPath);
     if (load == false)
     {
         cerr << "Error loading player texture" << endl;
