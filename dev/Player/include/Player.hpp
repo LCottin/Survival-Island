@@ -11,20 +11,20 @@ class Player: public Character
         void _initPlayer();
 
     public:
-        // Constructors
+        /* Constructors */
         Player();
-        Player(const string name);
+        Player(const string &name);
 
-        // Member functions (getters)
+        /* Member functions (getters) */
         uint32_t getMoney() const;
 
-        // Member functions (setters)
+        /* Member functions (setters) */
         void setMoney(const uint32_t money);
         void setPosition(const Vector2f position, const bool changeFrame);
         void setPosition(const float_t x, const float_t y, const bool changeFrame);
 
-        // Member functions (others)
-        void updateFrame(const uint32_t direction);
+        /* Member functions (others) */
+        void updateFrame(const DirectionType direction);
 };
 
 #endif

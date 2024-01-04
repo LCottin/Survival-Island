@@ -35,6 +35,7 @@ set(SOURCES
     ${DEV_DIR}/Character/src/CharacterData.cpp
     ${DEV_DIR}/Player/src/Player.cpp
     ${DEV_DIR}/NPC/src/NPC.cpp
+    ${DEV_DIR}/NPC/src/NPCData.cpp
     ${DEV_DIR}/Board/src/Board.cpp
     ${DEV_DIR}/Screen/src/Screen.cpp
     ${DEV_DIR}/Random/src/Random.cpp
@@ -48,6 +49,7 @@ set(HEADERS
     ${DEV_DIR}/Character/include/CharacterData.hpp
     ${DEV_DIR}/Player/include/Player.hpp
     ${DEV_DIR}/NPC/include/NPC.hpp
+    ${DEV_DIR}/NPC/include/NPCData.hpp
     ${DEV_DIR}/Board/include/Board.hpp
     ${DEV_DIR}/Board/include/BoardData.hpp
     ${DEV_DIR}/Board/include/TileType.hpp

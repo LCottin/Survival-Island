@@ -2,23 +2,25 @@
 #define __NPC_HPP__
 
 #include "Character.hpp"
+#include "NPCData.hpp"
+#include "Random.hpp"
 
 class NPC: public Character
 {
     private:
-        string   _Color;
+        string _Color;
 
         void _initNPC();
 
     public:
-        // Constructors
+        /* Constructors */
         NPC();
-        NPC(const string name);
-        NPC(const string name, const string color);
+        NPC(const string &name);
+        NPC(const string &name, const string &color);
 
-        // Member functions (setters)
+        /* Member functions (setters) */
 
-        // Member functions (others)
+        /* Member functions (others) */
 };
 
 #endif

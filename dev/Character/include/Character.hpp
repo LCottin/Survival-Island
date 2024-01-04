@@ -42,19 +42,19 @@ class Character
         vector<IntRect>    *_CurrentFrames;
         uint8_t             _CurrentFrameIndex;
 
-        void _initAttributes(const string filename);
-        json _loadFromJson(const string filename) const;
+        void _initCommon(const CharacterType type);
+        json _loadFromJson(const CharacterType type) const;
         void _restartTimer();
 
     public:
-        // Constructors
+        /* Constructors */
         Character();
-        Character(const string name);
+        Character(const string &name);
 
-        // Destructor
+        /* Destructor */
         virtual ~Character();
 
-        // Member functions (getters)
+        /* Member functions (getters) */
         string          getName()             const;
         uint32_t        getAge()              const;
         uint32_t        getHealth()           const;
@@ -73,20 +73,20 @@ class Character
         bool            isAlive()             const;
         bool            isCooldownElapsed()   const;
 
-        // Member functions (setters)
-        void setName(const string name);
+        /* Member functions (setters) */
+        void setName(const string &name);
         bool defend(const uint32_t damage);
         virtual void setPosition(const Vector2f position);
         virtual void setPosition(const float_t x, const float_t y);
         virtual void setPosition(const Vector2f position, const bool changeFrame);
         virtual void setPosition(const float_t x, const float_t y, const bool changeFrame);
 
-        // Member functions (others)
+        /* Member functions (others) */
         void sayHello() const;
         void presentation() const;
         void updateHealthBar();
         bool attack(Character &defender);
-        virtual void updateFrame(const uint32_t direction);
+        virtual void updateFrame(const DirectionType direction);
 };
 
 #endif // __CHARACTER_HPP__

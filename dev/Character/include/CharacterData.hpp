@@ -1,5 +1,5 @@
-#ifndef __CHARACTERDATA_HPP__
-#define __CHARACTERDATA_HPP__
+#ifndef __CHARACTER_DATA_HPP__
+#define __CHARACTER_DATA_HPP__
 
 #include <string>
 
@@ -17,22 +17,23 @@ typedef struct
     uint32_t Speed;
 } CharacterAttributes;
 
-typedef enum
+enum class CharacterType : uint32_t
 {
-    CHARACTER_TYPE_DEFAULT,
-    CHARACTER_TYPE_PLAYER,
-    CHARACTER_TYPE_NPC,
-    CHARACTER_TYPE_COUNT,
-} CharacterType;
+    DEFAULT,
+    PLAYER,
+    NPC,
+    COUNT,
+};
 
-typedef enum
+enum class DirectionType : uint32_t
 {
-    DIRECTION_UP,
-    DIRECTION_DOWN,
-    DIRECTION_LEFT,
-    DIRECTION_RIGHT,
-    DIRECTION_COUNT,
-} DirectionType;
+    NONE,
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    COUNT,
+};
 
 constexpr uint32_t HEALTH_BAR_HEIGHT    =  8U;
 
@@ -43,8 +44,8 @@ constexpr uint32_t FRAMES_PER_DIRECTION =  4U;
 constexpr uint32_t NPC_WIDTH            = 18U;
 constexpr uint32_t NPC_HEIGHT           = 26U;
 
-extern const string CharacterTypeString[CHARACTER_TYPE_COUNT];
+extern const string CharacterTypeString[static_cast<uint32_t>(CharacterType::COUNT)];
 
-extern const string CharacterDefaultName[CHARACTER_TYPE_COUNT];
+extern const string CharacterDefaultName[static_cast<uint32_t>(CharacterType::COUNT)];
 
-#endif // __CHARACTERDATA_HPP__
+#endif //__CHARACTER_DATA_HPP__

@@ -27,7 +27,7 @@ int main()
 
     for (size_t i = 0; i < (2U * static_cast<uint32_t>(ConfigUser::difficulty)); i++)
     {
-        listNPC[i] = make_shared<NPC>("NPC_" + to_string(i), NPCColorsString[Random::getRandomInteger(0, NPCColors::COLOR_COUNT - 1)]);
+        listNPC[i] = make_shared<NPC>("NPC_" + to_string(i), NPCColorsString[Random::getRandomInteger(0, static_cast<uint32_t>(NPCColors::COUNT) - 1U)]);
         screen.addNPC(listNPC[i]);
     }
 
