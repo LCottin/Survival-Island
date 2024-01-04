@@ -4,7 +4,7 @@ project(Survival-Island)
 
 # Set the default build type to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 endif()
 
 # Provide options for the build type
@@ -26,7 +26,7 @@ set(RELEASE_COMPILE_DEFINITIONS RELEASE_EXTRA)
 
 set(COMMON_COMPILE_OPTIONS  "-Wall" "-Wextra" "-march=native")
 set(DEBUG_COMPILE_OPTIONS   "-g")
-set(RELEASE_COMPILE_OPTIONS "-O3")
+set(RELEASE_COMPILE_OPTIONS "-O3" "-Werror")
 
 # Collect source files
 set(SOURCES
