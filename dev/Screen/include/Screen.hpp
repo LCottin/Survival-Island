@@ -44,13 +44,13 @@ class Screen
         void _HandleInteractions();
 
     public:
-        Screen(Board &board, Player &player, const string title);
+        Screen(Board &board, Player &player, const string &title);
 
         uint32_t getWidthPixel()  const;
         uint32_t getHeightPixel() const;
         uint32_t getSizePixel()   const;
 
-        void setWindowTitle(const string title);
+        void setWindowTitle(const string &title);
         void setBoard(Board &board);
 
         void render();

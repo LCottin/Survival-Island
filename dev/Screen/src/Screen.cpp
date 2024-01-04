@@ -1,6 +1,6 @@
 #include "Screen.hpp"
 
-Screen::Screen(Board &board, Player &player, const string title) :
+Screen::Screen(Board &board, Player &player, const string &title) :
     _Board(board), _Player(player)
 {
     _WindowTitle = title;
@@ -8,8 +8,7 @@ Screen::Screen(Board &board, Player &player, const string title) :
 
     if (_TilesetTexture.loadFromFile(ConfigDev::tilesetImgPath) == false)
     {
-        cerr << "Error loading tileset" << endl;
-        exit(EXIT_FAILURE);
+        throw runtime_error("Failed to load tileset image.");
     }
 
     _WidthPixel  = _Board.getWidthInTile() * _TileSize.x;
@@ -21,7 +20,6 @@ Screen::Screen(Board &board, Player &player, const string title) :
 
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
     _computeVertices();
-
 }
 
 void Screen::_computeVertices()
@@ -40,28 +38,27 @@ void Screen::_computeVertices()
 
             if (tileIndex == -1)
             {
-                cout << "index out of bound" << endl;
-                continue;
+                throw runtime_error("Index out of bound when computing vertices.");
             }
 
-            // Calculate the position of the current tile in the vertex array
+            /* Calculate the position of the current tile in the vertex array */
             float_t x = static_cast<float_t>(i * _TileSize.x);
             float_t y = static_cast<float_t>(j * _TileSize.y);
 
-            // Get a pointer to the current tile quad
+            /* Get a pointer to the current tile quad */
             Vertex* quad = &_Vertices[(i + j * boardWidth) * 4];
 
-            // Define its 4 corners
+            /* Define its 4 corners */
             quad[0].position = Vector2f(x              , y);
             quad[1].position = Vector2f(x + _TileSize.x, y);
             quad[2].position = Vector2f(x + _TileSize.x, y + _TileSize.y);
             quad[3].position = Vector2f(x              , y + _TileSize.y);
 
-            // Calculate coordinate of the index in the image
+            /* Calculate coordinate of the index in the image */
             float_t tile_x = static_cast<float_t>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
             float_t tile_y = static_cast<float_t>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
 
-            // Define its 4 texture coordinates
+            /* Define its 4 texture coordinates */
             quad[0].texCoords = Vector2f(tile_x              , tile_y);
             quad[1].texCoords = Vector2f(tile_x + _TileSize.x, tile_y);
             quad[2].texCoords = Vector2f(tile_x + _TileSize.x, tile_y + _TileSize.y);
@@ -236,7 +233,7 @@ void Screen::_HandleEvents()
         {
             if (_Player.isAlive() == true)
             {
-                bool updateFrame;
+                bool updateFrame    = false;
                 Vector2f currentPos = _Player.getPosition();
                 float_t playerSpeed = static_cast<float_t>(_Player.getSpeed());
 
@@ -262,13 +259,13 @@ void Screen::_HandleEvents()
                     if ((currentPos.x + playerSpeed + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
                     {
                         currentPos.x += playerSpeed;
-                        updateFrame   = true;
+                        updateFrame  |= true;
                     }
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
-                        updateFrame  = false;
+                        currentPos.x  = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
+                        updateFrame  |= false;
                     }
                 }
 
@@ -278,13 +275,13 @@ void Screen::_HandleEvents()
                     if ((currentPos.y - playerSpeed) >= 0)
                     {
                         currentPos.y -= playerSpeed;
-                        updateFrame   = true;
+                        updateFrame  |= true;
                     }
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.y = 0.0f;
-                        updateFrame  = false;
+                        currentPos.y  = 0.0f;
+                        updateFrame  |= false;
                     }
                 }
 
@@ -294,13 +291,13 @@ void Screen::_HandleEvents()
                     if ((currentPos.y + playerSpeed + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
                     {
                         currentPos.y += playerSpeed;
-                        updateFrame   = true;
+                        updateFrame  |= true;
                     }
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.y = (float_t)_HeightPixel - (float_t)PLAYER_HEIGHT*_Player.getScale().y;
-                        updateFrame  = false;
+                        currentPos.y  = (float_t)_HeightPixel - (float_t)PLAYER_HEIGHT*_Player.getScale().y;
+                        updateFrame  |= false;
                     }
                 }
 
@@ -360,7 +357,7 @@ uint32_t Screen::getSizePixel() const
  *
  * @param title The new window title
  */
-void Screen::setWindowTitle(const string title)
+void Screen::setWindowTitle(const string &title)
 {
     _WindowTitle = title;
     _Window.setTitle(_WindowTitle);
