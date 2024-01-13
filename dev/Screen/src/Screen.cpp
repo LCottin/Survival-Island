@@ -3,9 +3,9 @@
 Screen::Screen(Board &board, Player &player, const string &title) :
     _Board(board), _Player(player)
 {
+    _GameStatus     = GameStatus::INIT;
     _WindowTitle    = title;
     _TileSize       = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
-    _ScreenIsPaused = false;
 
     if (_TilesetTexture.loadFromFile(ConfigDev::tilesetImgPath) == false)
     {
@@ -24,6 +24,8 @@ Screen::Screen(Board &board, Player &player, const string &title) :
 
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
     _computeVertices();
+
+    _GameStatus = GameStatus::PLAY;
 }
 
 void Screen::_computeVertices()
@@ -237,13 +239,13 @@ void Screen::_HandleEvents()
         {
             if (_PauseCooldown.getElapsedTime() > _PauseTimer)
             {
-                _ScreenIsPaused = !_ScreenIsPaused;
+                _GameStatus = (_GameStatus == GameStatus::PLAY) ? GameStatus::PAUSE: GameStatus::PLAY;
                 _PauseCooldown.restart();
             }
         }
 
         /* Move player ... */
-        if ((event.type == Event::KeyPressed) && (_ScreenIsPaused == false))
+        if ((event.type == Event::KeyPressed) && (_GameStatus == GameStatus::PLAY))
         {
             if (_Player.isAlive() == true)
             {
@@ -316,6 +318,10 @@ void Screen::_HandleEvents()
                 }
 
                 _Player.setPosition(currentPos, updateFrame);
+            }
+            else
+            {
+                _GameStatus = GameStatus::STOP;
             }
         }
     }
@@ -394,11 +400,11 @@ void Screen::setBoard(Board &board)
  */
 void Screen::render()
 {
-    while (_Window.isOpen())
+    while ((_Window.isOpen()) && (_GameStatus != GameStatus::STOP))
     {
         _HandleEvents();
 
-        if (_ScreenIsPaused == false)
+        if (_GameStatus == GameStatus::PLAY)
         {
             _Window.clear();
             _drawBoard();

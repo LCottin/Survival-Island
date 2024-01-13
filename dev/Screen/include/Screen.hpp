@@ -31,7 +31,7 @@ class Screen
         uint32_t     _HeightPixel;
         uint32_t     _SizePixel;
         string       _WindowTitle;
-        bool        _ScreenIsPaused;
+        GameStatus   _GameStatus;
 
         Board                   &_Board;
         Player                  &_Player;
