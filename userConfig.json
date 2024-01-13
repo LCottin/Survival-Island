@@ -2,5 +2,11 @@
     "windowTitle" : "Survival Island",
 
     "difficultyComment" : "1 = easy, 2 = medium, 3 = hard",
-    "difficulty"        : 2
+    "difficulty"        : 2,
+
+    "availableKeys" : "Every letters for A to Z, arrows, esc, enter, space, left ctrl, tab",
+    "upKey"         : "Up",
+    "downKey"       : "Down",
+    "leftKey"       : "Left",
+    "rightKey"      : "Right",
 }

@@ -14,6 +14,7 @@
 #include "Random.hpp"
 
 #include "ConfigDev.hpp"
+#include "ConfigUser.hpp"
 
 using namespace std;
 using namespace sf;

@@ -238,7 +238,7 @@ void Screen::_HandleEvents()
                 float_t playerSpeed = static_cast<float_t>(_Player.getSpeed());
 
                 /* ... left */
-                if (Keyboard::isKeyPressed(Keyboard::Left))
+                if (Keyboard::isKeyPressed(ConfigUser::leftKey))
                 {
                     if ((currentPos.x - playerSpeed) >= 0)
                     {
@@ -254,7 +254,7 @@ void Screen::_HandleEvents()
                 }
 
                 /* ... right */
-                if (Keyboard::isKeyPressed(Keyboard::Right))
+                if (Keyboard::isKeyPressed(ConfigUser::rightKey))
                 {
                     if ((currentPos.x + playerSpeed + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
                     {
@@ -270,7 +270,7 @@ void Screen::_HandleEvents()
                 }
 
                 /* ... up */
-                if (Keyboard::isKeyPressed(Keyboard::Up))
+                if (Keyboard::isKeyPressed(ConfigUser::upKey))
                 {
                     if ((currentPos.y - playerSpeed) >= 0)
                     {
@@ -286,7 +286,7 @@ void Screen::_HandleEvents()
                 }
 
                 /* ... down */
-                if (Keyboard::isKeyPressed(Keyboard::Down))
+                if (Keyboard::isKeyPressed(ConfigUser::downKey))
                 {
                     if ((currentPos.y + playerSpeed + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
                     {
