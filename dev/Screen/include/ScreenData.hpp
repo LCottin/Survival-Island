@@ -6,4 +6,14 @@
 constexpr uint32_t IMAGE_WIDTH_PIXEL  = 256U;
 constexpr uint32_t IMAGE_HEIGHT_PIXEL = 224U;
 
-#endif // __SCREEN_DATA_HPP__
+constexpr float_t CHANGE_DIRECTION_THRESHOLD = 0.6f;
+
+enum class GameStatus : uint32_t
+{
+    INIT,
+    PLAY,
+    PAUSE,
+    STOP,
+};
+
+#endif //__SCREEN_DATA_HPP__

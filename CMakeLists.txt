@@ -4,7 +4,7 @@ project(Survival-Island)
 
 # Set the default build type to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 endif()
 
 # Provide options for the build type
@@ -26,7 +26,7 @@ set(RELEASE_COMPILE_DEFINITIONS RELEASE_EXTRA)
 
 set(COMMON_COMPILE_OPTIONS  "-Wall" "-Wextra" "-march=native")
 set(DEBUG_COMPILE_OPTIONS   "-g")
-set(RELEASE_COMPILE_OPTIONS "-O3")
+set(RELEASE_COMPILE_OPTIONS "-O3" "-Werror")
 
 # Collect source files
 set(SOURCES
@@ -35,9 +35,12 @@ set(SOURCES
     ${DEV_DIR}/Character/src/CharacterData.cpp
     ${DEV_DIR}/Player/src/Player.cpp
     ${DEV_DIR}/NPC/src/NPC.cpp
+    ${DEV_DIR}/NPC/src/NPCData.cpp
     ${DEV_DIR}/Board/src/Board.cpp
     ${DEV_DIR}/Screen/src/Screen.cpp
     ${DEV_DIR}/Random/src/Random.cpp
+    ${DEV_DIR}/Config/src/ConfigUser.cpp
+    ${DEV_DIR}/Config/src/ConfigDev.cpp
 )
 
 # Collect header files
@@ -46,12 +49,16 @@ set(HEADERS
     ${DEV_DIR}/Character/include/CharacterData.hpp
     ${DEV_DIR}/Player/include/Player.hpp
     ${DEV_DIR}/NPC/include/NPC.hpp
+    ${DEV_DIR}/NPC/include/NPCData.hpp
     ${DEV_DIR}/Board/include/Board.hpp
     ${DEV_DIR}/Board/include/BoardData.hpp
     ${DEV_DIR}/Board/include/TileType.hpp
     ${DEV_DIR}/Screen/include/Screen.hpp
     ${DEV_DIR}/Screen/include/ScreenData.hpp
     ${DEV_DIR}/Random/include/Random.hpp
+    ${DEV_DIR}/Config/include/ConfigUser.hpp
+    ${DEV_DIR}/Config/include/ConfigDev.hpp
+    ${DEV_DIR}/Config/include/ConfigData.hpp
 )
 
 # Set the output directory for the binary
@@ -74,6 +81,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/Screen/include
     ${DEV_DIR}/NPC/include
     ${DEV_DIR}/Random/include
+    ${DEV_DIR}/Config/include
 )
 
 # Link libraries

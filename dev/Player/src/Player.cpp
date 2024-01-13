@@ -1,22 +1,19 @@
 #include "Player.hpp"
 
-// Constructors
+/* Constructors */
 Player::Player() : Character()
 {
-    _Type  = CHARACTER_TYPE_PLAYER;
-    _Name  = CharacterDefaultName[_Type];
-    _Money = 0;
+    _Name  = CharacterDefaultName[static_cast<uint32_t>(_Type)];
 
-    _initAttributes(CharacterTypeString[_Type]);
+    _initCommon(CharacterType::PLAYER);
     _initPlayer();
 }
 
-Player::Player(const string name) : Character(name)
+Player::Player(const string &name) : Character(name)
 {
-    _Type  = CHARACTER_TYPE_PLAYER;
-    _Money = 0;
+    _Name = name;
 
-    _initAttributes(CharacterTypeString[_Type]);
+    _initCommon(CharacterType::PLAYER);
     _initPlayer();
 }
 
@@ -26,14 +23,12 @@ Player::Player(const string name) : Character(name)
  */
 void Player::_initPlayer()
 {
-    bool load = _Texture.loadFromFile("../assets/images/player.png");
-    if (load == false)
+    if (_Texture.loadFromFile(ConfigDev::playerImgPath) == false)
     {
-        cerr << "Error loading player texture" << endl;
-        exit(EXIT_FAILURE);
+        throw runtime_error("Error loading player texture");
     }
 
-    // Initialize frame sequences for each direction
+    /* Initialize frame sequences for each direction */
     for (size_t i = 0; i < FRAMES_PER_DIRECTION; i++)
     {
         _UpFrames.push_back(   IntRect(i * PLAYER_WIDTH, 0 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
@@ -42,7 +37,7 @@ void Player::_initPlayer()
         _DownFrames.push_back( IntRect(i * PLAYER_WIDTH, 3 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
     }
 
-    // Set initial animation state
+    /* Set initial animation state */
     _CurrentFrames     = &_UpFrames;
     _CurrentFrameIndex = 0;
 
@@ -52,6 +47,8 @@ void Player::_initPlayer()
     _Sprite.scale(_Scale);
     _Sprite.setTexture(_Texture);
     _Sprite.setTextureRect((*_CurrentFrames)[_CurrentFrameIndex]);
+
+    _Money = 0;
 }
 
 /**
@@ -83,22 +80,22 @@ void Player::setPosition(const Vector2f position, const bool changeFrame)
 {
     if (changeFrame == true)
     {
-        int32_t newDirection = -1;
+        DirectionType newDirection = DirectionType::NONE;
         if (_Position.x < position.x)
         {
-            newDirection = DIRECTION_RIGHT;
+            newDirection = DirectionType::RIGHT;
         }
         else if (_Position.x > position.x)
         {
-            newDirection = DIRECTION_LEFT;
+            newDirection = DirectionType::LEFT;
         }
         else if (_Position.y < position.y)
         {
-            newDirection = DIRECTION_UP;
+            newDirection = DirectionType::UP;
         }
         else if (_Position.y > position.y)
         {
-            newDirection = DIRECTION_DOWN;
+            newDirection = DirectionType::DOWN;
         }
         updateFrame(newDirection);
     }
@@ -120,22 +117,22 @@ void Player::setPosition(const float_t x, const float_t y, const bool changeFram
 {
     if (changeFrame == true)
     {
-        int32_t newDirection = -1;
+        DirectionType newDirection = DirectionType::NONE;
         if (_Position.x < x)
         {
-            newDirection = DIRECTION_RIGHT;
+            newDirection = DirectionType::RIGHT;
         }
         else if (_Position.x > x)
         {
-            newDirection = DIRECTION_LEFT;
+            newDirection = DirectionType::LEFT;
         }
         else if (_Position.y < y)
         {
-            newDirection = DIRECTION_UP;
+            newDirection = DirectionType::UP;
         }
         else if (_Position.y > y)
         {
-            newDirection = DIRECTION_DOWN;
+            newDirection = DirectionType::DOWN;
         }
         updateFrame(newDirection);
     }
@@ -152,24 +149,27 @@ void Player::setPosition(const float_t x, const float_t y, const bool changeFram
  * @param direction New direction to set
  *
  */
-void Player::updateFrame(const uint32_t direction)
+void Player::updateFrame(const DirectionType direction)
 {
     switch (direction)
     {
-        case DIRECTION_UP :
+        case DirectionType::UP:
             _CurrentFrames     = &_UpFrames;
             break;
 
-        case DIRECTION_DOWN :
+        case DirectionType::DOWN:
             _CurrentFrames     = &_DownFrames;
             break;
 
-        case DIRECTION_LEFT :
+        case DirectionType::LEFT:
             _CurrentFrames     = &_LeftFrames;
             break;
 
-        case DIRECTION_RIGHT:
+        case DirectionType::RIGHT:
             _CurrentFrames     = &_RightFrames;
+            break;
+
+        default:
             break;
     }
 

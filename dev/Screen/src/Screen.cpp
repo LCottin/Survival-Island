@@ -1,27 +1,31 @@
 #include "Screen.hpp"
 
-Screen::Screen(Board &board, Player &player, const string title) :
+Screen::Screen(Board &board, Player &player, const string &title) :
     _Board(board), _Player(player)
 {
-    _WindowTitle = title;
-    _TileSize    = Vector2u(16U, 16U);
+    _GameStatus     = GameStatus::INIT;
+    _WindowTitle    = title;
+    _TileSize       = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
 
-    if (_TilesetTexture.loadFromFile("../assets/images/tileset.png") == false)
+    if (_TilesetTexture.loadFromFile(ConfigDev::tilesetImgPath) == false)
     {
-        cerr << "Error loading tileset" << endl;
-        exit(EXIT_FAILURE);
+        throw runtime_error("Failed to load tileset image.");
     }
 
     _WidthPixel  = _Board.getWidthInTile() * _TileSize.x;
     _HeightPixel = _Board.getHeightInTile() * _TileSize.y;
     _SizePixel   = _WidthPixel * _HeightPixel;
 
+    _PauseTimer = seconds(0.5f);
+    _PauseCooldown.restart();
+
     _Window.create(VideoMode(_WidthPixel, _HeightPixel), _WindowTitle);
-    _Window.setFramerateLimit(10);
+    _Window.setFramerateLimit(ConfigDev::framerateLimit);
 
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
     _computeVertices();
 
+    _GameStatus = GameStatus::PLAY;
 }
 
 void Screen::_computeVertices()
@@ -40,28 +44,27 @@ void Screen::_computeVertices()
 
             if (tileIndex == -1)
             {
-                cout << "index out of bound" << endl;
-                continue;
+                throw runtime_error("Index out of bound when computing vertices.");
             }
 
-            // Calculate the position of the current tile in the vertex array
+            /* Calculate the position of the current tile in the vertex array */
             float_t x = static_cast<float_t>(i * _TileSize.x);
             float_t y = static_cast<float_t>(j * _TileSize.y);
 
-            // Get a pointer to the current tile quad
+            /* Get a pointer to the current tile quad */
             Vertex* quad = &_Vertices[(i + j * boardWidth) * 4];
 
-            // Define its 4 corners
+            /* Define its 4 corners */
             quad[0].position = Vector2f(x              , y);
             quad[1].position = Vector2f(x + _TileSize.x, y);
             quad[2].position = Vector2f(x + _TileSize.x, y + _TileSize.y);
             quad[3].position = Vector2f(x              , y + _TileSize.y);
 
-            // Calculate coordinate of the index in the image
+            /* Calculate coordinate of the index in the image */
             float_t tile_x = static_cast<float_t>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
             float_t tile_y = static_cast<float_t>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
 
-            // Define its 4 texture coordinates
+            /* Define its 4 texture coordinates */
             quad[0].texCoords = Vector2f(tile_x              , tile_y);
             quad[1].texCoords = Vector2f(tile_x + _TileSize.x, tile_y);
             quad[2].texCoords = Vector2f(tile_x + _TileSize.x, tile_y + _TileSize.y);
@@ -103,14 +106,12 @@ void Screen::_drawPlayer()
  */
 void Screen::_drawNPCs()
 {
-    constexpr float_t changeDirThreshold = 0.6f;
-
     for (auto &npc : _NPCs)
     {
         float_t changeDirProbaX = Random::getRandomFloat(0.0f, 1.0f);
         float_t changeDirProbaY = Random::getRandomFloat(0.0f, 1.0f);
-        float_t deltaX          = Random::getRandomInteger(0, 5);
-        float_t deltaY          = Random::getRandomInteger(0, 5);
+        float_t deltaX          = Random::getRandomInteger(0, npc->getSpeed());
+        float_t deltaY          = Random::getRandomInteger(0, npc->getSpeed());
         float_t absDeltaX       = abs(deltaX);
         float_t absDeltaY       = abs(deltaY);
 
@@ -127,7 +128,7 @@ void Screen::_drawNPCs()
         else if (currentPos.x != 0)
         {
             /* Check X direction change probability */
-            if (changeDirProbaX < changeDirThreshold)
+            if (changeDirProbaX < CHANGE_DIRECTION_THRESHOLD)
             {
                 /* If npc has moved left, change sign to move in the same direction */
                 deltaX = (currentPos.x < previousPos.x) ? -deltaX : deltaX;
@@ -147,7 +148,7 @@ void Screen::_drawNPCs()
         else if (currentPos.y != 0)
         {
             /* Check Y direction change probability */
-            if (changeDirProbaY < changeDirThreshold)
+            if (changeDirProbaY < CHANGE_DIRECTION_THRESHOLD)
             {
                 /* If npc has moved up, change sign to move in the same direction */
                 deltaY = (currentPos.y < previousPos.y) ? -deltaY : deltaY;
@@ -233,20 +234,31 @@ void Screen::_HandleEvents()
         if (event.type == Event::Closed)
             _Window.close();
 
+        /* Update pause status */
+        if ((event.type == Event::KeyPressed) && (Keyboard::isKeyPressed(ConfigUser::pauseKey)))
+        {
+            if (_PauseCooldown.getElapsedTime() > _PauseTimer)
+            {
+                _GameStatus = (_GameStatus == GameStatus::PLAY) ? GameStatus::PAUSE: GameStatus::PLAY;
+                _PauseCooldown.restart();
+            }
+        }
+
         /* Move player ... */
-        if (event.type == Event::KeyPressed)
+        if ((event.type == Event::KeyPressed) && (_GameStatus == GameStatus::PLAY))
         {
             if (_Player.isAlive() == true)
             {
-                bool updateFrame;
+                bool updateFrame    = false;
                 Vector2f currentPos = _Player.getPosition();
+                float_t playerSpeed = static_cast<float_t>(_Player.getSpeed());
 
                 /* ... left */
-                if (Keyboard::isKeyPressed(Keyboard::Left))
+                if (Keyboard::isKeyPressed(ConfigUser::leftKey))
                 {
-                    if ((currentPos.x - 10.0f) >= 0)
+                    if ((currentPos.x - playerSpeed) >= 0)
                     {
-                        currentPos.x -= 10.0f;
+                        currentPos.x -= playerSpeed;
                         updateFrame   = true;
                     }
                     else
@@ -258,54 +270,58 @@ void Screen::_HandleEvents()
                 }
 
                 /* ... right */
-                if (Keyboard::isKeyPressed(Keyboard::Right))
+                if (Keyboard::isKeyPressed(ConfigUser::rightKey))
                 {
-                    if ((currentPos.x + 10.0f + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
+                    if ((currentPos.x + playerSpeed + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
                     {
-                        currentPos.x += 10.0f;
-                        updateFrame   = true;
+                        currentPos.x += playerSpeed;
+                        updateFrame  |= true;
                     }
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.x = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
-                        updateFrame  = false;
+                        currentPos.x  = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
+                        updateFrame  |= false;
                     }
                 }
 
                 /* ... up */
-                if (Keyboard::isKeyPressed(Keyboard::Up))
+                if (Keyboard::isKeyPressed(ConfigUser::upKey))
                 {
-                    if ((currentPos.y - 10.0f) >= 0)
+                    if ((currentPos.y - playerSpeed) >= 0)
                     {
-                        currentPos.y -= 10.0f;
-                        updateFrame   = true;
+                        currentPos.y -= playerSpeed;
+                        updateFrame  |= true;
                     }
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.y = 0.0f;
-                        updateFrame  = false;
+                        currentPos.y  = 0.0f;
+                        updateFrame  |= false;
                     }
                 }
 
                 /* ... down */
-                if (Keyboard::isKeyPressed(Keyboard::Down))
+                if (Keyboard::isKeyPressed(ConfigUser::downKey))
                 {
-                    if ((currentPos.y + 10.0f + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
+                    if ((currentPos.y + playerSpeed + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
                     {
-                        currentPos.y += 10.0f;
-                        updateFrame   = true;
+                        currentPos.y += playerSpeed;
+                        updateFrame  |= true;
                     }
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.y = (float_t)_HeightPixel - (float_t)PLAYER_HEIGHT*_Player.getScale().y;
-                        updateFrame  = false;
+                        currentPos.y  = (float_t)_HeightPixel - (float_t)PLAYER_HEIGHT*_Player.getScale().y;
+                        updateFrame  |= false;
                     }
                 }
 
                 _Player.setPosition(currentPos, updateFrame);
+            }
+            else
+            {
+                _GameStatus = GameStatus::STOP;
             }
         }
     }
@@ -361,7 +377,7 @@ uint32_t Screen::getSizePixel() const
  *
  * @param title The new window title
  */
-void Screen::setWindowTitle(const string title)
+void Screen::setWindowTitle(const string &title)
 {
     _WindowTitle = title;
     _Window.setTitle(_WindowTitle);
@@ -384,17 +400,19 @@ void Screen::setBoard(Board &board)
  */
 void Screen::render()
 {
-    while (_Window.isOpen())
+    while ((_Window.isOpen()) && (_GameStatus != GameStatus::STOP))
     {
-        _Window.clear();
-
         _HandleEvents();
-        _drawBoard();
-        _drawPlayer();
-        _drawNPCs();
-        _drawIndicators();
 
-        _Window.display();
+        if (_GameStatus == GameStatus::PLAY)
+        {
+            _Window.clear();
+            _drawBoard();
+            _drawPlayer();
+            _drawNPCs();
+            _drawIndicators();
+           _Window.display();
+        }
     }
 }
 

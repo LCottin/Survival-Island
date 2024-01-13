@@ -1,0 +1,10 @@
+{
+    "tilesetImgPath"    : "../assets/images/tileset.png",
+    "playerImgPath"     : "../assets/images/player.png",
+    "NPCImgPath"        : "../assets/images/NPC.png",
+
+    "commentFrameLimit" : "Set to -1 to disable frameLimit",
+    "framerateLimit"    : 10,
+
+    "tileSize" : 16
+}

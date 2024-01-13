@@ -13,6 +13,9 @@
 #include "ScreenData.hpp"
 #include "Random.hpp"
 
+#include "ConfigDev.hpp"
+#include "ConfigUser.hpp"
+
 using namespace std;
 using namespace sf;
 
@@ -28,10 +31,14 @@ class Screen
         uint32_t     _HeightPixel;
         uint32_t     _SizePixel;
         string       _WindowTitle;
+        GameStatus   _GameStatus;
 
         Board                   &_Board;
         Player                  &_Player;
         vector<shared_ptr<NPC>>  _NPCs;
+
+        Clock _PauseCooldown;
+        Time  _PauseTimer;
 
         void _computeVertices();
         void _drawBoard();
@@ -42,13 +49,13 @@ class Screen
         void _HandleInteractions();
 
     public:
-        Screen(Board &board, Player &player, const string title = "Empty title");
+        Screen(Board &board, Player &player, const string &title);
 
         uint32_t getWidthPixel()  const;
         uint32_t getHeightPixel() const;
         uint32_t getSizePixel()   const;
 
-        void setWindowTitle(const string title);
+        void setWindowTitle(const string &title);
         void setBoard(Board &board);
 
         void render();

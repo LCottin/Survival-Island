@@ -1,25 +1,17 @@
 #include "Character.hpp"
 
-// Constructors
+/* Constructors */
 Character::Character()
 {
-    _Type    = CHARACTER_TYPE_DEFAULT;
-    _Name    = CharacterDefaultName[_Type];
-    _IsAlive = true;
-
-    _initAttributes(CharacterTypeString[_Type]);
+    _Name = CharacterDefaultName[static_cast<uint32_t>(CharacterType::DEFAULT)];
 }
 
-Character::Character(const string name)
+Character::Character(const string &name)
 {
-    _Type    = CHARACTER_TYPE_DEFAULT;
-    _Name    = name;
-    _IsAlive = true;
-
-    _initAttributes(CharacterTypeString[_Type]);
+    _Name = name;
 }
 
-// Destructor
+/* Destructor */
 Character::~Character()
 {
 }
@@ -28,28 +20,29 @@ Character::~Character()
  * @brief Load the default values from a JSON file
  *
  */
-json Character::_loadFromJson(const string filename) const
+json Character::_loadFromJson(const CharacterType type) const
 {
+    string filename = CharacterTypeString[static_cast<uint32_t>(type)];
     ifstream file("../assets/json/" + filename + ".json");
     json data;
 
-    if (!file.is_open())
+    if (file.is_open() == false)
     {
-        cerr << "Error opening file" << endl;
-        return json();
+        throw runtime_error("Failed to open json/" + filename + " file.");
     }
 
     try
     {
         data = json::parse(file);
+
+        if (data.empty() == true)
+        {
+            throw runtime_error("File json/" + filename + " is empty.");
+        }
     }
-    catch (const json::exception &e)
+    catch (const exception& e)
     {
-        cerr << "JSON error: " << e.what() << endl;
-    }
-    catch (const exception &e)
-    {
-        cerr << "Standard error: " << e.what() << endl;
+        throw runtime_error("Failed to parse json/" + filename + " file.");
     }
 
     file.close();
@@ -60,18 +53,16 @@ json Character::_loadFromJson(const string filename) const
 /**
  * @brief Initialize the attributes of the character from the JSON file
  *
+ * @param type Type of the Character
  * @warning This function only initializes the attributes that are common to all characters
  *
  */
-void Character::_initAttributes(const string filename)
+void Character::_initCommon(const CharacterType type)
 {
-    json data = _loadFromJson(filename);
+    _Type    = type;
+    _IsAlive = true;
 
-    if (data.empty())
-    {
-        cerr << "Error loading JSON data" << endl;
-        return;
-    }
+    json data = _loadFromJson(type);
 
     auto characterData  = data[_Name];
     _Attributes         = { .Health     = characterData.contains("Health")     ? characterData["Health"].get<uint32_t>()     : 100U,
@@ -89,6 +80,7 @@ void Character::_initAttributes(const string filename)
     _Sprite.setPosition(_Position);
 
     _DamageTimer = seconds(1.0f);
+    _DamageCooldown.restart();
 }
 
 /**
@@ -270,7 +262,7 @@ bool Character::isAlive() const
  * @param name Name of the character
  *
  */
-void Character::setName(const string name)
+void Character::setName(const string &name)
 {
     _Name = name;
 }
@@ -342,7 +334,8 @@ void Character::setPosition(const float_t x, const float_t y)
 void Character::setPosition(const Vector2f position, const bool changeFrame)
 {
     (void)changeFrame;
-    _Position = position;
+    _PreviousPosition = _Position;
+    _Position         = position;
     _Sprite.setPosition(_Position);
 }
 
@@ -357,8 +350,9 @@ void Character::setPosition(const Vector2f position, const bool changeFrame)
 void Character::setPosition(const float_t x, const float_t y, const bool changeFrame)
 {
     (void)changeFrame;
-    _Position.x = x;
-    _Position.y = y;
+    _PreviousPosition = _Position;
+    _Position.x       = x;
+    _Position.y       = y;
     _Sprite.setPosition(_Position);
 }
 
@@ -388,7 +382,7 @@ void Character::presentation() const
  * @param direction New direction to set
  *
  */
-void Character::updateFrame(const uint32_t direction)
+void Character::updateFrame(const DirectionType direction)
 {
     (void)direction;
 }

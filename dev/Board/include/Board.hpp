@@ -17,7 +17,7 @@ class Board
         uint32_t _HeightInTile;
         uint32_t _SizeInTile;
 
-        vector<vector<uint32_t>> _Map;
+        vector<vector<TileTypeBackground>> _Map;
 
         void _initMap();
 
@@ -29,11 +29,11 @@ class Board
         uint32_t getHeightInTile() const;
         uint32_t getSizeInTile() const;
 
-        bool setTile(const uint32_t x, const uint32_t y, const uint32_t tile);
+        bool setTile(const uint32_t x, const uint32_t y, const TileTypeBackground tile);
 
-        bool fillMap(const uint32_t value);
+        bool fillMap(const TileTypeBackground value);
 
         ~Board();
 };
 
-#endif // __BOARD_HPP__
+#endif //__BOARD_HPP__

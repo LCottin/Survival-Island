@@ -5,33 +5,32 @@
 #include "Board.hpp"
 #include "Screen.hpp"
 #include "NPC.hpp"
+#include "NPCData.hpp"
+
+#include "ConfigDev.hpp"
+#include "ConfigUser.hpp"
 
 using namespace std;
 using namespace sf;
 
 int main()
 {
-    Character character;
-    character.sayHello();
-    character.setName("John Doe");
-    character.presentation();
-
-    printf("\n\n");
-
-    Player player;
-    player.sayHello();
-    player.setName("Jane Doe");
-    player.presentation();
+    ConfigUser::loadConfig();
+    ConfigDev::loadConfig();
 
     Board board;
-    shared_ptr<NPC> npc1 = make_shared<NPC>("NPC1", "red");
-    shared_ptr<NPC> npc2 = make_shared<NPC>("NPC2", "green");
-    shared_ptr<NPC> npc3 = make_shared<NPC>("NPC3", "blue");
+    Player player("LCottin");
 
-    Screen screen(board, player, "My first game");
-    screen.addNPC(npc1);
-    screen.addNPC(npc2);
-    screen.addNPC(npc3);
+    Screen screen(board, player, ConfigUser::windowTitle);
+
+    vector<shared_ptr<NPC>>listNPC(2U * static_cast<uint32_t>(ConfigUser::difficulty));
+
+    for (size_t i = 0; i < (2U * static_cast<uint32_t>(ConfigUser::difficulty)); i++)
+    {
+        listNPC[i] = make_shared<NPC>("NPC_" + to_string(i), NPCColorsString[Random::getRandomInteger(0, static_cast<uint32_t>(NPCColors::COUNT) - 1U)]);
+        screen.addNPC(listNPC[i]);
+    }
+
     screen.render();
 
     return 0;
