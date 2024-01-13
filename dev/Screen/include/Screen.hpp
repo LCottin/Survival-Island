@@ -31,10 +31,14 @@ class Screen
         uint32_t     _HeightPixel;
         uint32_t     _SizePixel;
         string       _WindowTitle;
+        bool        _ScreenIsPaused;
 
         Board                   &_Board;
         Player                  &_Player;
         vector<shared_ptr<NPC>>  _NPCs;
+
+        Clock _PauseCooldown;
+        Time  _PauseTimer;
 
         void _computeVertices();
         void _drawBoard();

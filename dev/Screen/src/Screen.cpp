@@ -3,8 +3,9 @@
 Screen::Screen(Board &board, Player &player, const string &title) :
     _Board(board), _Player(player)
 {
-    _WindowTitle = title;
-    _TileSize    = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
+    _WindowTitle    = title;
+    _TileSize       = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
+    _ScreenIsPaused = false;
 
     if (_TilesetTexture.loadFromFile(ConfigDev::tilesetImgPath) == false)
     {
@@ -14,6 +15,9 @@ Screen::Screen(Board &board, Player &player, const string &title) :
     _WidthPixel  = _Board.getWidthInTile() * _TileSize.x;
     _HeightPixel = _Board.getHeightInTile() * _TileSize.y;
     _SizePixel   = _WidthPixel * _HeightPixel;
+
+    _PauseTimer = seconds(0.5f);
+    _PauseCooldown.restart();
 
     _Window.create(VideoMode(_WidthPixel, _HeightPixel), _WindowTitle);
     _Window.setFramerateLimit(ConfigDev::framerateLimit);
@@ -228,8 +232,18 @@ void Screen::_HandleEvents()
         if (event.type == Event::Closed)
             _Window.close();
 
+        /* Update pause status */
+        if ((event.type == Event::KeyPressed) && (Keyboard::isKeyPressed(ConfigUser::pauseKey)))
+        {
+            if (_PauseCooldown.getElapsedTime() > _PauseTimer)
+            {
+                _ScreenIsPaused = !_ScreenIsPaused;
+                _PauseCooldown.restart();
+            }
+        }
+
         /* Move player ... */
-        if (event.type == Event::KeyPressed)
+        if ((event.type == Event::KeyPressed) && (_ScreenIsPaused == false))
         {
             if (_Player.isAlive() == true)
             {
@@ -382,15 +396,17 @@ void Screen::render()
 {
     while (_Window.isOpen())
     {
-        _Window.clear();
-
         _HandleEvents();
-        _drawBoard();
-        _drawPlayer();
-        _drawNPCs();
-        _drawIndicators();
 
-        _Window.display();
+        if (_ScreenIsPaused == false)
+        {
+            _Window.clear();
+            _drawBoard();
+            _drawPlayer();
+            _drawNPCs();
+            _drawIndicators();
+           _Window.display();
+        }
     }
 }
 

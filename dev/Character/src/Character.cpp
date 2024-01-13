@@ -80,6 +80,7 @@ void Character::_initCommon(const CharacterType type)
     _Sprite.setPosition(_Position);
 
     _DamageTimer = seconds(1.0f);
+    _DamageCooldown.restart();
 }
 
 /**

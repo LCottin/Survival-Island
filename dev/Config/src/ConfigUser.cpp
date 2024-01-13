@@ -6,6 +6,56 @@ static inline constexpr Keyboard::Key  DEFAULT_UP_KEY         = Keyboard::Key::U
 static inline constexpr Keyboard::Key  DEFAULT_DOWN_KEY       = Keyboard::Key::Down;
 static inline constexpr Keyboard::Key  DEFAULT_LEFT_KEY       = Keyboard::Key::Left;
 static inline constexpr Keyboard::Key  DEFAULT_RIGHT_KEY      = Keyboard::Key::Right;
+static inline constexpr Keyboard::Key  DEFAULT_PAUSE_KEY      = Keyboard::Key::Escape;
+
+static string toLowerCase(const string& str)
+{
+    string result = str;
+    transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return tolower(c); });
+    return result;
+}
+
+/* Mapping from lowercase string to Keyboard::Key */
+static const unordered_map<std::string, Keyboard::Key> keyMapping =
+{
+    {toLowerCase("A"), Keyboard::Key::A},
+    {toLowerCase("B"), Keyboard::Key::B},
+    {toLowerCase("C"), Keyboard::Key::C},
+    {toLowerCase("D"), Keyboard::Key::D},
+    {toLowerCase("E"), Keyboard::Key::E},
+    {toLowerCase("F"), Keyboard::Key::F},
+    {toLowerCase("G"), Keyboard::Key::G},
+    {toLowerCase("H"), Keyboard::Key::H},
+    {toLowerCase("I"), Keyboard::Key::I},
+    {toLowerCase("J"), Keyboard::Key::J},
+    {toLowerCase("K"), Keyboard::Key::K},
+    {toLowerCase("L"), Keyboard::Key::L},
+    {toLowerCase("M"), Keyboard::Key::M},
+    {toLowerCase("N"), Keyboard::Key::N},
+    {toLowerCase("O"), Keyboard::Key::O},
+    {toLowerCase("P"), Keyboard::Key::P},
+    {toLowerCase("Q"), Keyboard::Key::Q},
+    {toLowerCase("R"), Keyboard::Key::R},
+    {toLowerCase("S"), Keyboard::Key::S},
+    {toLowerCase("T"), Keyboard::Key::T},
+    {toLowerCase("U"), Keyboard::Key::U},
+    {toLowerCase("V"), Keyboard::Key::V},
+    {toLowerCase("W"), Keyboard::Key::W},
+    {toLowerCase("X"), Keyboard::Key::X},
+    {toLowerCase("Y"), Keyboard::Key::Y},
+    {toLowerCase("Z"), Keyboard::Key::Z},
+
+    {toLowerCase("Left"),  Keyboard::Key::Left},
+    {toLowerCase("Right"), Keyboard::Key::Right},
+    {toLowerCase("Up"),    Keyboard::Key::Up},
+    {toLowerCase("Down"),  Keyboard::Key::Down},
+
+    {toLowerCase("Esc"),   Keyboard::Key::Escape},
+    {toLowerCase("Enter"), Keyboard::Key::Enter},
+    {toLowerCase("Space"), Keyboard::Key::Space},
+    {toLowerCase("Lctrl"), Keyboard::Key::LControl},
+    {toLowerCase("Tab"),   Keyboard::Key::Tab},
+};
 
 namespace ConfigUser
 {
@@ -15,6 +65,7 @@ namespace ConfigUser
     Keyboard::Key  downKey;
     Keyboard::Key  leftKey;
     Keyboard::Key  rightKey;
+    Keyboard::Key  pauseKey;
 
     bool loadConfig()
     {
@@ -154,6 +205,31 @@ namespace ConfigUser
                 /* Not critical value, hardcoded default */
                 cerr << "Error: Failed to parse rightKey. Using default." << std::endl;
                 rightKey = DEFAULT_UP_KEY;
+                toReturn = false;
+            }
+
+            try
+            {
+                string pauseKeyString = toLowerCase(config["pauseKey"].get<string>());
+
+                auto key = keyMapping.find(pauseKeyString);
+                if (key != keyMapping.end())
+                {
+                    pauseKey = key->second;
+                }
+                else
+                {
+                    /* Not critical value, hardcoded default */
+                    cerr << "Warning: Unknown key '" << pauseKeyString << "'. Using default." << std::endl;
+                    pauseKey = DEFAULT_PAUSE_KEY;
+                    toReturn = false;
+                }
+            }
+            catch (const exception& e)
+            {
+                /* Not critical value, hardcoded default */
+                cerr << "Error: Failed to parse pauseKey. Using default." << std::endl;
+                pauseKey = DEFAULT_PAUSE_KEY;
                 toReturn = false;
             }
         }

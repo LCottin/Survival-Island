@@ -6,6 +6,7 @@
 #include <string>
 #include <nlohmann/json.hpp>
 #include <SFML/Window.hpp>
+#include <unordered_map>
 
 #include "ConfigData.hpp"
 
@@ -21,6 +22,7 @@ namespace ConfigUser
     extern Keyboard::Key  downKey;
     extern Keyboard::Key  leftKey;
     extern Keyboard::Key  rightKey;
+    extern Keyboard::Key  pauseKey;
 
     extern bool loadConfig();
 }
