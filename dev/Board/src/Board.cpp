@@ -16,26 +16,92 @@ Board::~Board()
 }
 
 /**
- * @brief Fills the map with default values
+ * @brief Fills the map using Perlin noise
  *
  */
 void Board::_initMap()
 {
-    /* Fills map with water */
-    for (uint32_t j = 0; j < _HeightInTile; j++)
-    {
-        for (uint32_t i = 0; i < _WidthInTile; i++)
-        {
-            _Map[i][j] = TileTypeBackground::WATER_FULL;
-        }
-    }
+    FastNoiseLite noise;
 
-    /* Sets a region of grass */
-   for (uint32_t j = 5; j < _HeightInTile - 5; j++)
+    /* Configure the noise parameters */
+    noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+    noise.SetFrequency(0.05f);
+    noise.SetSeed(Random::getRandomInteger(0, 1000));
+
+    /* Generate terrain based on Perlin noise */
+    for (size_t j = 0; j < _HeightInTile; j++)
     {
-        for (uint32_t i = 5; i < _WidthInTile - 5; i++)
+        for (size_t i = 0; i < _WidthInTile; i++)
         {
-            _Map[i][j] = TileTypeBackground::GRASS_FULL;
+            /* Check if the current position is on the border */
+            bool isTopBorder    = (j == 0);
+            bool isBottomBorder = (j == (_HeightInTile - 1U));
+            bool isLeftBorder   = (i == 0);
+            bool isRightBorder  = (i == (_WidthInTile - 1U));
+
+            /* Set the appropriate wall tile for the borders */
+            if (isTopBorder || isBottomBorder || isLeftBorder || isRightBorder)
+            {
+                /* Top-left corner */
+                if (isTopBorder && isLeftBorder)
+                    _Map[i][j] = TileTypeBackground::WATER_WALL_UP_LEFT;
+                /* Top-right corner */
+                else if (isTopBorder && isRightBorder)
+                    _Map[i][j] = TileTypeBackground::WATER_WALL_UP_RIGHT;
+                /* Bottom-left corner */
+                else if (isBottomBorder && isLeftBorder)
+                    _Map[i][j] = TileTypeBackground::WATER_WALL_BOTTOM_LEFT;
+                /* Bottom-right corner */
+                else if (isBottomBorder && isRightBorder)
+                    _Map[i][j] = TileTypeBackground::WATER_WALL_BOTTOM_RIGHT;
+                /* Top edge */
+                else if (isTopBorder)
+                    _Map[i][j] = TileTypeBackground::WATER_WALL_UP;
+                /* Bottom edge */
+                else if (isBottomBorder)
+                    _Map[i][j] = TileTypeBackground::WATER_WALL_DOWN;
+                /* Left edge */
+                else if (isLeftBorder)
+                    _Map[i][j] = TileTypeBackground::WATER_WALL_LEFT;
+                /* Right edge */
+                else if (isRightBorder)
+                    _Map[i][j] = TileTypeBackground::WATER_WALL_RIGHT;
+            }
+            else
+            {
+                /* Interior tiles */
+                float_t value = noise.GetNoise(static_cast<float_t>(i), static_cast<float_t>(j));
+
+                if (value < -0.2f)
+                {
+                    /* Water */
+                    if (value < -0.5f)
+                        _Map[i][j] = TileTypeBackground::WATER_FULL;
+                    else if (value < -0.3f)
+                        _Map[i][j] = TileTypeBackground::WATER_WALL_BOTTOM_RIGHT;
+                    else
+                        _Map[i][j] = TileTypeBackground::WATER_WALL_BOTTOM_LEFT_RIGHT;
+                }
+                else if (value < 0.6f)
+                {
+                    /* Grass */
+                    if (value < 0.2f)
+                        _Map[i][j] = TileTypeBackground::GRASS_FULL;
+                    else if (value < 0.3f)
+                        _Map[i][j] = TileTypeBackground::GRASS_WALL_BOTTOM_RIGHT;
+                    else if (value < 0.4f)
+                        _Map[i][j] = TileTypeBackground::GRASS_WALL_BOTTOM_LEFT;
+                    else if (value < 0.5f)
+                        _Map[i][j] = TileTypeBackground::GRASS_WALL_TOP_RIGHT;
+                    else
+                        _Map[i][j] = TileTypeBackground::GRASS_WALL_TOP_LEFT_BOTTOM_RIGHT;
+                }
+                else
+                {
+                    /* Default to snow */
+                    _Map[i][j] = TileTypeBackground::SNOW_FULL;
+                }
+            }
         }
     }
 }
