@@ -42,30 +42,26 @@ void Board::_initMap()
             /* Set the appropriate wall tile for the borders */
             if (isTopBorder || isBottomBorder || isLeftBorder || isRightBorder)
             {
-                /* Top-left corner */
+                float_t borderValue = noise.GetNoise(static_cast<float_t>(i) * 0.1f, static_cast<float_t>(j) * 0.1f);
+
+                /* Add some variation to the corners */
                 if (isTopBorder && isLeftBorder)
-                    _Map[i][j] = TileTypeBackground::WATER_WALL_UP_LEFT;
-                /* Top-right corner */
+                    _Map[i][j] = (borderValue < -0.3f) ? TileTypeBackground::WATER_WALL_UP_LEFT : TileTypeBackground::WATER_FULL;
                 else if (isTopBorder && isRightBorder)
-                    _Map[i][j] = TileTypeBackground::WATER_WALL_UP_RIGHT;
-                /* Bottom-left corner */
+                    _Map[i][j] = (borderValue < -0.3f) ? TileTypeBackground::WATER_WALL_UP_RIGHT : TileTypeBackground::WATER_FULL;
                 else if (isBottomBorder && isLeftBorder)
-                    _Map[i][j] = TileTypeBackground::WATER_WALL_BOTTOM_LEFT;
-                /* Bottom-right corner */
+                    _Map[i][j] = (borderValue < -0.3f) ? TileTypeBackground::WATER_WALL_BOTTOM_LEFT : TileTypeBackground::WATER_FULL;
                 else if (isBottomBorder && isRightBorder)
-                    _Map[i][j] = TileTypeBackground::WATER_WALL_BOTTOM_RIGHT;
-                /* Top edge */
+                    _Map[i][j] = (borderValue < -0.3f) ? TileTypeBackground::WATER_WALL_BOTTOM_RIGHT : TileTypeBackground::WATER_FULL;
+                /* Add some variation to the edges */
                 else if (isTopBorder)
-                    _Map[i][j] = TileTypeBackground::WATER_WALL_UP;
-                /* Bottom edge */
+                    _Map[i][j] = (borderValue < -0.3f) ? TileTypeBackground::WATER_WALL_UP : TileTypeBackground::WATER_FULL;
                 else if (isBottomBorder)
-                    _Map[i][j] = TileTypeBackground::WATER_WALL_DOWN;
-                /* Left edge */
+                    _Map[i][j] = (borderValue < -0.3f) ? TileTypeBackground::WATER_WALL_DOWN : TileTypeBackground::WATER_FULL;
                 else if (isLeftBorder)
-                    _Map[i][j] = TileTypeBackground::WATER_WALL_LEFT;
-                /* Right edge */
+                    _Map[i][j] = (borderValue < -0.3f) ? TileTypeBackground::WATER_WALL_LEFT : TileTypeBackground::WATER_FULL;
                 else if (isRightBorder)
-                    _Map[i][j] = TileTypeBackground::WATER_WALL_RIGHT;
+                    _Map[i][j] = (borderValue < -0.3f) ? TileTypeBackground::WATER_WALL_RIGHT : TileTypeBackground::WATER_FULL;
             }
             else
             {
