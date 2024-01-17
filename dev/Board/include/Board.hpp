@@ -7,6 +7,8 @@
 
 #include "BoardData.hpp"
 #include "TileType.hpp"
+#include "FastNoiseLite.hpp"
+#include "Random.hpp"
 
 using namespace std;
 

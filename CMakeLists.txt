@@ -59,6 +59,7 @@ set(HEADERS
     ${DEV_DIR}/Config/include/ConfigUser.hpp
     ${DEV_DIR}/Config/include/ConfigDev.hpp
     ${DEV_DIR}/Config/include/ConfigData.hpp
+    ${DEV_DIR}/FastNoise/include/FastNoiseLite.hpp
 )
 
 # Set the output directory for the binary
@@ -82,6 +83,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/NPC/include
     ${DEV_DIR}/Random/include
     ${DEV_DIR}/Config/include
+    ${DEV_DIR}/FastNoise/include
 )
 
 # Link libraries
