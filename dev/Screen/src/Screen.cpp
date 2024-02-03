@@ -12,7 +12,7 @@ Screen::Screen(Board &board, Player &player, const string &title) :
         throw runtime_error("Failed to load tileset image.");
     }
 
-    _WidthPixel  = _Board.getWidthInTile() * _TileSize.x;
+    _WidthPixel  = _Board.getWidthInTile() * _TileSize.x + INFO_PANEL_WIDTH_PIXEL;
     _HeightPixel = _Board.getHeightInTile() * _TileSize.y;
     _SizePixel   = _WidthPixel * _HeightPixel;
 
@@ -21,6 +21,10 @@ Screen::Screen(Board &board, Player &player, const string &title) :
 
     _Window.create(VideoMode(_WidthPixel, _HeightPixel), _WindowTitle);
     _Window.setFramerateLimit(ConfigDev::framerateLimit);
+
+    _InfoPanel.setSize(Vector2f(INFO_PANEL_WIDTH_PIXEL, _HeightPixel));
+    _InfoPanel.setPosition(Vector2f(_WidthPixel - INFO_PANEL_WIDTH_PIXEL, 0.0f));
+    _InfoPanel.setFillColor(Color::Blue);
 
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
     _computeVertices();
@@ -120,7 +124,7 @@ void Screen::_drawNPCs()
         Vector2f previousPos = npc->getPreviousPosition();
 
         /* Compute new directions */
-        if (currentPos.x == (static_cast<float_t>(_WidthPixel) - npcSize.x))
+        if (currentPos.x == (static_cast<float_t>(_WidthPixel - INFO_PANEL_WIDTH_PIXEL) - npcSize.x))
         {
             /* Force moving left */
             deltaX = -deltaX;
@@ -166,9 +170,9 @@ void Screen::_drawNPCs()
             currentPos.x = 0;
             deltaX       = absDeltaX;
         }
-        else if ((currentPos.x + absDeltaX + npcSize.x) > _WidthPixel)
+        else if ((currentPos.x + absDeltaX + npcSize.x) > (_WidthPixel - INFO_PANEL_WIDTH_PIXEL))
         {
-            currentPos.x = static_cast<float_t>(_WidthPixel) - npcSize.x;
+            currentPos.x = static_cast<float_t>(_WidthPixel - INFO_PANEL_WIDTH_PIXEL) - npcSize.x;
             deltaX       = -absDeltaX;
         }
 
@@ -222,6 +226,15 @@ void Screen::_drawIndicators()
 }
 
 /**
+ * @brief Draw information panel on the screen
+ *
+ */
+void Screen::_drawInfoPanel()
+{
+    _Window.draw(_InfoPanel);
+}
+
+/**
  * @brief Handle events on the screen
  *
  */
@@ -272,7 +285,7 @@ void Screen::_HandleEvents()
                 /* ... right */
                 if (Keyboard::isKeyPressed(ConfigUser::rightKey))
                 {
-                    if ((currentPos.x + playerSpeed + PLAYER_WIDTH*_Player.getScale().x) <= _WidthPixel)
+                    if ((currentPos.x + playerSpeed + PLAYER_WIDTH*_Player.getScale().x) <= (_WidthPixel - INFO_PANEL_WIDTH_PIXEL))
                     {
                         currentPos.x += playerSpeed;
                         updateFrame  |= true;
@@ -280,7 +293,7 @@ void Screen::_HandleEvents()
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.x  = static_cast<float_t>(_WidthPixel) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
+                        currentPos.x  = static_cast<float_t>(_WidthPixel - INFO_PANEL_WIDTH_PIXEL) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
                         updateFrame  |= false;
                     }
                 }
@@ -411,6 +424,7 @@ void Screen::render()
             _drawPlayer();
             _drawNPCs();
             _drawIndicators();
+            _drawInfoPanel();
            _Window.display();
         }
     }

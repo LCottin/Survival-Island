@@ -33,6 +33,10 @@ class Screen
         string       _WindowTitle;
         GameStatus   _GameStatus;
 
+        RectangleShape _InfoPanel;
+        Font           _Font;
+        Text           _HealthText;
+
         Board                   &_Board;
         Player                  &_Player;
         vector<shared_ptr<NPC>>  _NPCs;
@@ -45,6 +49,7 @@ class Screen
         void _drawPlayer();
         void _drawNPCs();
         void _drawIndicators();
+        void _drawInfoPanel();
         void _HandleEvents();
         void _HandleInteractions();
 
