@@ -35,7 +35,7 @@ class Screen
 
         RectangleShape _InfoPanel;
         Font           _Font;
-        Text           _HealthText;
+        Text           _PanelText;
 
         Board                   &_Board;
         Player                  &_Player;

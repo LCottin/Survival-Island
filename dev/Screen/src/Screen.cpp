@@ -24,7 +24,17 @@ Screen::Screen(Board &board, Player &player, const string &title) :
 
     _InfoPanel.setSize(Vector2f(INFO_PANEL_WIDTH_PIXEL, _HeightPixel));
     _InfoPanel.setPosition(Vector2f(_WidthPixel - INFO_PANEL_WIDTH_PIXEL, 0.0f));
-    _InfoPanel.setFillColor(Color::Blue);
+    _InfoPanel.setFillColor(Color(220, 200, 180)); /* Light brown */
+
+    if (_Font.loadFromFile("../assets/fonts/Italic_text.ttf") == false)
+    {
+        throw runtime_error("Failed to load text font.");
+    }
+
+    _PanelText.setFont(_Font);
+    _PanelText.setCharacterSize(20U);
+    _PanelText.setFillColor(Color(80, 60, 40)); /* Dark Brown */
+    _PanelText.setPosition(Vector2f(_WidthPixel - INFO_PANEL_WIDTH_PIXEL + 5U, 10));
 
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
     _computeVertices();
@@ -231,7 +241,12 @@ void Screen::_drawIndicators()
  */
 void Screen::_drawInfoPanel()
 {
+    String textToDisplay = "Player\nHealth:\n" + to_string(_Player.getHealth()) + "\n\n\n\n";
+    textToDisplay       += "Difficulty:\n" + GameDifficultyString[static_cast<uint32_t>(ConfigUser::difficulty)];
+
+    _PanelText.setString(textToDisplay);
     _Window.draw(_InfoPanel);
+    _Window.draw(_PanelText);
 }
 
 /**
