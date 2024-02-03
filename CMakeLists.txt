@@ -41,6 +41,7 @@ set(SOURCES
     ${DEV_DIR}/Random/src/Random.cpp
     ${DEV_DIR}/Config/src/ConfigUser.cpp
     ${DEV_DIR}/Config/src/ConfigDev.cpp
+    ${DEV_DIR}/Config/src/ConfigData.cpp
 )
 
 # Collect header files
