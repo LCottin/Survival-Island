@@ -17,9 +17,8 @@ Screen::Screen(Board &board, Player &player, const string &title) :
     _BoardSizePixel   = _BoardWidthPixel * _BoardHeightPixel;
 
     _View            = new WindowView(_Board, _Player);
-    _ViewWidthPixel  = _View->getWidthInTile() * _TileSize.x + INFO_PANEL_WIDTH_PIXEL;
+    _ViewWidthPixel  = _View->getWidthInTile() * _TileSize.x + VIEW_PANEL_WIDTH_PIXEL;
     _ViewHeightPixel = _View->getHeightInTile() * _TileSize.y;
-    _ViewSizePixel   = _ViewWidthPixel * _ViewHeightPixel;
 
     _PauseTimer = seconds(0.5f);
     _PauseCooldown.restart();
@@ -28,8 +27,7 @@ Screen::Screen(Board &board, Player &player, const string &title) :
     _Window.setFramerateLimit(ConfigDev::framerateLimit);
     _Window.setView(_View->getView());
 
-    _InfoPanel.setSize(Vector2f(INFO_PANEL_WIDTH_PIXEL, _ViewHeightPixel));
-    _InfoPanel.setPosition(Vector2f(_ViewWidthPixel - INFO_PANEL_WIDTH_PIXEL, 0.0f));
+    _InfoPanel.setSize(Vector2f(VIEW_PANEL_WIDTH_PIXEL, _ViewHeightPixel));
     _InfoPanel.setFillColor(Color(220, 200, 180)); /* Light brown */
 
     if (_Font.loadFromFile("../assets/fonts/Italic_text.ttf") == false)
@@ -40,7 +38,6 @@ Screen::Screen(Board &board, Player &player, const string &title) :
     _PanelText.setFont(_Font);
     _PanelText.setCharacterSize(20U);
     _PanelText.setFillColor(Color(80, 60, 40)); /* Dark Brown */
-    _PanelText.setPosition(Vector2f(_ViewWidthPixel - INFO_PANEL_WIDTH_PIXEL + 5U, 10));
 
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
     _computeVertices();
@@ -247,10 +244,14 @@ void Screen::_drawIndicators()
  */
 void Screen::_drawInfoPanel()
 {
+    Vector2f viewPos     = _View->getPosition();
     String textToDisplay = "Player\nHealth:\n" + to_string(_Player.getHealth()) + "\n\n\n\n";
     textToDisplay       += "Difficulty:\n" + GameDifficultyString[static_cast<uint32_t>(ConfigUser::difficulty)];
 
+    _InfoPanel.setPosition(viewPos.x + _View->getWidthInTile() * 16 - VIEW_PANEL_WIDTH_PIXEL + 0, viewPos.y);
+    _PanelText.setPosition(viewPos.x + _View->getWidthInTile() * 16 - VIEW_PANEL_WIDTH_PIXEL + 5, viewPos.y);
     _PanelText.setString(textToDisplay);
+
     _Window.draw(_InfoPanel);
     _Window.draw(_PanelText);
 }

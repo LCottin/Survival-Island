@@ -33,7 +33,6 @@ class Screen
         uint32_t                 _BoardSizePixel;
         uint32_t                 _ViewWidthPixel;
         uint32_t                 _ViewHeightPixel;
-        uint32_t                 _ViewSizePixel;
 
         string                   _WindowTitle;
         GameStatus               _GameStatus;

@@ -30,6 +30,9 @@ class WindowView
         uint32_t getWidthInTile() const;
         uint32_t getHeightInTile() const;
         uint32_t getSizeInTile() const;
+        Vector2f getPosition() const;
+        Vector2f getCenterPosition() const;
+
         void     update();
 };
 

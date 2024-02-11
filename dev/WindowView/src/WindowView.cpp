@@ -42,9 +42,9 @@ void WindowView::update()
     }
 
     /* Do not exceed right side */
-    else if (playerPos.x > (boardSize.x * ConfigDev::tileSize - halfViewSize.x))
+    else if (playerPos.x > (boardSize.x * ConfigDev::tileSize - halfViewSize.x + VIEW_PANEL_WIDTH_PIXEL))
     {
-        newCenter.x = boardSize.x * ConfigDev::tileSize - halfViewSize.x;
+        newCenter.x = boardSize.x * ConfigDev::tileSize - halfViewSize.x + VIEW_PANEL_WIDTH_PIXEL;
     }
 
     /* Do not exceed top */
@@ -109,3 +109,23 @@ uint32_t WindowView::getSizeInTile() const
 {
     return _SizeInTile;
 }
+
+/**
+ * @brief Return the position of the view (from top left corner)
+ *
+ */
+Vector2f WindowView::getPosition() const
+{
+    Vector2f viewPos = _View.getCenter();
+    return Vector2f(viewPos.x - _WidthInTile * ConfigDev::tileSize / 2, viewPos.y - _HeightInTile * ConfigDev::tileSize / 2);
+}
+
+/**
+ * @brief Return the position of the center of the view
+ *
+ */
+Vector2f WindowView::getCenterPosition() const
+{
+    return _View.getCenter();
+}
+
