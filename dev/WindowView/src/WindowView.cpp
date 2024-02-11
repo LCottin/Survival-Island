@@ -16,9 +16,9 @@ WindowView::WindowView(Board &board, Player &player) :
  */
 void WindowView::update()
 {
-    const Vector2f playerPos = _Player.getPosition();
-    const Vector2f boardSize = static_cast<const Vector2f>(_Board.getDimensionInTile());
-    Vector2f newCenter       = playerPos;
+    const Vector2u playerPos = _Player.getPosition();
+    const Vector2u boardSize = static_cast<const Vector2u>(_Board.getDimensionInTile());
+    Vector2u newCenter       = playerPos;
 
     /* Calculate the half size of the view */
     const Vector2f halfViewSize = Vector2f(_WidthInPixel / 2.0f, _HeightInPixel / 2.0f);
@@ -48,7 +48,7 @@ void WindowView::update()
     }
 
     /* Update the view center */
-    _View.setCenter(newCenter);
+    _View.setCenter(static_cast<Vector2f>(newCenter));
 }
 
 
@@ -64,11 +64,11 @@ View& WindowView::getView()
 /**
  * @brief Return the size of the view
  *
- * @return Vector2f of the size
+ * @return Vector2u of the size
  */
-Vector2f WindowView::getViewSize() const
+Vector2u WindowView::getViewSize() const
 {
-    return _View.getSize();
+    return static_cast<Vector2u>(_View.getSize());
 }
 
 /**
@@ -102,18 +102,18 @@ uint32_t WindowView::getSizeInPixel() const
  * @brief Return the position of the view (from top left corner)
  *
  */
-Vector2f WindowView::getPosition() const
+Vector2u WindowView::getPosition() const
 {
     Vector2f viewPos = _View.getCenter();
-    return Vector2f(viewPos.x - _WidthInPixel / 2.0f, viewPos.y - _HeightInPixel / 2.0f);
+    return Vector2u(viewPos.x - _WidthInPixel / 2U, viewPos.y - _HeightInPixel / 2U);
 }
 
 /**
  * @brief Return the position of the center of the view
  *
  */
-Vector2f WindowView::getCenterPosition() const
+Vector2u WindowView::getCenterPosition() const
 {
-    return _View.getCenter();
+    return static_cast<Vector2u>(_View.getCenter());
 }
 

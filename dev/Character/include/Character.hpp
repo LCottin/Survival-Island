@@ -28,10 +28,10 @@ class Character
 
         Texture             _Texture;
         Sprite              _Sprite;
-        Vector2f            _Size;
-        Vector2f            _Scale;
-        Vector2f            _Position;
-        Vector2f            _PreviousPosition;
+        Vector2u            _Size;
+        Vector2u            _Scale;
+        Vector2u            _Position;
+        Vector2u            _PreviousPosition;
         RectangleShape      _HealthBar;
         Clock               _DamageCooldown;
         Time                _DamageTimer;
@@ -66,10 +66,10 @@ class Character
         uint32_t        getStrength()         const;
         uint32_t        getDefense()          const;
         uint32_t        getSpeed()            const;
-        Vector2f        getPosition()         const;
-        Vector2f        getPreviousPosition() const;
-        Vector2f        getScale()            const;
-        Vector2f        getSize()             const;
+        Vector2u        getPosition()         const;
+        Vector2u        getPreviousPosition() const;
+        Vector2u        getScale()            const;
+        Vector2u        getSize()             const;
         Sprite&         getSprite();
         RectangleShape& getHealthBar();
         bool            isAlive()             const;
@@ -78,10 +78,10 @@ class Character
         /* Member functions (setters) */
         void setName(const string &name);
         bool defend(const uint32_t damage);
-        virtual void setPosition(const Vector2f position);
-        virtual void setPosition(const float_t x, const float_t y);
-        virtual void setPosition(const Vector2f position, const bool changeFrame);
-        virtual void setPosition(const float_t x, const float_t y, const bool changeFrame);
+        virtual void setPosition(const Vector2u position);
+        virtual void setPosition(const uint32_t x, const uint32_t y);
+        virtual void setPosition(const Vector2u position, const bool changeFrame);
+        virtual void setPosition(const uint32_t x, const uint32_t y, const bool changeFrame);
 
         /* Member functions (others) */
         void sayHello() const;
