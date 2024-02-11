@@ -3,9 +3,9 @@
 Screen::Screen(Board &board, Player &player, const string &title) :
     _Board(board), _Player(player)
 {
-    _GameStatus     = GameStatus::INIT;
-    _WindowTitle    = title;
-    _TileSize       = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
+    _GameStatus  = GameStatus::INIT;
+    _TileSize    = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
+    _WindowTitle = title;
 
     if (_TilesetTexture.loadFromFile(ConfigDev::tilesetImgPath) == false)
     {
@@ -54,7 +54,7 @@ void Screen::_computeVertices()
     {
         for (size_t i = 0; i < boardWidth; i++)
         {
-            int32_t tileIndex = _Board.getTile(i, j);
+            const int32_t tileIndex = _Board.getTile(i, j);
 
             if (tileIndex == -1)
             {
@@ -62,8 +62,8 @@ void Screen::_computeVertices()
             }
 
             /* Calculate the position of the current tile in the vertex array */
-            float_t x = static_cast<float_t>(i * _TileSize.x);
-            float_t y = static_cast<float_t>(j * _TileSize.y);
+            const float_t x = static_cast<const float_t>(i * _TileSize.x);
+            const float_t y = static_cast<const float_t>(j * _TileSize.y);
 
             /* Get a pointer to the current tile quad */
             Vertex* quad = &_Vertices[(i + j * boardWidth) * 4];
@@ -75,8 +75,8 @@ void Screen::_computeVertices()
             quad[3].position = Vector2f(x              , y + _TileSize.y);
 
             /* Calculate coordinate of the index in the image */
-            float_t tile_x = static_cast<float_t>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
-            float_t tile_y = static_cast<float_t>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
+            const float_t tile_x = static_cast<const float_t>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
+            const float_t tile_y = static_cast<const float_t>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
 
             /* Define its 4 texture coordinates */
             quad[0].texCoords = Vector2f(tile_x              , tile_y);
@@ -122,12 +122,12 @@ void Screen::_drawNPCs()
 {
     for (auto &npc : _NPCs)
     {
-        float_t changeDirProbaX = Random::getRandomFloat(0.0f, 1.0f);
-        float_t changeDirProbaY = Random::getRandomFloat(0.0f, 1.0f);
-        float_t deltaX          = Random::getRandomInteger(0, npc->getSpeed());
-        float_t deltaY          = Random::getRandomInteger(0, npc->getSpeed());
-        float_t absDeltaX       = abs(deltaX);
-        float_t absDeltaY       = abs(deltaY);
+        const float_t changeDirProbaX = Random::getRandomFloat(0.0f, 1.0f);
+        const float_t changeDirProbaY = Random::getRandomFloat(0.0f, 1.0f);
+        float_t deltaX                = Random::getRandomInteger(0, npc->getSpeed());
+        float_t deltaY                = Random::getRandomInteger(0, npc->getSpeed());
+        const float_t absDeltaX       = abs(deltaX);
+        const float_t absDeltaY       = abs(deltaY);
 
         Vector2f npcSize     = npc->getSize();
         Vector2f currentPos  = npc->getPosition();
@@ -277,9 +277,10 @@ void Screen::_HandleEvents()
         {
             if (_Player.isAlive() == true)
             {
-                bool updateFrame    = false;
-                Vector2f currentPos = _Player.getPosition();
-                float_t playerSpeed = static_cast<float_t>(_Player.getSpeed());
+                const Vector2f playerSize = _Player.getSize();
+                const float_t playerSpeed = static_cast<const float_t>(_Player.getSpeed());
+                Vector2f currentPos       = _Player.getPosition();
+                bool updateFrame          = false;
 
                 /* ... left */
                 if (Keyboard::isKeyPressed(ConfigUser::leftKey))
@@ -300,7 +301,7 @@ void Screen::_HandleEvents()
                 /* ... right */
                 if (Keyboard::isKeyPressed(ConfigUser::rightKey))
                 {
-                    if ((currentPos.x + playerSpeed + PLAYER_WIDTH*_Player.getScale().x) <= (_WidthPixel - INFO_PANEL_WIDTH_PIXEL))
+                    if ((currentPos.x + playerSpeed + playerSize.x) <= _BoardWidthPixel)
                     {
                         currentPos.x += playerSpeed;
                         updateFrame  |= true;
@@ -332,7 +333,7 @@ void Screen::_HandleEvents()
                 /* ... down */
                 if (Keyboard::isKeyPressed(ConfigUser::downKey))
                 {
-                    if ((currentPos.y + playerSpeed + PLAYER_HEIGHT*_Player.getScale().y) <= _HeightPixel)
+                    if ((currentPos.y + playerSpeed + playerSize.y) <= _BoardHeightPixel)
                     {
                         currentPos.y += playerSpeed;
                         updateFrame  |= true;
@@ -454,8 +455,8 @@ void Screen::render()
 void Screen::addNPC(shared_ptr<NPC> &NPC)
 {
     Vector2f newPosition;
-    newPosition.x = (float_t)Random::getRandomInteger(0, _WidthPixel - NPC_WIDTH*NPC->getScale().x);
-    newPosition.y = (float_t)Random::getRandomInteger(0, _HeightPixel - NPC_HEIGHT*NPC->getScale().y);
+    newPosition.x = static_cast<float_t>(Random::getRandomInteger(0, _BoardWidthPixel - NPC->getSize().x));
+    newPosition.y = static_cast<float_t>(Random::getRandomInteger(0, _BoardHeightPixel - NPC->getSize().y));
 
     NPC->setPosition(newPosition);
     _NPCs.push_back(NPC);
@@ -470,16 +471,16 @@ void Screen::addNPC(shared_ptr<NPC> &NPC)
  * @return true if they are close, else false
  *
  */
-bool Screen::areClose(Player &player, NPC &npc, const uint32_t threshold) const
+bool Screen::areClose(const Player &player, const NPC &npc, const uint32_t threshold) const
 {
-    Vector2f playerPos = player.getPosition();
-    Vector2f npcPos    = npc.getPosition();
+    const Vector2f playerPos = player.getPosition();
+    const Vector2f npcPos    = npc.getPosition();
 
-    Vector2f playerSize = player.getSize();
-    Vector2f npcSize    = npc.getSize();
+    const Vector2f playerSize = player.getSize();
+    const Vector2f npcSize    = npc.getSize();
 
-    float_t distanceX = abs(playerPos.x - npcPos.x) - (playerSize.x + npcSize.x) / 2.0f;
-    float_t distanceY = abs(playerPos.y - npcPos.y) - (playerSize.y + npcSize.y) / 2.0f;
+    const float_t distanceX = abs(playerPos.x - npcPos.x) - (playerSize.x + npcSize.x) / 2.0f;
+    const float_t distanceY = abs(playerPos.y - npcPos.y) - (playerSize.y + npcSize.y) / 2.0f;
 
     return ((distanceX < threshold) && (distanceY < threshold));
 }
