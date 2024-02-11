@@ -12,18 +12,24 @@ Screen::Screen(Board &board, Player &player, const string &title) :
         throw runtime_error("Failed to load tileset image.");
     }
 
-    _WidthPixel  = _Board.getWidthInTile() * _TileSize.x + INFO_PANEL_WIDTH_PIXEL;
-    _HeightPixel = _Board.getHeightInTile() * _TileSize.y;
-    _SizePixel   = _WidthPixel * _HeightPixel;
+    _BoardWidthPixel  = _Board.getWidthInTile() * _TileSize.x;
+    _BoardHeightPixel = _Board.getHeightInTile() * _TileSize.y;
+    _BoardSizePixel   = _BoardWidthPixel * _BoardHeightPixel;
+
+    _View            = new WindowView(_Board, _Player);
+    _ViewWidthPixel  = _View->getWidthInTile() * _TileSize.x + INFO_PANEL_WIDTH_PIXEL;
+    _ViewHeightPixel = _View->getHeightInTile() * _TileSize.y;
+    _ViewSizePixel   = _ViewWidthPixel * _ViewHeightPixel;
 
     _PauseTimer = seconds(0.5f);
     _PauseCooldown.restart();
 
-    _Window.create(VideoMode(_WidthPixel, _HeightPixel), _WindowTitle);
+    _Window.create(VideoMode(_ViewWidthPixel, _ViewHeightPixel), _WindowTitle);
     _Window.setFramerateLimit(ConfigDev::framerateLimit);
+    _Window.setView(_View->getView());
 
-    _InfoPanel.setSize(Vector2f(INFO_PANEL_WIDTH_PIXEL, _HeightPixel));
-    _InfoPanel.setPosition(Vector2f(_WidthPixel - INFO_PANEL_WIDTH_PIXEL, 0.0f));
+    _InfoPanel.setSize(Vector2f(INFO_PANEL_WIDTH_PIXEL, _ViewHeightPixel));
+    _InfoPanel.setPosition(Vector2f(_ViewWidthPixel - INFO_PANEL_WIDTH_PIXEL, 0.0f));
     _InfoPanel.setFillColor(Color(220, 200, 180)); /* Light brown */
 
     if (_Font.loadFromFile("../assets/fonts/Italic_text.ttf") == false)
@@ -34,7 +40,7 @@ Screen::Screen(Board &board, Player &player, const string &title) :
     _PanelText.setFont(_Font);
     _PanelText.setCharacterSize(20U);
     _PanelText.setFillColor(Color(80, 60, 40)); /* Dark Brown */
-    _PanelText.setPosition(Vector2f(_WidthPixel - INFO_PANEL_WIDTH_PIXEL + 5U, 10));
+    _PanelText.setPosition(Vector2f(_ViewWidthPixel - INFO_PANEL_WIDTH_PIXEL + 5U, 10));
 
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
     _computeVertices();
@@ -134,7 +140,7 @@ void Screen::_drawNPCs()
         Vector2f previousPos = npc->getPreviousPosition();
 
         /* Compute new directions */
-        if (currentPos.x == (static_cast<float_t>(_WidthPixel - INFO_PANEL_WIDTH_PIXEL) - npcSize.x))
+        if (currentPos.x == (static_cast<float_t>(_BoardWidthPixel) - npcSize.x))
         {
             /* Force moving left */
             deltaX = -deltaX;
@@ -154,7 +160,7 @@ void Screen::_drawNPCs()
             }
         }
 
-        if (currentPos.y == (static_cast<float_t>(_HeightPixel) - npcSize.y))
+        if (currentPos.y == (static_cast<float_t>(_BoardHeightPixel) - npcSize.y))
         {
             /* Force moving up */
             deltaY = -deltaY;
@@ -180,9 +186,9 @@ void Screen::_drawNPCs()
             currentPos.x = 0;
             deltaX       = absDeltaX;
         }
-        else if ((currentPos.x + absDeltaX + npcSize.x) > (_WidthPixel - INFO_PANEL_WIDTH_PIXEL))
+        else if ((currentPos.x + absDeltaX + npcSize.x) > _BoardWidthPixel)
         {
-            currentPos.x = static_cast<float_t>(_WidthPixel - INFO_PANEL_WIDTH_PIXEL) - npcSize.x;
+            currentPos.x = static_cast<float_t>(_BoardWidthPixel) - npcSize.x;
             deltaX       = -absDeltaX;
         }
 
@@ -191,9 +197,9 @@ void Screen::_drawNPCs()
             currentPos.y = 0;
             deltaY       = absDeltaY;
         }
-        else if (((currentPos.y + absDeltaY + npcSize.y) > _HeightPixel))
+        else if (((currentPos.y + absDeltaY + npcSize.y) > _BoardHeightPixel))
         {
-            currentPos.y = static_cast<float_t>(_HeightPixel) - npcSize.y;
+            currentPos.y = static_cast<float_t>(_BoardHeightPixel) - npcSize.y;
             deltaY       = -absDeltaY;
         }
 
@@ -309,7 +315,7 @@ void Screen::_HandleEvents()
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.x  = static_cast<float_t>(_WidthPixel - INFO_PANEL_WIDTH_PIXEL) - static_cast<float_t>(PLAYER_WIDTH) * _Player.getScale().x;
+                        currentPos.x  = static_cast<float_t>(_BoardWidthPixel) - playerSize.x;
                         updateFrame  |= false;
                     }
                 }
@@ -341,12 +347,13 @@ void Screen::_HandleEvents()
                     else
                     {
                         /* Sprite out of bound, do not exceed window size */
-                        currentPos.y  = (float_t)_HeightPixel - (float_t)PLAYER_HEIGHT*_Player.getScale().y;
+                        currentPos.y  = static_cast<float_t>(_BoardHeightPixel) - playerSize.y;
                         updateFrame  |= false;
                     }
                 }
 
                 _Player.setPosition(currentPos, updateFrame);
+                _View->update();
             }
             else
             {
@@ -378,7 +385,7 @@ void Screen::_HandleInteractions()
  */
 uint32_t Screen::getWidthPixel() const
 {
-    return _WidthPixel;
+    return _BoardWidthPixel;
 }
 
 /**
@@ -388,7 +395,7 @@ uint32_t Screen::getWidthPixel() const
  */
 uint32_t Screen::getHeightPixel() const
 {
-    return _HeightPixel;
+    return _BoardHeightPixel;
 }
 
 /**
@@ -398,7 +405,7 @@ uint32_t Screen::getHeightPixel() const
  */
 uint32_t Screen::getSizePixel() const
 {
-    return _SizePixel;
+    return _BoardSizePixel;
 }
 
 /**
@@ -436,6 +443,7 @@ void Screen::render()
         if (_GameStatus == GameStatus::PLAY)
         {
             _Window.clear();
+            _Window.setView(_View->getView());
             _drawBoard();
             _drawPlayer();
             _drawNPCs();
@@ -487,4 +495,5 @@ bool Screen::areClose(const Player &player, const NPC &npc, const uint32_t thres
 
 Screen::~Screen()
 {
+    delete _View;
 }
