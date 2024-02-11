@@ -1,24 +1,12 @@
 #include "WindowView.hpp"
 
-template <typename T>
-static inline constexpr T _min(T a, T b)
-{
-    return ((a < b) ? a : b);
-}
-
-template <typename T>
-static inline constexpr T _max(T a, T b)
-{
-    return ((a < b) ? b : a);
-}
-
 WindowView::WindowView(Board &board, Player &player) :
     _Board(board), _Player(player)
 {
-    _WidthInTile  = VIEW_WIDTH_TILE;
-    _HeightInTile = VIEW_HEIGHT_TILE;
-    _SizeInTile   = VIEW_SIZE_TILE;
-    _View         = View(FloatRect(Vector2f(0.0f, 0.0f), Vector2f(_WidthInTile * ConfigDev::tileSize, _HeightInTile * ConfigDev::tileSize)));
+    _WidthInPixel  = VIEW_WIDTH_TILE  * ConfigDev::tileSize;
+    _HeightInPixel = VIEW_HEIGHT_TILE * ConfigDev::tileSize;
+    _SizeInPixel   = VIEW_SIZE_TILE   * ConfigDev::tileSize;
+    _View         = View(FloatRect(Vector2f(0.0f, 0.0f), Vector2f(_WidthInPixel, _HeightInPixel)));
     update();
 }
 
@@ -33,7 +21,7 @@ void WindowView::update()
     Vector2f newCenter       = playerPos;
 
     /* Calculate the half size of the view */
-    const Vector2f halfViewSize = Vector2f(_WidthInTile * ConfigDev::tileSize / 2.0f, _HeightInTile * ConfigDev::tileSize / 2.0f);
+    const Vector2f halfViewSize = Vector2f(_WidthInPixel / 2.0f, _HeightInPixel / 2.0f);
 
     /* Do not exceed left side */
     if (playerPos.x <= halfViewSize.x)
@@ -87,27 +75,27 @@ Vector2f WindowView::getViewSize() const
  * @brief Return the width of the view in pixel
  *
  */
-uint32_t WindowView::getWidthInTile() const
+uint32_t WindowView::getWidthInPixel() const
 {
-    return _WidthInTile;
+    return _WidthInPixel;
 }
 
 /**
  * @brief Return the height of the view in pixel
  *
  */
-uint32_t WindowView::getHeightInTile() const
+uint32_t WindowView::getHeightInPixel() const
 {
-    return _HeightInTile;
+    return _HeightInPixel;
 }
 
 /**
  * @brief Return the size of the view in pixel
  *
  */
-uint32_t WindowView::getSizeInTile() const
+uint32_t WindowView::getSizeInPixel() const
 {
-    return _SizeInTile;
+    return _SizeInPixel;
 }
 
 /**
@@ -117,7 +105,7 @@ uint32_t WindowView::getSizeInTile() const
 Vector2f WindowView::getPosition() const
 {
     Vector2f viewPos = _View.getCenter();
-    return Vector2f(viewPos.x - _WidthInTile * ConfigDev::tileSize / 2, viewPos.y - _HeightInTile * ConfigDev::tileSize / 2);
+    return Vector2f(viewPos.x - _WidthInPixel / 2.0f, viewPos.y - _HeightInPixel / 2.0f);
 }
 
 /**

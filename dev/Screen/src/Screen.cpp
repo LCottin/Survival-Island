@@ -17,8 +17,8 @@ Screen::Screen(Board &board, Player &player, const string &title) :
     _BoardSizePixel   = _BoardWidthPixel * _BoardHeightPixel;
 
     _View            = new WindowView(_Board, _Player);
-    _ViewWidthPixel  = _View->getWidthInTile() * _TileSize.x + VIEW_PANEL_WIDTH_PIXEL;
-    _ViewHeightPixel = _View->getHeightInTile() * _TileSize.y;
+    _ViewWidthPixel  = _View->getWidthInPixel() + VIEW_PANEL_WIDTH_PIXEL;
+    _ViewHeightPixel = _View->getHeightInPixel();
 
     _PauseTimer = seconds(0.5f);
     _PauseCooldown.restart();
@@ -248,8 +248,8 @@ void Screen::_drawInfoPanel()
     String textToDisplay = "Player\nHealth:\n" + to_string(_Player.getHealth()) + "\n\n\n\n";
     textToDisplay       += "Difficulty:\n" + GameDifficultyString[static_cast<uint32_t>(ConfigUser::difficulty)];
 
-    _InfoPanel.setPosition(viewPos.x + _View->getWidthInTile() * 16 - VIEW_PANEL_WIDTH_PIXEL + 0, viewPos.y);
-    _PanelText.setPosition(viewPos.x + _View->getWidthInTile() * 16 - VIEW_PANEL_WIDTH_PIXEL + 5, viewPos.y);
+    _InfoPanel.setPosition(viewPos.x + _View->getWidthInPixel() - VIEW_PANEL_WIDTH_PIXEL + 0, viewPos.y);
+    _PanelText.setPosition(viewPos.x + _View->getWidthInPixel() - VIEW_PANEL_WIDTH_PIXEL + 5, viewPos.y);
     _PanelText.setString(textToDisplay);
 
     _Window.draw(_InfoPanel);

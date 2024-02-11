@@ -15,9 +15,9 @@ using namespace sf;
 class WindowView
 {
     private:
-        uint32_t  _WidthInTile;
-        uint32_t  _HeightInTile;
-        uint32_t  _SizeInTile;
+        uint32_t  _WidthInPixel;
+        uint32_t  _HeightInPixel;
+        uint32_t  _SizeInPixel;
         View      _View;
         Board    &_Board;
         Player   &_Player;
@@ -27,9 +27,9 @@ class WindowView
 
         View&    getView();
         Vector2f getViewSize() const;
-        uint32_t getWidthInTile() const;
-        uint32_t getHeightInTile() const;
-        uint32_t getSizeInTile() const;
+        uint32_t getWidthInPixel() const;
+        uint32_t getHeightInPixel() const;
+        uint32_t getSizeInPixel() const;
         Vector2f getPosition() const;
         Vector2f getCenterPosition() const;
 
