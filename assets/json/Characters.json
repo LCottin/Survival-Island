@@ -7,8 +7,6 @@
         "Experience" : 0,
         "Strength" : 10,
         "Defense" : 10,
-        "Speed" : 10,
-        "Position_x" : 10,
-        "Position_y" : 10
+        "Speed" : 10
     }
 }

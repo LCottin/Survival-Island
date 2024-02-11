@@ -74,8 +74,8 @@ void Character::_initCommon(const CharacterType type)
                             .Speed      = characterData.contains("Speed")      ? characterData["Speed"].get<uint32_t>()      :  10U,
                             .Age        = characterData.contains("Age")        ? characterData["Age"].get<uint32_t>()        :  25U };
 
-    _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<float_t>() : 0.0f;
-    _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : 0.0f;
+    _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<float_t>() : Random::getRandomFloat(0.0f, BOARD_WIDTH_TILE  * ConfigDev::tileSize);
+    _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : Random::getRandomFloat(0.0f, BOARD_HEIGHT_TILE * ConfigDev::tileSize);
 
     _Sprite.setPosition(_Position);
 

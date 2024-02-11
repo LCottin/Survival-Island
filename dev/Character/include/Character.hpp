@@ -9,6 +9,8 @@
 #include <nlohmann/json.hpp>
 
 #include "CharacterData.hpp"
+#include "Random.hpp"
+#include "BoardData.hpp"
 
 #include "ConfigDev.hpp"
 
