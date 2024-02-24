@@ -20,8 +20,8 @@ class Player: public Character
 
         /* Member functions (setters) */
         void setMoney(const uint32_t money);
-        void setPosition(const Vector2f position, const bool changeFrame);
-        void setPosition(const float_t x, const float_t y, const bool changeFrame);
+        void setPosition(const Vector2u position, const bool changeFrame);
+        void setPosition(const uint32_t x, const uint32_t y, const bool changeFrame);
 
         /* Member functions (others) */
         void updateFrame(const DirectionType direction);

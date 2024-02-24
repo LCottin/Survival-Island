@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <SFML/System.hpp>
 
 #include "BoardData.hpp"
 #include "TileType.hpp"
@@ -11,6 +12,7 @@
 #include "Random.hpp"
 
 using namespace std;
+using namespace sf;
 
 class Board
 {
@@ -30,6 +32,7 @@ class Board
         uint32_t getWidthInTile() const;
         uint32_t getHeightInTile() const;
         uint32_t getSizeInTile() const;
+        Vector2i getDimensionInTile() const;
 
         bool setTile(const uint32_t x, const uint32_t y, const TileTypeBackground tile);
 

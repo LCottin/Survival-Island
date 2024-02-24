@@ -74,10 +74,10 @@ void Character::_initCommon(const CharacterType type)
                             .Speed      = characterData.contains("Speed")      ? characterData["Speed"].get<uint32_t>()      :  10U,
                             .Age        = characterData.contains("Age")        ? characterData["Age"].get<uint32_t>()        :  25U };
 
-    _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<float_t>() : 0.0f;
-    _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : 0.0f;
+    _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<uint32_t>() : Random::getRandomInteger(0, BOARD_WIDTH_TILE  * ConfigDev::tileSize);
+    _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<uint32_t>() : Random::getRandomInteger(0, BOARD_HEIGHT_TILE * ConfigDev::tileSize);
 
-    _Sprite.setPosition(_Position);
+    _Sprite.setPosition(static_cast<Vector2f>(_Position));
 
     _DamageTimer = seconds(1.0f);
     _DamageCooldown.restart();
@@ -195,7 +195,7 @@ uint32_t Character::getSpeed() const
  * @brief Get character current position
  *
  */
-Vector2f Character::getPosition() const
+Vector2u Character::getPosition() const
 {
     return _Position;
 }
@@ -204,7 +204,7 @@ Vector2f Character::getPosition() const
  * @brief Get character previous position
  *
  */
-Vector2f Character::getPreviousPosition() const
+Vector2u Character::getPreviousPosition() const
 {
     return _PreviousPosition;
 }
@@ -213,7 +213,7 @@ Vector2f Character::getPreviousPosition() const
  * @brief Return character current scale
  *
  */
-Vector2f Character::getScale() const
+Vector2u Character::getScale() const
 {
     return _Scale;
 }
@@ -222,7 +222,7 @@ Vector2f Character::getScale() const
  * @brief Return character current scaled size
  *
  */
-Vector2f Character::getSize() const
+Vector2u Character::getSize() const
 {
     return _Size;
 }
@@ -281,7 +281,7 @@ bool Character::defend(const uint32_t damage)
         if (_Attributes.Health <= damage)
         {
             /* Kill the character */
-            _Attributes.Health = 0;
+            _Attributes.Health = 0U;
             _IsAlive           = false;
         }
         else
@@ -299,14 +299,14 @@ bool Character::defend(const uint32_t damage)
 /**
  * @brief Set new position of the player
  *
- * @param position Vector2f containing new position
+ * @param position Vector2u containing new position
  *
  */
-void Character::setPosition(const Vector2f position)
+void Character::setPosition(const Vector2u position)
 {
     _PreviousPosition = _Position;
     _Position         = position;
-    _Sprite.setPosition(_Position);
+    _Sprite.setPosition(static_cast<Vector2f>(_Position));
 }
 
 /**
@@ -316,27 +316,27 @@ void Character::setPosition(const Vector2f position)
  * @param y New position on y axis
  *
  */
-void Character::setPosition(const float_t x, const float_t y)
+void Character::setPosition(const uint32_t x, const uint32_t y)
 {
     _PreviousPosition = _Position;
     _Position.x       = x;
     _Position.y       = y;
-    _Sprite.setPosition(_Position);
+    _Sprite.setPosition(static_cast<Vector2f>(_Position));
 }
 
 /**
  * @brief Set new position of the player
  *
- * @param position Vector2f containing new position
+ * @param position Vector2u containing new position
  * @param changeFrame Boolean to change the frame displayed
  *
  */
-void Character::setPosition(const Vector2f position, const bool changeFrame)
+void Character::setPosition(const Vector2u position, const bool changeFrame)
 {
     (void)changeFrame;
     _PreviousPosition = _Position;
     _Position         = position;
-    _Sprite.setPosition(_Position);
+    _Sprite.setPosition(static_cast<Vector2f>(_Position));
 }
 
 /**
@@ -347,13 +347,13 @@ void Character::setPosition(const Vector2f position, const bool changeFrame)
  * @param changeFrame Boolean to change the frame displayed
  *
  */
-void Character::setPosition(const float_t x, const float_t y, const bool changeFrame)
+void Character::setPosition(const uint32_t x, const uint32_t y, const bool changeFrame)
 {
     (void)changeFrame;
     _PreviousPosition = _Position;
     _Position.x       = x;
     _Position.y       = y;
-    _Sprite.setPosition(_Position);
+    _Sprite.setPosition(static_cast<Vector2f>(_Position));
 }
 
 /**
@@ -405,7 +405,7 @@ bool Character::attack(Character &defender)
 
         if (_Attributes.Health <= defense)
         {
-            _Attributes.Health = 0;
+            _Attributes.Health = 0U;
             _IsAlive           = false;
         }
         else

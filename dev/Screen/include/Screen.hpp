@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <string>
-#include <memory>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
@@ -12,6 +11,7 @@
 #include "NPC.hpp"
 #include "ScreenData.hpp"
 #include "Random.hpp"
+#include "WindowView.hpp"
 
 #include "ConfigDev.hpp"
 #include "ConfigUser.hpp"
@@ -22,23 +22,27 @@ using namespace sf;
 class Screen
 {
     private:
-        RenderWindow _Window;
-        Vector2u     _TileSize;
-        Texture      _TilesetTexture;
-        VertexArray  _Vertices;
+        RenderWindow             _Window;
+        Vector2u                 _TileSize;
+        Texture                  _TilesetTexture;
+        VertexArray              _Vertices;
 
-        uint32_t     _WidthPixel;
-        uint32_t     _HeightPixel;
-        uint32_t     _SizePixel;
-        string       _WindowTitle;
-        GameStatus   _GameStatus;
+        uint32_t                 _BoardWidthPixel;
+        uint32_t                 _BoardHeightPixel;
+        uint32_t                 _BoardSizePixel;
+        uint32_t                 _ViewWidthPixel;
+        uint32_t                 _ViewHeightPixel;
 
-        RectangleShape _InfoPanel;
-        Font           _Font;
-        Text           _PanelText;
+        string                   _WindowTitle;
+        GameStatus               _GameStatus;
+
+        RectangleShape           _InfoPanel;
+        Font                     _Font;
+        Text                     _PanelText;
 
         Board                   &_Board;
         Player                  &_Player;
+        WindowView              *_View;
         vector<shared_ptr<NPC>>  _NPCs;
 
         Clock _PauseCooldown;
@@ -65,7 +69,7 @@ class Screen
 
         void render();
         void addNPC(shared_ptr<NPC> &NPC);
-        bool areClose(Player &player, NPC &npc, const uint32_t threshold) const;
+        bool areClose(const Player &player, const NPC &npc, const uint32_t threshold) const;
 
         ~Screen();
 };

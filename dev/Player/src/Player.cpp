@@ -41,10 +41,10 @@ void Player::_initPlayer()
     _CurrentFrames     = &_UpFrames;
     _CurrentFrameIndex = 0;
 
-    _Scale = Vector2f(3.0f, 3.0f);
-    _Size  = Vector2f(PLAYER_WIDTH * _Scale.x, PLAYER_HEIGHT * _Scale.y);
+    _Scale = Vector2u(3U, 3U);
+    _Size  = Vector2u(PLAYER_WIDTH * _Scale.x, PLAYER_HEIGHT * _Scale.y);
 
-    _Sprite.scale(_Scale);
+    _Sprite.scale(static_cast<Vector2f>(_Scale));
     _Sprite.setTexture(_Texture);
     _Sprite.setTextureRect((*_CurrentFrames)[_CurrentFrameIndex]);
 
@@ -72,11 +72,11 @@ void Player::setMoney(const uint32_t money)
 /**
  * @brief Set new position of the player
  *
- * @param position Vector2f containing new position
+ * @param position Vector2u containing new position
  * @param changeFrame Boolean to change the frame displayed
  *
  */
-void Player::setPosition(const Vector2f position, const bool changeFrame)
+void Player::setPosition(const Vector2u position, const bool changeFrame)
 {
     if (changeFrame == true)
     {
@@ -102,7 +102,7 @@ void Player::setPosition(const Vector2f position, const bool changeFrame)
 
     _PreviousPosition = _Position;
     _Position         = position;
-    _Sprite.setPosition(_Position);
+    _Sprite.setPosition(static_cast<Vector2f>(_Position));
 }
 
 /**
@@ -113,7 +113,7 @@ void Player::setPosition(const Vector2f position, const bool changeFrame)
  * @param changeFrame Boolean to change the frame displayed
  *
  */
-void Player::setPosition(const float_t x, const float_t y, const bool changeFrame)
+void Player::setPosition(const uint32_t x, const uint32_t y, const bool changeFrame)
 {
     if (changeFrame == true)
     {
@@ -140,7 +140,7 @@ void Player::setPosition(const float_t x, const float_t y, const bool changeFram
     _PreviousPosition = _Position;
     _Position.x       = x;
     _Position.y       = y;
-    _Sprite.setPosition(_Position);
+    _Sprite.setPosition(static_cast<Vector2f>(_Position));
 }
 
 /**

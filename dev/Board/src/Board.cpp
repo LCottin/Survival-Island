@@ -149,6 +149,16 @@ uint32_t Board::getSizeInTile() const
 }
 
 /**
+ * @brief Get the Board dimension in tile object
+ *
+ * @return Vector2i The board dimension in tile
+ */
+Vector2i Board::getDimensionInTile() const
+{
+    return Vector2i(_WidthInTile, _HeightInTile);
+}
+
+/**
  * @brief Set the tile object at the given position
  *
  * @param x Position on the X axis
