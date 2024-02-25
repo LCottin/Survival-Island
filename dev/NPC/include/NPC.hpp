@@ -2,8 +2,6 @@
 #define __NPC_HPP__
 
 #include "Character.hpp"
-#include "NPCData.hpp"
-#include "Random.hpp"
 
 class NPC: public Character
 {

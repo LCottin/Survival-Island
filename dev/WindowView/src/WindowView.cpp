@@ -1,4 +1,6 @@
 #include "WindowView.hpp"
+#include "WindowViewPub.hpp"
+#include "ConfigDev.hpp"
 
 WindowView::WindowView(Board &board, Player &player) :
     _Board(board), _Player(player)

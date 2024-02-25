@@ -1,20 +1,14 @@
 #ifndef __SCREEN_HPP__
 #define __SCREEN_HPP__
 
-#include <iostream>
 #include <string>
 #include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
 
 #include "Board.hpp"
 #include "Player.hpp"
 #include "NPC.hpp"
-#include "ScreenData.hpp"
-#include "Random.hpp"
 #include "WindowView.hpp"
-
-#include "ConfigDev.hpp"
-#include "ConfigUser.hpp"
+#include "ScreenPub.hpp"
 
 using namespace std;
 using namespace sf;
@@ -73,6 +67,5 @@ class Screen
 
         ~Screen();
 };
-
 
 #endif

@@ -1,4 +1,7 @@
 #include "Board.hpp"
+#include "BoardPub.hpp"
+#include "FastNoiseLite.hpp"
+#include "Random.hpp"
 
 Board::Board()
 {

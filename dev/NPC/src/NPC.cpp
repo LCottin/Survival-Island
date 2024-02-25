@@ -1,4 +1,7 @@
 #include "NPC.hpp"
+#include "NPCPrv.hpp"
+#include "Random.hpp"
+#include "ConfigDev.hpp"
 
 /* Constructors */
 NPC::NPC() : Character()

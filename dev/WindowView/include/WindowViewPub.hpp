@@ -1,5 +1,5 @@
-#ifndef __WINDOWVIEW_DATA_HPP__
-#define __WINDOWVIEW_DATA_HPP__
+#ifndef __WINDOWVIEW_PUB_HPP__
+#define __WINDOWVIEW_PUB_HPP__
 
 #include <iostream>
 
@@ -9,4 +9,4 @@ constexpr uint32_t VIEW_SIZE_TILE   = VIEW_WIDTH_TILE * VIEW_HEIGHT_TILE;
 
 constexpr uint32_t VIEW_PANEL_WIDTH_PIXEL = 120U;
 
-#endif // __WINDOWVIEW_DATA_HPP__
+#endif // __WINDOWVIEW_PUB_HPP__

@@ -6,8 +6,6 @@
 
 #include "Board.hpp"
 #include "Player.hpp"
-#include "ConfigDev.hpp"
-#include "WindowViewData.hpp"
 
 using namespace std;
 using namespace sf;

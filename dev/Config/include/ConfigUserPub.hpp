@@ -1,5 +1,5 @@
-#ifndef __CONFIG_DATA_HPP__
-#define __CONFIG_DATA_HPP__
+#ifndef __CONFIG_USER_PUB_HPP__
+#define __CONFIG_USER_PUB_HPP__
 
 #include <string>
 
@@ -15,4 +15,4 @@ enum class GameDifficulty : uint32_t
 
 extern const string GameDifficultyString[static_cast<uint32_t>(GameDifficulty::COUNT)];
 
-#endif //__CONFIG_DATA_HPP__
+#endif //__CONFIG_USER_PUB_HPP__

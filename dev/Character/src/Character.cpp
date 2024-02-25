@@ -1,4 +1,8 @@
 #include "Character.hpp"
+#include "CharacterPrv.hpp"
+#include "ConfigDev.hpp"
+#include "Random.hpp"
+#include "BoardPub.hpp"
 
 /* Constructors */
 Character::Character()

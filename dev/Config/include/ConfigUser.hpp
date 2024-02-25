@@ -6,9 +6,8 @@
 #include <string>
 #include <nlohmann/json.hpp>
 #include <SFML/Window.hpp>
-#include <unordered_map>
 
-#include "ConfigData.hpp"
+#include "ConfigUserPub.hpp"
 
 using namespace std;
 using namespace sf;

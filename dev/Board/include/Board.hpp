@@ -1,15 +1,11 @@
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <SFML/System.hpp>
 
-#include "BoardData.hpp"
 #include "TileType.hpp"
-#include "FastNoiseLite.hpp"
-#include "Random.hpp"
 
 using namespace std;
 using namespace sf;

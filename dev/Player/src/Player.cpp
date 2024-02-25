@@ -1,4 +1,6 @@
 #include "Player.hpp"
+#include "PlayerPrv.hpp"
+#include "ConfigDev.hpp"
 
 /* Constructors */
 Player::Player() : Character()
