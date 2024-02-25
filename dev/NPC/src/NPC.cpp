@@ -58,7 +58,7 @@ void NPC::_initNPC()
     }
 
     _Scale = Vector2u(2U, 2U);
-    _Size  = Vector2u(NPC_WIDTH * _Scale.x, NPC_HEIGHT * _Scale.y);
+    _Size  = Vector2u(NPCSize::WIDTH * _Scale.x, NPCSize::HEIGHT * _Scale.y);
 
     _Sprite.scale(static_cast<Vector2f>(_Scale));
     _Sprite.setTexture(_Texture);

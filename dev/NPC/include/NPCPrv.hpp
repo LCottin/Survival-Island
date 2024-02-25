@@ -3,10 +3,11 @@
 
 #include "NPCPub.hpp"
 
-using namespace std;
-
-constexpr uint32_t NPC_WIDTH  = 18U;
-constexpr uint32_t NPC_HEIGHT = 26U;
+namespace NPCSize
+{
+    constexpr uint32_t WIDTH  = 18U;
+    constexpr uint32_t HEIGHT = 26U;
+}
 
 extern const string NPCColorsString[static_cast<uint32_t>(NPCColors::COUNT)];
 

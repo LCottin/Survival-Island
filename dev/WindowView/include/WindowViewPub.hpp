@@ -3,9 +3,12 @@
 
 #include <iostream>
 
-constexpr uint32_t VIEW_WIDTH_TILE  = 82U;
-constexpr uint32_t VIEW_HEIGHT_TILE = 52U;
-constexpr uint32_t VIEW_SIZE_TILE   = VIEW_WIDTH_TILE * VIEW_HEIGHT_TILE;
+namespace ViewSizeInTile
+{
+    constexpr uint32_t WIDTH  = 82U;
+    constexpr uint32_t HEIGHT = 52U;
+    constexpr uint32_t SIZE   = WIDTH * HEIGHT;
+}
 
 constexpr uint32_t VIEW_PANEL_WIDTH_PIXEL = 120U;
 

@@ -3,8 +3,11 @@
 
 #include <iostream>
 
-constexpr uint32_t BOARD_WIDTH_TILE  = 1000U;
-constexpr uint32_t BOARD_HEIGHT_TILE = 1000U;
-constexpr uint32_t BOARD_SIZE_TILE   = BOARD_WIDTH_TILE * BOARD_HEIGHT_TILE;
+namespace BoardSizeInTile
+{
+    constexpr uint32_t WIDTH  = 1000U;
+    constexpr uint32_t HEIGHT = 1000U;
+    constexpr uint32_t SIZE   = WIDTH * HEIGHT;
+}
 
 #endif //__BOARD_PUB_HPP__
