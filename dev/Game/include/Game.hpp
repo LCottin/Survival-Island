@@ -12,10 +12,10 @@ using namespace sf;
 class Game
 {
     private:
-        Player         *_Player;
-        Board          *_Board;
-        Screen         *_Screen;
-        vector<shared_ptr<NPC>>  *_NPCs;
+        shared_ptr<Player>                  _Player;
+        shared_ptr<Board>                   _Board;
+        shared_ptr<Screen>                  _Screen;
+        shared_ptr<vector<shared_ptr<NPC>>> _NPCs;
 
     public:
         Game(const string &playerName);

@@ -36,7 +36,7 @@ class Screen
 
         Board                   &_Board;
         Player                  &_Player;
-        WindowView              *_View;
+        unique_ptr<WindowView>   _View;
         vector<shared_ptr<NPC>> &_NPCs;
 
         Clock _PauseCooldown;

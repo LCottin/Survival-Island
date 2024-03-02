@@ -21,7 +21,7 @@ Screen::Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, c
     _BoardHeightPixel = _Board.getHeightInTile() * _TileSize.y;
     _BoardSizePixel   = _BoardWidthPixel * _BoardHeightPixel;
 
-    _View            = new WindowView(_Board, _Player);
+    _View            = make_unique<WindowView>(_Board, _Player);
     _ViewWidthPixel  = _View->getWidthInPixel() + VIEW_PANEL_WIDTH_PIXEL;
     _ViewHeightPixel = _View->getHeightInPixel();
 
@@ -486,5 +486,4 @@ bool Screen::areClose(const Player &player, const NPC &npc, const uint32_t thres
 
 Screen::~Screen()
 {
-    delete _View;
 }
