@@ -34,6 +34,7 @@ set(SOURCES
     ${DEV_DIR}/Character/src/Character.cpp
     ${DEV_DIR}/Character/src/CharacterPrv.cpp
     ${DEV_DIR}/Player/src/Player.cpp
+    ${DEV_DIR}/Game/src/Game.cpp
     ${DEV_DIR}/NPC/src/NPC.cpp
     ${DEV_DIR}/NPC/src/NPCPrv.cpp
     ${DEV_DIR}/Board/src/Board.cpp
@@ -52,6 +53,7 @@ set(HEADERS
     ${DEV_DIR}/Character/include/CharacterPrv.hpp
     ${DEV_DIR}/Player/include/Player.hpp
     ${DEV_DIR}/Player/include/PlayerPrv.hpp
+    ${DEV_DIR}/Game/include/Game.hpp
     ${DEV_DIR}/NPC/include/NPC.hpp
     ${DEV_DIR}/NPC/include/NPCPub.hpp
     ${DEV_DIR}/NPC/include/NPCPrv.hpp
@@ -88,6 +90,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/Player/include
     ${DEV_DIR}/Board/include
     ${DEV_DIR}/Screen/include
+    ${DEV_DIR}/Game/include
     ${DEV_DIR}/NPC/include
     ${DEV_DIR}/Random/include
     ${DEV_DIR}/Config/include
