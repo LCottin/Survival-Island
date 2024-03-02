@@ -83,8 +83,8 @@ void Screen::_computeVertices()
             quad[3].position = Vector2f(x              , y + _TileSize.y);
 
             /* Calculate coordinate of the index in the image */
-            const float_t tile_x = static_cast<const float_t>((tileIndex % (IMAGE_WIDTH_PIXEL / _TileSize.x)) * _TileSize.x);
-            const float_t tile_y = static_cast<const float_t>((tileIndex / (IMAGE_WIDTH_PIXEL / _TileSize.y)) * _TileSize.y);
+            const float_t tile_x = static_cast<const float_t>((tileIndex % (ImageSizeInPixel::WIDTH / _TileSize.x)) * _TileSize.x);
+            const float_t tile_y = static_cast<const float_t>((tileIndex / (ImageSizeInPixel::HEIGHT / _TileSize.y)) * _TileSize.y);
 
             /* Define its 4 texture coordinates */
             quad[0].texCoords = Vector2f(tile_x              , tile_y);
