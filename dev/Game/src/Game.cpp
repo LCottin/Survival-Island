@@ -8,8 +8,7 @@ Game::Game(const string &playerName)
     _Player = make_shared<Player>(playerName);
     _Board  = make_shared<Board>();
 
-    _NPCs = make_shared<vector<shared_ptr<NPC>>>();
-    _NPCs->resize(2U * static_cast<uint32_t>(ConfigUser::difficulty));
+    _NPCs = make_shared<vector<shared_ptr<NPC>>>(2U * static_cast<uint32_t>(ConfigUser::difficulty));
 
     for (size_t i = 0; i < _NPCs->size(); i++)
     {
