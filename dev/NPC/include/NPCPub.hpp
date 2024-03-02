@@ -13,4 +13,6 @@ enum class NPCColors : uint32_t
     COUNT,
 };
 
+extern const string NPCColorsString[static_cast<uint32_t>(NPCColors::COUNT)];
+
 #endif //__NPC_PUB_HPP__
