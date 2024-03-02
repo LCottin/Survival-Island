@@ -37,7 +37,7 @@ class Screen
         Board                   &_Board;
         Player                  &_Player;
         WindowView              *_View;
-        vector<shared_ptr<NPC>>  _NPCs;
+        vector<shared_ptr<NPC>> &_NPCs;
 
         Clock _PauseCooldown;
         Time  _PauseTimer;
@@ -52,7 +52,7 @@ class Screen
         void _HandleInteractions();
 
     public:
-        Screen(Board &board, Player &player, const string &title);
+        Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, const string &title);
 
         uint32_t getWidthPixel()  const;
         uint32_t getHeightPixel() const;
@@ -62,7 +62,6 @@ class Screen
         void setBoard(Board &board);
 
         void render();
-        void addNPC(shared_ptr<NPC> &NPC);
         bool areClose(const Player &player, const NPC &npc, const uint32_t threshold) const;
 
         ~Screen();

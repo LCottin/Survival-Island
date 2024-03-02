@@ -5,8 +5,8 @@
 #include "Random.hpp"
 #include "WindowViewPub.hpp"
 
-Screen::Screen(Board &board, Player &player, const string &title) :
-    _Board(board), _Player(player)
+Screen::Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, const string &title) :
+    _Board(board), _Player(player), _NPCs(NPClist)
 {
     _GameStatus  = GameStatus::INIT;
     _TileSize    = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
@@ -460,21 +460,6 @@ void Screen::render()
     }
 }
 
-/**
- * @brief Add a new NPC to the game
- *
- * @param &NPC Reference to the new NPC
- *
- */
-void Screen::addNPC(shared_ptr<NPC> &NPC)
-{
-    Vector2u newPosition;
-    newPosition.x = Random::getRandomInteger(0, _BoardWidthPixel - NPC->getSize().x);
-    newPosition.y = Random::getRandomInteger(0, _BoardHeightPixel - NPC->getSize().y);
-
-    NPC->setPosition(newPosition);
-    _NPCs.push_back(NPC);
-}
 
 /**
  * @brief Indicate if player and NPC are close
