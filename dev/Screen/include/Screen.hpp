@@ -1,20 +1,14 @@
 #ifndef __SCREEN_HPP__
 #define __SCREEN_HPP__
 
-#include <iostream>
 #include <string>
 #include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
 
 #include "Board.hpp"
 #include "Player.hpp"
 #include "NPC.hpp"
-#include "ScreenData.hpp"
-#include "Random.hpp"
 #include "WindowView.hpp"
-
-#include "ConfigDev.hpp"
-#include "ConfigUser.hpp"
+#include "ScreenPub.hpp"
 
 using namespace std;
 using namespace sf;
@@ -42,8 +36,8 @@ class Screen
 
         Board                   &_Board;
         Player                  &_Player;
-        WindowView              *_View;
-        vector<shared_ptr<NPC>>  _NPCs;
+        unique_ptr<WindowView>   _View;
+        vector<shared_ptr<NPC>> &_NPCs;
 
         Clock _PauseCooldown;
         Time  _PauseTimer;
@@ -58,7 +52,7 @@ class Screen
         void _HandleInteractions();
 
     public:
-        Screen(Board &board, Player &player, const string &title);
+        Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, const string &title);
 
         uint32_t getWidthPixel()  const;
         uint32_t getHeightPixel() const;
@@ -68,11 +62,9 @@ class Screen
         void setBoard(Board &board);
 
         void render();
-        void addNPC(shared_ptr<NPC> &NPC);
         bool areClose(const Player &player, const NPC &npc, const uint32_t threshold) const;
 
         ~Screen();
 };
-
 
 #endif

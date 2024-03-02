@@ -1,4 +1,4 @@
-#include "CharacterData.hpp"
+#include "CharacterPrv.hpp"
 
 const string CharacterTypeString[static_cast<uint32_t>(CharacterType::COUNT)] =
 {

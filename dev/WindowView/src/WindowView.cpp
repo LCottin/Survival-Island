@@ -1,11 +1,13 @@
 #include "WindowView.hpp"
+#include "WindowViewPub.hpp"
+#include "ConfigDev.hpp"
 
 WindowView::WindowView(Board &board, Player &player) :
     _Board(board), _Player(player)
 {
-    _WidthInPixel  = VIEW_WIDTH_TILE  * ConfigDev::tileSize;
-    _HeightInPixel = VIEW_HEIGHT_TILE * ConfigDev::tileSize;
-    _SizeInPixel   = VIEW_SIZE_TILE   * ConfigDev::tileSize;
+    _WidthInPixel  = ViewSizeInTile::WIDTH  * ConfigDev::tileSize;
+    _HeightInPixel = ViewSizeInTile::HEIGHT * ConfigDev::tileSize;
+    _SizeInPixel   = ViewSizeInTile::SIZE   * ConfigDev::tileSize;
     _View         = View(FloatRect(Vector2f(0.0f, 0.0f), Vector2f(_WidthInPixel, _HeightInPixel)));
     update();
 }

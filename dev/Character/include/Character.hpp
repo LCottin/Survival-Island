@@ -3,16 +3,11 @@
 
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <nlohmann/json.hpp>
 
-#include "CharacterData.hpp"
-#include "Random.hpp"
-#include "BoardData.hpp"
-
-#include "ConfigDev.hpp"
+#include "CharacterPub.hpp"
 
 using namespace std;
 using namespace sf;

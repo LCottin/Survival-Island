@@ -1,5 +1,5 @@
-#ifndef __NPC_DATA_HPP__
-#define __NPC_DATA_HPP__
+#ifndef __NPC_PUB_HPP__
+#define __NPC_PUB_HPP__
 
 #include <string>
 
@@ -15,4 +15,4 @@ enum class NPCColors : uint32_t
 
 extern const string NPCColorsString[static_cast<uint32_t>(NPCColors::COUNT)];
 
-#endif //__NPC_DATA_HPP__
+#endif //__NPC_PUB_HPP__

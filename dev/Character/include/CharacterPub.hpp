@@ -1,5 +1,5 @@
-#ifndef __CHARACTER_DATA_HPP__
-#define __CHARACTER_DATA_HPP__
+#ifndef __CHARACTER_PUB_HPP__
+#define __CHARACTER_PUB_HPP__
 
 #include <string>
 
@@ -35,17 +35,6 @@ enum class DirectionType : uint32_t
     COUNT,
 };
 
-constexpr uint32_t HEALTH_BAR_HEIGHT    =  8U;
-
-constexpr uint32_t PLAYER_WIDTH         = 16U;
-constexpr uint32_t PLAYER_HEIGHT        = 24U;
-constexpr uint32_t FRAMES_PER_DIRECTION =  4U;
-
-constexpr uint32_t NPC_WIDTH            = 18U;
-constexpr uint32_t NPC_HEIGHT           = 26U;
-
-extern const string CharacterTypeString[static_cast<uint32_t>(CharacterType::COUNT)];
-
 extern const string CharacterDefaultName[static_cast<uint32_t>(CharacterType::COUNT)];
 
-#endif //__CHARACTER_DATA_HPP__
+#endif //__CHARACTER_PUB_HPP__

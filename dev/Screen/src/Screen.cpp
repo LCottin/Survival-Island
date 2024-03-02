@@ -1,7 +1,12 @@
 #include "Screen.hpp"
+#include "ScreenPrv.hpp"
+#include "ConfigDev.hpp"
+#include "ConfigUser.hpp"
+#include "Random.hpp"
+#include "WindowViewPub.hpp"
 
-Screen::Screen(Board &board, Player &player, const string &title) :
-    _Board(board), _Player(player)
+Screen::Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, const string &title) :
+    _Board(board), _Player(player), _NPCs(NPClist)
 {
     _GameStatus  = GameStatus::INIT;
     _TileSize    = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
@@ -16,7 +21,7 @@ Screen::Screen(Board &board, Player &player, const string &title) :
     _BoardHeightPixel = _Board.getHeightInTile() * _TileSize.y;
     _BoardSizePixel   = _BoardWidthPixel * _BoardHeightPixel;
 
-    _View            = new WindowView(_Board, _Player);
+    _View            = make_unique<WindowView>(_Board, _Player);
     _ViewWidthPixel  = _View->getWidthInPixel() + VIEW_PANEL_WIDTH_PIXEL;
     _ViewHeightPixel = _View->getHeightInPixel();
 
@@ -455,21 +460,6 @@ void Screen::render()
     }
 }
 
-/**
- * @brief Add a new NPC to the game
- *
- * @param &NPC Reference to the new NPC
- *
- */
-void Screen::addNPC(shared_ptr<NPC> &NPC)
-{
-    Vector2u newPosition;
-    newPosition.x = Random::getRandomInteger(0, _BoardWidthPixel - NPC->getSize().x);
-    newPosition.y = Random::getRandomInteger(0, _BoardHeightPixel - NPC->getSize().y);
-
-    NPC->setPosition(newPosition);
-    _NPCs.push_back(NPC);
-}
 
 /**
  * @brief Indicate if player and NPC are close
@@ -496,5 +486,4 @@ bool Screen::areClose(const Player &player, const NPC &npc, const uint32_t thres
 
 Screen::~Screen()
 {
-    delete _View;
 }

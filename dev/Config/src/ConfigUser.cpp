@@ -1,4 +1,5 @@
 #include "ConfigUser.hpp"
+#include <unordered_map>
 
 static inline constexpr char           DEFAULT_WINDOW_TITLE[] = "Empty title";
 static inline constexpr GameDifficulty DEFAULT_DIFFICULTY     = GameDifficulty::EASY;
@@ -16,7 +17,7 @@ static string toLowerCase(const string& str)
 }
 
 /* Mapping from lowercase string to Keyboard::Key */
-static const unordered_map<std::string, Keyboard::Key> keyMapping =
+static const unordered_map<string, Keyboard::Key> keyMapping =
 {
     {toLowerCase("A"), Keyboard::Key::A},
     {toLowerCase("B"), Keyboard::Key::B},
@@ -120,7 +121,7 @@ namespace ConfigUser
                 else
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << upKeyString << "'. Using default." << std::endl;
+                    cerr << "Warning: Unknown key '" << upKeyString << "'. Using default." << endl;
                     upKey    = DEFAULT_UP_KEY;
                     toReturn = false;
                 }
@@ -128,7 +129,7 @@ namespace ConfigUser
             catch (const exception& e)
             {
                 /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse upKey. Using default." << std::endl;
+                cerr << "Error: Failed to parse upKey. Using default." << endl;
                 upKey    = DEFAULT_UP_KEY;
                 toReturn = false;
             }
@@ -145,7 +146,7 @@ namespace ConfigUser
                 else
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << downKeyString << "'. Using default." << std::endl;
+                    cerr << "Warning: Unknown key '" << downKeyString << "'. Using default." << endl;
                     downKey  = DEFAULT_DOWN_KEY;
                     toReturn = false;
                 }
@@ -153,7 +154,7 @@ namespace ConfigUser
             catch (const exception& e)
             {
                 /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse downKey. Using default." << std::endl;
+                cerr << "Error: Failed to parse downKey. Using default." << endl;
                 downKey  = DEFAULT_DOWN_KEY;
                 toReturn = false;
             }
@@ -170,7 +171,7 @@ namespace ConfigUser
                 else
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << leftKeyString << "'. Using default." << std::endl;
+                    cerr << "Warning: Unknown key '" << leftKeyString << "'. Using default." << endl;
                     leftKey  = DEFAULT_LEFT_KEY;
                     toReturn = false;
                 }
@@ -178,7 +179,7 @@ namespace ConfigUser
             catch (const exception& e)
             {
                 /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse leftKey. Using default." << std::endl;
+                cerr << "Error: Failed to parse leftKey. Using default." << endl;
                 leftKey  = DEFAULT_LEFT_KEY;
                 toReturn = false;
             }
@@ -195,7 +196,7 @@ namespace ConfigUser
                 else
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << rightKeyString << "'. Using default." << std::endl;
+                    cerr << "Warning: Unknown key '" << rightKeyString << "'. Using default." << endl;
                     rightKey = DEFAULT_RIGHT_KEY;
                     toReturn = false;
                 }
@@ -203,7 +204,7 @@ namespace ConfigUser
             catch (const exception& e)
             {
                 /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse rightKey. Using default." << std::endl;
+                cerr << "Error: Failed to parse rightKey. Using default." << endl;
                 rightKey = DEFAULT_UP_KEY;
                 toReturn = false;
             }
@@ -220,7 +221,7 @@ namespace ConfigUser
                 else
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << pauseKeyString << "'. Using default." << std::endl;
+                    cerr << "Warning: Unknown key '" << pauseKeyString << "'. Using default." << endl;
                     pauseKey = DEFAULT_PAUSE_KEY;
                     toReturn = false;
                 }
@@ -228,7 +229,7 @@ namespace ConfigUser
             catch (const exception& e)
             {
                 /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse pauseKey. Using default." << std::endl;
+                cerr << "Error: Failed to parse pauseKey. Using default." << endl;
                 pauseKey = DEFAULT_PAUSE_KEY;
                 toReturn = false;
             }

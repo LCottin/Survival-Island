@@ -1,6 +1,6 @@
-#include "ConfigData.hpp"
+#include "ConfigUserPub.hpp"
 
-const string GameDifficultyString[static_cast<uint32_t>(GameDifficulty::COUNT)]
+const string GameDifficultyString[static_cast<uint32_t>(GameDifficulty::COUNT)] =
 {
     [static_cast<uint32_t>(GameDifficulty::EASY)]   = "EASY",
     [static_cast<uint32_t>(GameDifficulty::MEDIUM)] = "MEDIUM",

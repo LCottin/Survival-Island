@@ -1,4 +1,4 @@
-#include "NPCData.hpp"
+#include "NPCPub.hpp"
 
 const string NPCColorsString[static_cast<uint32_t>(NPCColors::COUNT)] =
 {

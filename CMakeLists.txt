@@ -32,37 +32,44 @@ set(RELEASE_COMPILE_OPTIONS "-O3" "-Werror")
 set(SOURCES
     ${DEV_DIR}/main.cpp
     ${DEV_DIR}/Character/src/Character.cpp
-    ${DEV_DIR}/Character/src/CharacterData.cpp
+    ${DEV_DIR}/Character/src/CharacterPrv.cpp
     ${DEV_DIR}/Player/src/Player.cpp
+    ${DEV_DIR}/Game/src/Game.cpp
     ${DEV_DIR}/NPC/src/NPC.cpp
-    ${DEV_DIR}/NPC/src/NPCData.cpp
+    ${DEV_DIR}/NPC/src/NPCPub.cpp
     ${DEV_DIR}/Board/src/Board.cpp
     ${DEV_DIR}/Screen/src/Screen.cpp
     ${DEV_DIR}/Random/src/Random.cpp
-    ${DEV_DIR}/Config/src/ConfigUser.cpp
     ${DEV_DIR}/Config/src/ConfigDev.cpp
-    ${DEV_DIR}/Config/src/ConfigData.cpp
+    ${DEV_DIR}/Config/src/ConfigUser.cpp
+    ${DEV_DIR}/Config/src/ConfigUserPub.cpp
     ${DEV_DIR}/WindowView/src/WindowView.cpp
 )
 
 # Collect header files
 set(HEADERS
     ${DEV_DIR}/Character/include/Character.hpp
-    ${DEV_DIR}/Character/include/CharacterData.hpp
+    ${DEV_DIR}/Character/include/CharacterPub.hpp
+    ${DEV_DIR}/Character/include/CharacterPrv.hpp
     ${DEV_DIR}/Player/include/Player.hpp
+    ${DEV_DIR}/Player/include/PlayerPrv.hpp
+    ${DEV_DIR}/Game/include/Game.hpp
     ${DEV_DIR}/NPC/include/NPC.hpp
-    ${DEV_DIR}/NPC/include/NPCData.hpp
+    ${DEV_DIR}/NPC/include/NPCPub.hpp
+    ${DEV_DIR}/NPC/include/NPCPrv.hpp
     ${DEV_DIR}/Board/include/Board.hpp
-    ${DEV_DIR}/Board/include/BoardData.hpp
+    ${DEV_DIR}/Board/include/BoardPub.hpp
     ${DEV_DIR}/Board/include/TileType.hpp
     ${DEV_DIR}/Screen/include/Screen.hpp
-    ${DEV_DIR}/Screen/include/ScreenData.hpp
+    ${DEV_DIR}/Screen/include/ScreenPub.hpp
+    ${DEV_DIR}/Screen/include/ScreenPrv.hpp
     ${DEV_DIR}/Random/include/Random.hpp
-    ${DEV_DIR}/Config/include/ConfigUser.hpp
     ${DEV_DIR}/Config/include/ConfigDev.hpp
-    ${DEV_DIR}/Config/include/ConfigData.hpp
+    ${DEV_DIR}/Config/include/ConfigUser.hpp
+    ${DEV_DIR}/Config/include/ConfigUserPub.hpp
     ${DEV_DIR}/FastNoise/include/FastNoiseLite.hpp
     ${DEV_DIR}/WindowView/include/WindowView.hpp
+    ${DEV_DIR}/WindowView/include/WindowViewPub.hpp
 )
 
 # Set the output directory for the binary
@@ -83,6 +90,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/Player/include
     ${DEV_DIR}/Board/include
     ${DEV_DIR}/Screen/include
+    ${DEV_DIR}/Game/include
     ${DEV_DIR}/NPC/include
     ${DEV_DIR}/Random/include
     ${DEV_DIR}/Config/include

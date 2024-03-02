@@ -1,10 +1,13 @@
 #include "Board.hpp"
+#include "BoardPub.hpp"
+#include "FastNoiseLite.hpp"
+#include "Random.hpp"
 
 Board::Board()
 {
-    _WidthInTile  = BOARD_WIDTH_TILE;
-    _HeightInTile = BOARD_HEIGHT_TILE;
-    _SizeInTile   = BOARD_SIZE_TILE;
+    _WidthInTile  = BoardSizeInTile::WIDTH;
+    _HeightInTile = BoardSizeInTile::HEIGHT;
+    _SizeInTile   = BoardSizeInTile::SIZE;
 
     _Map.resize(_WidthInTile, vector<TileTypeBackground>(_HeightInTile));
 

@@ -1,4 +1,6 @@
 #include "Player.hpp"
+#include "PlayerPrv.hpp"
+#include "ConfigDev.hpp"
 
 /* Constructors */
 Player::Player() : Character()
@@ -31,10 +33,10 @@ void Player::_initPlayer()
     /* Initialize frame sequences for each direction */
     for (size_t i = 0; i < FRAMES_PER_DIRECTION; i++)
     {
-        _UpFrames.push_back(   IntRect(i * PLAYER_WIDTH, 0 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
-        _RightFrames.push_back(IntRect(i * PLAYER_WIDTH, 1 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
-        _LeftFrames.push_back( IntRect(i * PLAYER_WIDTH, 2 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
-        _DownFrames.push_back( IntRect(i * PLAYER_WIDTH, 3 * PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT));
+        _UpFrames.push_back(   IntRect(i * PlayerSize::WIDTH, 0 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
+        _RightFrames.push_back(IntRect(i * PlayerSize::WIDTH, 1 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
+        _LeftFrames.push_back( IntRect(i * PlayerSize::WIDTH, 2 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
+        _DownFrames.push_back( IntRect(i * PlayerSize::WIDTH, 3 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
     }
 
     /* Set initial animation state */
@@ -42,7 +44,7 @@ void Player::_initPlayer()
     _CurrentFrameIndex = 0;
 
     _Scale = Vector2u(3U, 3U);
-    _Size  = Vector2u(PLAYER_WIDTH * _Scale.x, PLAYER_HEIGHT * _Scale.y);
+    _Size  = Vector2u(PlayerSize::WIDTH * _Scale.x, PlayerSize::HEIGHT * _Scale.y);
 
     _Sprite.scale(static_cast<Vector2f>(_Scale));
     _Sprite.setTexture(_Texture);
