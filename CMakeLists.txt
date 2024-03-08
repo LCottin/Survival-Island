@@ -54,6 +54,8 @@ set(HEADERS
     ${DEV_DIR}/Player/include/Player.hpp
     ${DEV_DIR}/Player/include/PlayerPrv.hpp
     ${DEV_DIR}/Game/include/Game.hpp
+    ${DEV_DIR}/Game/include/GamePub.hpp
+    ${DEV_DIR}/Game/include/GamePrv.hpp
     ${DEV_DIR}/NPC/include/NPC.hpp
     ${DEV_DIR}/NPC/include/NPCPub.hpp
     ${DEV_DIR}/NPC/include/NPCPrv.hpp
@@ -61,7 +63,6 @@ set(HEADERS
     ${DEV_DIR}/Board/include/BoardPub.hpp
     ${DEV_DIR}/Board/include/TileType.hpp
     ${DEV_DIR}/Screen/include/Screen.hpp
-    ${DEV_DIR}/Screen/include/ScreenPub.hpp
     ${DEV_DIR}/Screen/include/ScreenPrv.hpp
     ${DEV_DIR}/Random/include/Random.hpp
     ${DEV_DIR}/Config/include/ConfigDev.hpp
