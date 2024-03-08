@@ -8,7 +8,7 @@
 #include "Player.hpp"
 #include "NPC.hpp"
 #include "WindowView.hpp"
-#include "ScreenPub.hpp"
+#include "GamePub.hpp"
 
 using namespace std;
 using namespace sf;
@@ -28,7 +28,6 @@ class Screen
         uint32_t                 _ViewHeightPixel;
 
         string                   _WindowTitle;
-        GameStatus               _GameStatus;
 
         RectangleShape           _InfoPanel;
         Font                     _Font;
@@ -48,8 +47,6 @@ class Screen
         void _drawNPCs();
         void _drawIndicators();
         void _drawInfoPanel();
-        void _HandleEvents();
-        void _HandleInteractions();
 
     public:
         Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, const string &title);
@@ -57,12 +54,13 @@ class Screen
         uint32_t getWidthPixel()  const;
         uint32_t getHeightPixel() const;
         uint32_t getSizePixel()   const;
+        bool     isWindowOpen()   const;
 
         void setWindowTitle(const string &title);
         void setBoard(Board &board);
 
-        void render();
-        bool areClose(const Player &player, const NPC &npc, const uint32_t threshold) const;
+        void handleAllEvents(sharedEvents &sharedEvent);
+        void drawAll();
 
         ~Screen();
 };
