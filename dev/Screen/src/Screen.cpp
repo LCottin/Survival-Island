@@ -5,8 +5,7 @@
 #include "Random.hpp"
 #include "WindowViewPub.hpp"
 
-Screen::Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, const string &title) :
-    _Board(board), _Player(player), _NPCs(NPClist)
+Screen::Screen(const string &title)
 {
     _TileSize    = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
     _WindowTitle = title;
@@ -16,11 +15,7 @@ Screen::Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, c
         throw runtime_error("Failed to load tileset image.");
     }
 
-    _BoardWidthPixel  = _Board.getWidthInTile() * _TileSize.x;
-    _BoardHeightPixel = _Board.getHeightInTile() * _TileSize.y;
-    _BoardSizePixel   = _BoardWidthPixel * _BoardHeightPixel;
-
-    _View            = make_unique<WindowView>(_Board, _Player);
+    _View            = make_unique<WindowView>();
     _ViewWidthPixel  = _View->getWidthInPixel() + VIEW_PANEL_WIDTH_PIXEL;
     _ViewHeightPixel = _View->getHeightInPixel();
 
@@ -47,22 +42,24 @@ Screen::Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, c
 /**
  * @brief Draw the board on the screen
  *
+ * @param board Reference to the board
  */
-void Screen::_drawBoard()
+void Screen::_drawBoard(const Board &board)
 {
-    _Window.draw(_Board.getVertices(), &_TilesetTexture);
+    _Window.draw(board.getVertices(), &_TilesetTexture);
 }
 
 /**
  * @brief Draw the player on the screen
  *
+ * @param player Reference to the player
  */
-void Screen::_drawPlayer()
+void Screen::_drawPlayer(Player &player)
 {
-    Sprite& sprite = _Player.getSprite();
+    Sprite& sprite = player.getSprite();
 
     /* Draw player on the screen only if alive, otherwise move sprite away */
-    if (_Player.isAlive() == false)
+    if (player.isAlive() == false)
     {
         sprite.setPosition(-1000.0f, -1000.0f);
     }
@@ -73,10 +70,11 @@ void Screen::_drawPlayer()
 /**
  * @brief Draw the NPCs on the screen
  *
+ * @param NPClist Reference to the NPCs
  */
-void Screen::_drawNPCs()
+void Screen::_drawNPCs(const vector<shared_ptr<NPC>> &NPClist)
 {
-    for (auto &npc : _NPCs)
+    for (auto &npc : NPClist)
     {
         /* Draw npc only if alive */
         if (npc->isAlive() == true)
@@ -89,16 +87,18 @@ void Screen::_drawNPCs()
 /**
  * @brief Draw indicators on the screen
  *
+ * @param player Reference to the player
+ * @param NPClist Reference to the NPCs
  */
-void Screen::_drawIndicators()
+void Screen::_drawIndicators(Player &player, const vector<shared_ptr<NPC>> &NPClist)
 {
-    if (_Player.isAlive() == true)
+    if (player.isAlive() == true)
     {
-        _Player.updateHealthBar();
-        _Window.draw(_Player.getHealthBar());
+        player.updateHealthBar();
+        _Window.draw(player.getHealthBar());
     }
 
-    for (auto &npc : _NPCs)
+    for (auto &npc : NPClist)
     {
         /* Draw health bar is relevant */
         if (npc->isAlive() == true)
@@ -112,11 +112,12 @@ void Screen::_drawIndicators()
 /**
  * @brief Draw information panel on the screen
  *
+ * @param player Reference to the player
  */
-void Screen::_drawInfoPanel()
+void Screen::_drawInfoPanel(const Player &player)
 {
     Vector2u viewPos     = _View->getPosition();
-    String textToDisplay = "Player\nHealth:\n" + to_string(_Player.getHealth()) + "\n\n\n\n";
+    String textToDisplay = "Player\nHealth:\n" + to_string(player.getHealth()) + "\n\n\n\n";
     textToDisplay       += "Difficulty:\n" + GameDifficultyString[static_cast<uint32_t>(ConfigUser::difficulty)];
 
     _InfoPanel.setPosition(viewPos.x + _View->getWidthInPixel() - VIEW_PANEL_WIDTH_PIXEL + 0U, viewPos.y);
@@ -156,31 +157,28 @@ void Screen::handleAllEvents(sharedEvents &sharedEvent)
         /* Move player ... */
         if (event.type == Event::KeyPressed)
         {
-            if (_Player.isAlive() == true)
+            /* ... left */
+            if (Keyboard::isKeyPressed(ConfigUser::leftKey))
             {
-                /* ... left */
-                if (Keyboard::isKeyPressed(ConfigUser::leftKey))
-                {
-                    sharedEvent.movePlayerLeft = true;
-                }
+                sharedEvent.movePlayerLeft = true;
+            }
 
-                /* ... right */
-                if (Keyboard::isKeyPressed(ConfigUser::rightKey))
-                {
-                    sharedEvent.movePlayerRight = true;
-                }
+            /* ... right */
+            if (Keyboard::isKeyPressed(ConfigUser::rightKey))
+            {
+                sharedEvent.movePlayerRight = true;
+            }
 
-                /* ... up */
-                if (Keyboard::isKeyPressed(ConfigUser::upKey))
-                {
-                    sharedEvent.movePlayerUp = true;
-                }
+            /* ... up */
+            if (Keyboard::isKeyPressed(ConfigUser::upKey))
+            {
+                sharedEvent.movePlayerUp = true;
+            }
 
-                /* ... down */
-                if (Keyboard::isKeyPressed(ConfigUser::downKey))
-                {
-                    sharedEvent.movePlayerDown = true;
-                }
+            /* ... down */
+            if (Keyboard::isKeyPressed(ConfigUser::downKey))
+            {
+                sharedEvent.movePlayerDown = true;
             }
         }
     }
@@ -216,30 +214,24 @@ void Screen::setWindowTitle(const string &title)
     _Window.setTitle(_WindowTitle);
 }
 
-/**
- * @brief Change the board to display
- *
- * @param board The new board to display
- */
-void Screen::setBoard(Board &board)
-{
-    _Board = board;
-}
 
 /**
  * @brief Draw all objects on the window
  *
+ * @param board Reference to the board
+ * @param player Reference to the player
+ * @param NPClist  Reference to the NPCs
  */
-void Screen::drawAll()
+void Screen::drawAll(const Board &board, Player &player, const vector<shared_ptr<NPC>> &NPClist)
 {
     _Window.clear();
-    _View->update();
+    _View->update(board, player);
     _Window.setView(_View->getView());
-    _drawBoard();
-    _drawPlayer();
-    _drawNPCs();
-    _drawIndicators();
-    _drawInfoPanel();
+    _drawBoard(board);
+    _drawPlayer(player);
+    _drawNPCs(NPClist);
+    _drawIndicators(player, NPClist);
+    _drawInfoPanel(player);
     _Window.display();
 }
 

@@ -17,11 +17,9 @@ class WindowView
         uint32_t  _HeightInPixel;
         uint32_t  _SizeInPixel;
         View      _View;
-        Board    &_Board;
-        Player   &_Player;
 
     public:
-        WindowView(Board &board, Player &player);
+        WindowView();
 
         View&    getView();
         Vector2u getViewSize() const;
@@ -31,7 +29,7 @@ class WindowView
         Vector2u getPosition() const;
         Vector2u getCenterPosition() const;
 
-        void     update();
+        void update(const Board &board, const Player &player);
 };
 
 #endif

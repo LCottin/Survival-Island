@@ -11,15 +11,13 @@ Game::Game(const string &playerName)
 
     _Player = make_shared<Player>(playerName);
     _Board  = make_shared<Board>();
-
-    _NPCs = make_shared<vector<shared_ptr<NPC>>>(2U * static_cast<uint32_t>(ConfigUser::difficulty));
+    _Screen = make_shared<Screen>(ConfigUser::windowTitle);
+    _NPCs   = make_shared<vector<shared_ptr<NPC>>>(2U * static_cast<uint32_t>(ConfigUser::difficulty));
 
     for (size_t i = 0; i < _NPCs->size(); i++)
     {
         _NPCs->at(i) = make_shared<NPC>("NPC_" + to_string(i), NPCColorsString[Random::getRandomInteger(0, static_cast<uint32_t>(NPCColors::COUNT) - 1U)]);
     }
-
-    _Screen = make_shared<Screen>(*_Board, *_Player, *_NPCs, ConfigUser::windowTitle);
 
     _Board->computeVertices(ConfigDev::tileSize, _Screen->getImageSize());
     _BoardSizeInPixel  = Vector2u(_Board->getWidthInTile() * ConfigDev::tileSize, _Board->getHeightInTile() * ConfigDev::tileSize);
@@ -296,7 +294,7 @@ void Game::_Draw()
 {
     if (_GameStatus == GameStatus::PLAY)
     {
-        _Screen->drawAll();
+        _Screen->drawAll(*_Board, *_Player, *_NPCs);
     }
 }
 

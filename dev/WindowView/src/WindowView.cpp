@@ -2,24 +2,24 @@
 #include "WindowViewPub.hpp"
 #include "ConfigDev.hpp"
 
-WindowView::WindowView(Board &board, Player &player) :
-    _Board(board), _Player(player)
+WindowView::WindowView()
 {
     _WidthInPixel  = ViewSizeInTile::WIDTH  * ConfigDev::tileSize;
     _HeightInPixel = ViewSizeInTile::HEIGHT * ConfigDev::tileSize;
     _SizeInPixel   = ViewSizeInTile::SIZE   * ConfigDev::tileSize;
-    _View         = View(FloatRect(Vector2f(0.0f, 0.0f), Vector2f(_WidthInPixel, _HeightInPixel)));
-    update();
+    _View          = View(FloatRect(Vector2f(0.0f, 0.0f), Vector2f(_WidthInPixel, _HeightInPixel)));
 }
 
 /**
  * @brief Update the view to focus on player when moving
  *
+ * @param board Reference to the board
+ * @param player Reference to the player
  */
-void WindowView::update()
+void WindowView::update(const Board &board, const Player &player)
 {
-    const Vector2u playerPos = _Player.getPosition();
-    const Vector2u boardSize = static_cast<const Vector2u>(_Board.getDimensionInTile());
+    const Vector2u playerPos = player.getPosition();
+    const Vector2u boardSize = static_cast<const Vector2u>(board.getDimensionInTile());
     Vector2u newCenter       = playerPos;
 
     /* Calculate the half size of the view */

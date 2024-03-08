@@ -33,32 +33,28 @@ class Screen
         Font                     _Font;
         Text                     _PanelText;
 
-        Board                   &_Board;
-        Player                  &_Player;
         unique_ptr<WindowView>   _View;
-        vector<shared_ptr<NPC>> &_NPCs;
 
         Clock _PauseCooldown;
         Time  _PauseTimer;
 
         void _computeVertices();
-        void _drawBoard();
-        void _drawPlayer();
-        void _drawNPCs();
-        void _drawIndicators();
-        void _drawInfoPanel();
+        void _drawBoard(const Board &board);
+        void _drawPlayer(Player &player);
+        void _drawNPCs(const vector<shared_ptr<NPC>> &NPClist);
+        void _drawIndicators(Player &player, const vector<shared_ptr<NPC>> &NPClist);
+        void _drawInfoPanel(const Player &player);
 
     public:
-        Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, const string &title);
+        Screen(const string &title);
 
         Vector2u getImageSize()   const;
         bool     isWindowOpen()   const;
 
         void setWindowTitle(const string &title);
-        void setBoard(Board &board);
 
         void handleAllEvents(sharedEvents &sharedEvent);
-        void drawAll();
+        void drawAll(const Board &board, Player &player, const vector<shared_ptr<NPC>> &NPClist);
 
         ~Screen();
 };
