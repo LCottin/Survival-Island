@@ -6,7 +6,6 @@ WindowView::WindowView()
 {
     _WidthInPixel  = ViewSizeInTile::WIDTH  * ConfigDev::tileSize;
     _HeightInPixel = ViewSizeInTile::HEIGHT * ConfigDev::tileSize;
-    _SizeInPixel   = ViewSizeInTile::SIZE   * ConfigDev::tileSize;
     _View          = View(FloatRect(Vector2f(0.0f, 0.0f), Vector2f(_WidthInPixel, _HeightInPixel)));
 }
 
@@ -64,16 +63,6 @@ View& WindowView::getView()
 }
 
 /**
- * @brief Return the size of the view
- *
- * @return Vector2u of the size
- */
-Vector2u WindowView::getViewSize() const
-{
-    return static_cast<Vector2u>(_View.getSize());
-}
-
-/**
  * @brief Return the width of the view in pixel
  *
  */
@@ -89,15 +78,6 @@ uint32_t WindowView::getWidthInPixel() const
 uint32_t WindowView::getHeightInPixel() const
 {
     return _HeightInPixel;
-}
-
-/**
- * @brief Return the size of the view in pixel
- *
- */
-uint32_t WindowView::getSizeInPixel() const
-{
-    return _SizeInPixel;
 }
 
 /**

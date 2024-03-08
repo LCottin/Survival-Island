@@ -7,7 +7,6 @@ Board::Board()
 {
     _WidthInTile  = BoardSizeInTile::WIDTH;
     _HeightInTile = BoardSizeInTile::HEIGHT;
-    _SizeInTile   = BoardSizeInTile::SIZE;
 
     _Map.resize(_WidthInTile, vector<TileTypeBackground>(_HeightInTile));
     _Vertices.setPrimitiveType(PrimitiveType::Quads);
@@ -113,7 +112,7 @@ void Board::_initMap()
 void Board::computeVertices(const uint32_t tileSize, const Vector2u &imageSizeInPixel)
 {
     _Vertices.clear();
-    _Vertices.resize(_SizeInTile * 4U);
+    _Vertices.resize(_WidthInTile * _HeightInTile * 4U);
 
     for (size_t j = 0; j < _WidthInTile; j++)
     {
@@ -181,16 +180,6 @@ uint32_t Board::getWidthInTile() const
 uint32_t Board::getHeightInTile() const
 {
     return _HeightInTile;
-}
-
-/**
- * @brief Get the Board Size in tile object
- *
- * @return uint32_t The board size in tile
- */
-uint32_t Board::getSizeInTile() const
-{
-    return _SizeInTile;
 }
 
 /**

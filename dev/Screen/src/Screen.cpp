@@ -24,7 +24,6 @@ Screen::Screen(const string &title)
 
     _Window.create(VideoMode(_ViewWidthPixel, _ViewHeightPixel), _WindowTitle, Style::Titlebar | Style::Close);
     _Window.setFramerateLimit(ConfigDev::framerateLimit);
-    _Window.setView(_View->getView());
 
     _InfoPanel.setSize(Vector2f(VIEW_PANEL_WIDTH_PIXEL, _ViewHeightPixel));
     _InfoPanel.setFillColor(Color(220, 200, 180)); /* Light brown */

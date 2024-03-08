@@ -16,7 +16,6 @@ class Board
     private:
         uint32_t _WidthInTile;
         uint32_t _HeightInTile;
-        uint32_t _SizeInTile;
 
         vector<vector<TileTypeBackground>> _Map;
 
@@ -30,7 +29,6 @@ class Board
         int32_t      getTile(const uint32_t x, const uint32_t y) const;
         uint32_t     getWidthInTile() const;
         uint32_t     getHeightInTile() const;
-        uint32_t     getSizeInTile() const;
         Vector2i     getDimensionInTile() const;
         const VertexArray &getVertices() const;
 

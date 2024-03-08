@@ -23,7 +23,6 @@ class Screen
 
         uint32_t                 _BoardWidthPixel;
         uint32_t                 _BoardHeightPixel;
-        uint32_t                 _BoardSizePixel;
         uint32_t                 _ViewWidthPixel;
         uint32_t                 _ViewHeightPixel;
 
