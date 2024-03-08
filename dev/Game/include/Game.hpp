@@ -18,9 +18,7 @@ class Game
         shared_ptr<Screen>                  _Screen;
         shared_ptr<vector<shared_ptr<NPC>>> _NPCs;
 
-        Vector2u _ScreenSizeInPixel;
-        Vector2u _BoardSizeInPixel;
-
+        Vector2u   _BoardSizeInPixel;
         GameStatus _GameStatus;
 
         void _ResetSharedEvent(sharedEvents &sharedEvent);

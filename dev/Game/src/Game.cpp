@@ -21,7 +21,7 @@ Game::Game(const string &playerName)
 
     _Screen = make_shared<Screen>(*_Board, *_Player, *_NPCs, ConfigUser::windowTitle);
 
-    _ScreenSizeInPixel = Vector2u(_Screen->getWidthPixel(), _Screen->getHeightPixel());
+    _Board->computeVertices(ConfigDev::tileSize, _Screen->getImageSize());
     _BoardSizeInPixel  = Vector2u(_Board->getWidthInTile() * ConfigDev::tileSize, _Board->getHeightInTile() * ConfigDev::tileSize);
 }
 

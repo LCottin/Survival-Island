@@ -10,6 +10,7 @@ Board::Board()
     _SizeInTile   = BoardSizeInTile::SIZE;
 
     _Map.resize(_WidthInTile, vector<TileTypeBackground>(_HeightInTile));
+    _Vertices.setPrimitiveType(PrimitiveType::Quads);
 
     _initMap();
 }
@@ -106,6 +107,47 @@ void Board::_initMap()
 }
 
 /**
+ * @brief Computes board vertices
+ *
+ */
+void Board::computeVertices(const uint32_t tileSize, const Vector2u &imageSizeInPixel)
+{
+    _Vertices.clear();
+    _Vertices.resize(_SizeInTile * 4U);
+
+    for (size_t j = 0; j < _WidthInTile; j++)
+    {
+        for (size_t i = 0; i < _HeightInTile; i++)
+        {
+            const uint32_t tileIndex = static_cast<uint32_t>(_Map[i][j]);
+
+            /* Calculate the position of the current tile in the vertex array */
+            const float_t x = static_cast<const float_t>(i * tileSize);
+            const float_t y = static_cast<const float_t>(j * tileSize);
+
+            /* Get a pointer to the current tile quad */
+            Vertex* quad = &_Vertices[(i + j * _WidthInTile) * 4U];
+
+            /* Define its 4 corners */
+            quad[0].position = Vector2f(x           , y);
+            quad[1].position = Vector2f(x + tileSize, y);
+            quad[2].position = Vector2f(x + tileSize, y + tileSize);
+            quad[3].position = Vector2f(x           , y + tileSize);
+
+            /* Calculate coordinate of the index in the image */
+            const float_t tile_x = static_cast<const float_t>((tileIndex % (imageSizeInPixel.x / tileSize)) * tileSize);
+            const float_t tile_y = static_cast<const float_t>((tileIndex / (imageSizeInPixel.y / tileSize)) * tileSize);
+
+            /* Define its 4 texture coordinates */
+            quad[0].texCoords = Vector2f(tile_x           , tile_y);
+            quad[1].texCoords = Vector2f(tile_x + tileSize, tile_y);
+            quad[2].texCoords = Vector2f(tile_x + tileSize, tile_y + tileSize);
+            quad[3].texCoords = Vector2f(tile_x           , tile_y + tileSize);
+        }
+    }
+}
+
+/**
  * @brief Get the tile object at the given position
  *
  * @param x Position on the X axis
@@ -159,6 +201,15 @@ uint32_t Board::getSizeInTile() const
 Vector2i Board::getDimensionInTile() const
 {
     return Vector2i(_WidthInTile, _HeightInTile);
+}
+
+/**
+ * @brief Gives a reference to the board vertices
+ *
+ */
+const VertexArray& Board::getVertices() const
+{
+    return _Vertices;
 }
 
 /**

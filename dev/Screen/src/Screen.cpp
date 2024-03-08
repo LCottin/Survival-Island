@@ -42,54 +42,6 @@ Screen::Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, c
     _PanelText.setFont(_Font);
     _PanelText.setCharacterSize(20U);
     _PanelText.setFillColor(Color(80, 60, 40)); /* Dark Brown */
-
-    _Vertices.setPrimitiveType(PrimitiveType::Quads);
-    _computeVertices();
-}
-
-void Screen::_computeVertices()
-{
-    _Vertices.clear();
-    _Vertices.resize(_Board.getSizeInTile() * 4U);
-
-    const uint32_t boardWidth  = _Board.getWidthInTile();
-    const uint32_t boardHeight = _Board.getHeightInTile();
-
-    for (size_t j = 0; j < boardHeight; j++)
-    {
-        for (size_t i = 0; i < boardWidth; i++)
-        {
-            const int32_t tileIndex = _Board.getTile(i, j);
-
-            if (tileIndex == -1)
-            {
-                throw runtime_error("Index out of bound when computing vertices.");
-            }
-
-            /* Calculate the position of the current tile in the vertex array */
-            const float_t x = static_cast<const float_t>(i * _TileSize.x);
-            const float_t y = static_cast<const float_t>(j * _TileSize.y);
-
-            /* Get a pointer to the current tile quad */
-            Vertex* quad = &_Vertices[(i + j * boardWidth) * 4U];
-
-            /* Define its 4 corners */
-            quad[0].position = Vector2f(x              , y);
-            quad[1].position = Vector2f(x + _TileSize.x, y);
-            quad[2].position = Vector2f(x + _TileSize.x, y + _TileSize.y);
-            quad[3].position = Vector2f(x              , y + _TileSize.y);
-
-            /* Calculate coordinate of the index in the image */
-            const float_t tile_x = static_cast<const float_t>((tileIndex % (ImageSizeInPixel::WIDTH / _TileSize.x)) * _TileSize.x);
-            const float_t tile_y = static_cast<const float_t>((tileIndex / (ImageSizeInPixel::HEIGHT / _TileSize.y)) * _TileSize.y);
-
-            /* Define its 4 texture coordinates */
-            quad[0].texCoords = Vector2f(tile_x              , tile_y);
-            quad[1].texCoords = Vector2f(tile_x + _TileSize.x, tile_y);
-            quad[2].texCoords = Vector2f(tile_x + _TileSize.x, tile_y + _TileSize.y);
-            quad[3].texCoords = Vector2f(tile_x              , tile_y + _TileSize.y);
-        }
-    }
 }
 
 /**
@@ -98,7 +50,7 @@ void Screen::_computeVertices()
  */
 void Screen::_drawBoard()
 {
-    _Window.draw(_Vertices, &_TilesetTexture);
+    _Window.draw(_Board.getVertices(), &_TilesetTexture);
 }
 
 /**
@@ -235,33 +187,12 @@ void Screen::handleAllEvents(sharedEvents &sharedEvent)
 }
 
 /**
- * @brief Get the Screen Width in pixel object
+ * @brief Return image size
  *
- * @return uint32_t The screen width in pixel
  */
-uint32_t Screen::getWidthPixel() const
+Vector2u Screen::getImageSize() const
 {
-    return _BoardWidthPixel;
-}
-
-/**
- * @brief Get the Screen Height in pixel object
- *
- * @return uint32_t The screen height in pixel
- */
-uint32_t Screen::getHeightPixel() const
-{
-    return _BoardHeightPixel;
-}
-
-/**
- * @brief Get the Screen Size in pixel object
- *
- * @return uint32_t The screen size in pixel
- */
-uint32_t Screen::getSizePixel() const
-{
-    return _BoardSizePixel;
+    return Vector2u(ImageSizeInPixel::WIDTH, ImageSizeInPixel::HEIGHT);
 }
 
 /**
@@ -293,7 +224,6 @@ void Screen::setWindowTitle(const string &title)
 void Screen::setBoard(Board &board)
 {
     _Board = board;
-    _computeVertices();
 }
 
 /**

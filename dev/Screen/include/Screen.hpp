@@ -51,9 +51,7 @@ class Screen
     public:
         Screen(Board &board, Player &player, vector<shared_ptr<NPC>> &NPClist, const string &title);
 
-        uint32_t getWidthPixel()  const;
-        uint32_t getHeightPixel() const;
-        uint32_t getSizePixel()   const;
+        Vector2u getImageSize()   const;
         bool     isWindowOpen()   const;
 
         void setWindowTitle(const string &title);

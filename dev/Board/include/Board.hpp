@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "TileType.hpp"
 
@@ -19,20 +20,24 @@ class Board
 
         vector<vector<TileTypeBackground>> _Map;
 
+        VertexArray _Vertices;
+
         void _initMap();
 
     public:
         Board();
 
-        int32_t  getTile(const uint32_t x, const uint32_t y) const;
-        uint32_t getWidthInTile() const;
-        uint32_t getHeightInTile() const;
-        uint32_t getSizeInTile() const;
-        Vector2i getDimensionInTile() const;
+        int32_t      getTile(const uint32_t x, const uint32_t y) const;
+        uint32_t     getWidthInTile() const;
+        uint32_t     getHeightInTile() const;
+        uint32_t     getSizeInTile() const;
+        Vector2i     getDimensionInTile() const;
+        const VertexArray &getVertices() const;
 
         bool setTile(const uint32_t x, const uint32_t y, const TileTypeBackground tile);
 
         bool fillMap(const TileTypeBackground value);
+        void computeVertices(const uint32_t tileSize, const Vector2u &imageSizeInPixel);
 
         ~Board();
 };
