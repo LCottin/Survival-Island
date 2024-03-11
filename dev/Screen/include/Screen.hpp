@@ -7,8 +7,9 @@
 #include "Board.hpp"
 #include "Player.hpp"
 #include "NPC.hpp"
-#include "WindowView.hpp"
 #include "GamePub.hpp"
+#include "BoardView.hpp"
+#include "InfoPanel.hpp"
 
 using namespace std;
 using namespace sf;
@@ -20,18 +21,13 @@ class Screen
         Vector2u                 _TileSize;
         Texture                  _TilesetTexture;
 
-        uint32_t                 _BoardWidthPixel;
-        uint32_t                 _BoardHeightPixel;
-        uint32_t                 _ViewWidthPixel;
-        uint32_t                 _ViewHeightPixel;
+        uint32_t                 _ScreenWidthInPixel;
+        uint32_t                 _ScreenHeightInPixel;
 
         string                   _WindowTitle;
 
-        RectangleShape           _InfoPanel;
-        Font                     _Font;
-        Text                     _PanelText;
-
-        unique_ptr<WindowView>   _View;
+        unique_ptr<BoardView>  _BoardView;
+        unique_ptr<InfoPanel>  _InfoPanel;
 
         Clock _PauseCooldown;
         Time  _PauseTimer;
@@ -41,15 +37,13 @@ class Screen
         void _drawPlayer(Player &player);
         void _drawNPCs(const vector<shared_ptr<NPC>> &NPClist);
         void _drawIndicators(Player &player, const vector<shared_ptr<NPC>> &NPClist);
-        void _drawInfoPanel(const Player &player);
+        void _drawInfoPanel();
 
     public:
         Screen(const string &title);
 
         Vector2u getImageSize()   const;
         bool     isWindowOpen()   const;
-
-        void setWindowTitle(const string &title);
 
         void handleAllEvents(sharedEvents &sharedEvent);
         void drawAll(const Board &board, Player &player, const vector<shared_ptr<NPC>> &NPClist);

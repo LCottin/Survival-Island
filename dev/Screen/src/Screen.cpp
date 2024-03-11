@@ -14,27 +14,17 @@ Screen::Screen(const string &title)
         throw runtime_error("Failed to load tileset image.");
     }
 
-    _View            = make_unique<WindowView>();
-    _ViewWidthPixel  = _View->getWidthInPixel() + VIEW_PANEL_WIDTH_PIXEL;
-    _ViewHeightPixel = _View->getHeightInPixel();
+    _BoardView = make_unique<BoardView>(BoardViewSizeInTile::WIDTH * _TileSize.x, BoardViewSizeInTile::HEIGHT * _TileSize.y, InfoViewSizeInTile::WIDTH * _TileSize.x, Vector2u(0U, 0U));
+    _InfoPanel = make_unique<InfoPanel>(InfoViewSizeInTile::WIDTH * _TileSize.x, InfoViewSizeInTile::HEIGHT * _TileSize.y, Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
+
+    _ScreenWidthInPixel  = _BoardView->getWidthInPixel() + _InfoPanel->getWidthInPixel();
+    _ScreenHeightInPixel = _BoardView->getHeightInPixel();
+
+    _Window.create(VideoMode(_ScreenWidthInPixel, _ScreenHeightInPixel), _WindowTitle, Style::Titlebar | Style::Close);
+    _Window.setFramerateLimit(ConfigDev::framerateLimit);
 
     _PauseTimer = seconds(0.5f);
     _PauseCooldown.restart();
-
-    _Window.create(VideoMode(_ViewWidthPixel, _ViewHeightPixel), _WindowTitle, Style::Titlebar | Style::Close);
-    _Window.setFramerateLimit(ConfigDev::framerateLimit);
-
-    _InfoPanel.setSize(Vector2f(VIEW_PANEL_WIDTH_PIXEL, _ViewHeightPixel));
-    _InfoPanel.setFillColor(Color(220, 200, 180)); /* Light brown */
-
-    if (_Font.loadFromFile("../assets/fonts/Italic_text.ttf") == false)
-    {
-        throw runtime_error("Failed to load text font.");
-    }
-
-    _PanelText.setFont(_Font);
-    _PanelText.setCharacterSize(20U);
-    _PanelText.setFillColor(Color(80, 60, 40)); /* Dark Brown */
 }
 
 /**
@@ -110,20 +100,11 @@ void Screen::_drawIndicators(Player &player, const vector<shared_ptr<NPC>> &NPCl
 /**
  * @brief Draw information panel on the screen
  *
- * @param player Reference to the player
  */
-void Screen::_drawInfoPanel(const Player &player)
+void Screen::_drawInfoPanel()
 {
-    Vector2u viewPos     = _View->getPosition();
-    String textToDisplay = "Player\nHealth:\n" + to_string(player.getHealth()) + "\n\n\n\n";
-    textToDisplay       += "Difficulty:\n" + GameDifficultyString[static_cast<uint32_t>(ConfigUser::difficulty)];
-
-    _InfoPanel.setPosition(viewPos.x + _View->getWidthInPixel() - VIEW_PANEL_WIDTH_PIXEL + 0U, viewPos.y);
-    _PanelText.setPosition(viewPos.x + _View->getWidthInPixel() - VIEW_PANEL_WIDTH_PIXEL + 5U, viewPos.y);
-    _PanelText.setString(textToDisplay);
-
-    _Window.draw(_InfoPanel);
-    _Window.draw(_PanelText);
+    _Window.draw(_InfoPanel->getShape());
+    _Window.draw(_InfoPanel->getText());
 }
 
 /**
@@ -201,35 +182,30 @@ bool Screen::isWindowOpen() const
     return _Window.isOpen();
 }
 
-/**
- * @brief Change the window title
- *
- * @param title The new window title
- */
-void Screen::setWindowTitle(const string &title)
-{
-    _WindowTitle = title;
-    _Window.setTitle(_WindowTitle);
-}
-
 
 /**
  * @brief Draw all objects on the window
  *
- * @param board Reference to the board
+ * @param board Constant reference to the board
  * @param player Reference to the player
- * @param NPClist  Reference to the NPCs
+ * @param NPClist Constant reference to the NPCs
  */
 void Screen::drawAll(const Board &board, Player &player, const vector<shared_ptr<NPC>> &NPClist)
 {
     _Window.clear();
-    _View->update(board, player);
-    _Window.setView(_View->getView());
+
+    _BoardView->update(board, player);
+    _Window.setView(_BoardView->getView());
+
     _drawBoard(board);
     _drawPlayer(player);
     _drawNPCs(NPClist);
     _drawIndicators(player, NPClist);
-    _drawInfoPanel(player);
+
+    _Window.setView(_Window.getDefaultView());
+    _InfoPanel->update(player);
+    _drawInfoPanel();
+
     _Window.display();
 }
 
