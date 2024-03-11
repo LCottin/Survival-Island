@@ -7,6 +7,7 @@ namespace ConfigDev
     string   tilesetImgPath;
     string   playerImgPath;
     string   NPCImgPath;
+    string   fontPath;
     int32_t  framerateLimit;
     uint32_t tileSize;
 
@@ -49,6 +50,15 @@ namespace ConfigDev
             catch(const exception& e)
             {
                 throw runtime_error("Failed to get NPC image path.");
+            }
+
+            try
+            {
+                fontPath = config["fontPath"].get<string>();
+            }
+            catch(const exception& e)
+            {
+                throw runtime_error("Failed to get font path.");
             }
 
             try

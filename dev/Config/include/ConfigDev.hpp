@@ -14,6 +14,7 @@ namespace ConfigDev
     extern string   tilesetImgPath;
     extern string   playerImgPath;
     extern string   NPCImgPath;
+    extern string   fontPath;
     extern int32_t  framerateLimit;
     extern uint32_t tileSize;
 
