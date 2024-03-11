@@ -19,7 +19,6 @@ class Screen
         RenderWindow             _Window;
         Vector2u                 _TileSize;
         Texture                  _TilesetTexture;
-        VertexArray              _Vertices;
 
         uint32_t                 _BoardWidthPixel;
         uint32_t                 _BoardHeightPixel;
