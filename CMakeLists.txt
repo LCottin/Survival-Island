@@ -43,7 +43,7 @@ set(SOURCES
     ${DEV_DIR}/Config/src/ConfigDev.cpp
     ${DEV_DIR}/Config/src/ConfigUser.cpp
     ${DEV_DIR}/Config/src/ConfigUserPub.cpp
-    ${DEV_DIR}/WindowView/src/WindowView.cpp
+    ${DEV_DIR}/BoardView/src/BoardView.cpp
 )
 
 # Collect header files
@@ -69,7 +69,7 @@ set(HEADERS
     ${DEV_DIR}/Config/include/ConfigUser.hpp
     ${DEV_DIR}/Config/include/ConfigUserPub.hpp
     ${DEV_DIR}/FastNoise/include/FastNoiseLite.hpp
-    ${DEV_DIR}/WindowView/include/WindowView.hpp
+    ${DEV_DIR}/BoardView/include/BoardView.hpp
     ${DEV_DIR}/WindowView/include/WindowViewPub.hpp
 )
 
@@ -96,7 +96,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/Random/include
     ${DEV_DIR}/Config/include
     ${DEV_DIR}/FastNoise/include
-    ${DEV_DIR}/WindowView/include
+    ${DEV_DIR}/BoardView/include
 )
 
 # Link libraries

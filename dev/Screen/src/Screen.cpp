@@ -3,7 +3,6 @@
 #include "ConfigDev.hpp"
 #include "ConfigUser.hpp"
 #include "Random.hpp"
-#include "WindowViewPub.hpp"
 
 Screen::Screen(const string &title)
 {
