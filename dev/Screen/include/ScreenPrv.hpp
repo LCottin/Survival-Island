@@ -16,6 +16,18 @@ namespace BoardViewSizeInTile
 namespace InfoViewSizeInTile
 {
     constexpr uint32_t WIDTH  =  8U;
+    constexpr uint32_t HEIGHT = 42U;
+}
+
+namespace MinimapSizeInTile
+{
+    constexpr uint32_t WIDTH  =  8U;
+    constexpr uint32_t HEIGHT = 10U;
+}
+
+namespace ScreenSizeInTile
+{
+    constexpr uint32_t WIDTH  = 88U;
     constexpr uint32_t HEIGHT = 52U;
 }
 

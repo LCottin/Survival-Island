@@ -1,20 +1,16 @@
-#include "BoardView.hpp"
+#include "Minimap.hpp"
 #include "ConfigDev.hpp"
 
-BoardView::BoardView(const uint32_t widthInPixel, const uint32_t heightInPixel, const uint32_t limitOffsetInPixel, const Vector2u &position, const RenderWindow &window)
+Minimap::Minimap(const uint32_t widthInPixel, const uint32_t heightInPixel, const Vector2u &position, const RenderWindow &window)
 {
-    _WidthInPixel       = widthInPixel;
-    _HeightInPixel      = heightInPixel;
-    _LimitOffsetInPixel = limitOffsetInPixel;
-    _Position           = position;
+    _WidthInPixel  = widthInPixel;
+    _HeightInPixel = heightInPixel;
+    _Position      = position;
 
-    /* Get the default view of the window */
-    View defaultView = window.getDefaultView();
+    /* Set the center of the Minimap view to the position specified */
+    _View.setCenter(Vector2f(_Position.x + _WidthInPixel / 2.0f, _Position.y + _HeightInPixel / 2.0f));
 
-    /* Set the center of the BoardView to the center of the  default view */
-    _View.setCenter(defaultView.getCenter());
-
-    /* Set the size of the BoardView */
+    /* Set the size of the Minimap view */
     _View.setSize(static_cast<float>(_WidthInPixel), static_cast<float>(_HeightInPixel));
 
     /* Calculate the viewport parameters */
@@ -23,8 +19,11 @@ BoardView::BoardView(const uint32_t widthInPixel, const uint32_t heightInPixel, 
     const float_t viewportWidth  = static_cast<float_t>(_WidthInPixel)  / window.getSize().x;
     const float_t viewportHeight = static_cast<float_t>(_HeightInPixel) / window.getSize().y;
 
-    /* Set the viewport of the BoardView */
+    /* Set the viewport of the Minimap view */
     _View.setViewport(FloatRect(viewportLeft, viewportTop, viewportWidth, viewportHeight));
+
+    /* Zoom the Minimap view */
+    _View.zoom(10.0f);
 }
 
 /**
@@ -32,7 +31,7 @@ BoardView::BoardView(const uint32_t widthInPixel, const uint32_t heightInPixel, 
  *
  * @return const View& Constant reference to the view
  */
-const View& BoardView::getView() const
+const View& Minimap::getView() const
 {
     return _View;
 }
@@ -41,7 +40,7 @@ const View& BoardView::getView() const
  * @brief Return the width of the view in pixel
  *
  */
-uint32_t BoardView::getWidthInPixel() const
+uint32_t Minimap::getWidthInPixel() const
 {
     return _WidthInPixel;
 }
@@ -50,23 +49,24 @@ uint32_t BoardView::getWidthInPixel() const
  * @brief Return the height of the view in pixel
  *
  */
-uint32_t BoardView::getHeightInPixel() const
+uint32_t Minimap::getHeightInPixel() const
 {
     return _HeightInPixel;
 }
 
 /**
- * @brief Update the view to focus on player when moving
+ * @brief Update the view
  *
  * @param board Constant reference to the board
  * @param player Constant reference to the player
  */
-void BoardView::update(const Board &board, const Player &player)
+void Minimap::update(const Board &board, const Player &player)
 {
     const Vector2u playerPos = player.getPosition();
     const Vector2u boardSize = static_cast<const Vector2u>(board.getDimensionInTile());
     Vector2f newCenter       = static_cast<Vector2f>(playerPos);
 
+    uint32_t _LimitOffsetInPixel = 10;
     /* Calculate the half size of the view */
     const Vector2f halfViewSize = Vector2f(_WidthInPixel / 2.0f, _HeightInPixel / 2.0f);
 

@@ -45,6 +45,7 @@ set(SOURCES
     ${DEV_DIR}/Config/src/ConfigUserPub.cpp
     ${DEV_DIR}/BoardView/src/BoardView.cpp
     ${DEV_DIR}/InfoPanel/src/InfoPanel.cpp
+    ${DEV_DIR}/Minimap/src/Minimap.cpp
 )
 
 # Collect header files
@@ -72,6 +73,7 @@ set(HEADERS
     ${DEV_DIR}/FastNoise/include/FastNoiseLite.hpp
     ${DEV_DIR}/BoardView/include/BoardView.hpp
     ${DEV_DIR}/InfoPanel/include/InfoPanel.hpp
+    ${DEV_DIR}/Minimap/include/Minimap.hpp
 )
 
 # Set the output directory for the binary
@@ -99,6 +101,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/FastNoise/include
     ${DEV_DIR}/BoardView/include
     ${DEV_DIR}/InfoPanel/include
+    ${DEV_DIR}/Minimap/include
 )
 
 # Link libraries

@@ -14,14 +14,15 @@ Screen::Screen(const string &title)
         throw runtime_error("Failed to load tileset image.");
     }
 
-    _BoardView = make_unique<BoardView>(BoardViewSizeInTile::WIDTH * _TileSize.x, BoardViewSizeInTile::HEIGHT * _TileSize.y, InfoViewSizeInTile::WIDTH * _TileSize.x, Vector2u(0U, 0U));
-    _InfoPanel = make_unique<InfoPanel>(InfoViewSizeInTile::WIDTH * _TileSize.x, InfoViewSizeInTile::HEIGHT * _TileSize.y, Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
-
-    _ScreenWidthInPixel  = _BoardView->getWidthInPixel() + _InfoPanel->getWidthInPixel();
-    _ScreenHeightInPixel = _BoardView->getHeightInPixel();
+    _ScreenWidthInPixel  = ScreenSizeInTile::WIDTH  * _TileSize.x;
+    _ScreenHeightInPixel = ScreenSizeInTile::HEIGHT * _TileSize.y;
 
     _Window.create(VideoMode(_ScreenWidthInPixel, _ScreenHeightInPixel), _WindowTitle, Style::Titlebar | Style::Close);
     _Window.setFramerateLimit(ConfigDev::framerateLimit);
+
+    _BoardView = make_unique<BoardView>(BoardViewSizeInTile::WIDTH * _TileSize.x, BoardViewSizeInTile::HEIGHT * _TileSize.y,_TileSize.x,  Vector2u(0U, 0U), _Window);
+    _InfoPanel = make_unique<InfoPanel>(InfoViewSizeInTile::WIDTH  * _TileSize.x, InfoViewSizeInTile::HEIGHT  * _TileSize.y,                                          Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
+    _Minimap   = make_unique<Minimap>  (MinimapSizeInTile::WIDTH   * _TileSize.x, MinimapSizeInTile::HEIGHT   * _TileSize.y,                                          Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, InfoViewSizeInTile::HEIGHT * _TileSize.y), _Window);
 
     _PauseTimer = seconds(0.5f);
     _PauseCooldown.restart();
@@ -194,14 +195,21 @@ void Screen::drawAll(const Board &board, Player &player, const vector<shared_ptr
 {
     _Window.clear();
 
+    /* Draw elements for the main view (BoardView) */
     _BoardView->update(board, player);
     _Window.setView(_BoardView->getView());
-
     _drawBoard(board);
     _drawPlayer(player);
     _drawNPCs(NPClist);
     _drawIndicators(player, NPClist);
 
+    /* Draw elements for the minimap view (Minimap) */
+    _Minimap->update(board, player);
+    _Window.setView(_Minimap->getView());
+    _drawBoard(board);
+    _drawPlayer(player);
+
+    /* Reset view to default before drawing the information panel */
     _Window.setView(_Window.getDefaultView());
     _InfoPanel->update(player);
     _drawInfoPanel();

@@ -10,6 +10,7 @@
 #include "GamePub.hpp"
 #include "BoardView.hpp"
 #include "InfoPanel.hpp"
+#include "Minimap.hpp"
 
 using namespace std;
 using namespace sf;
@@ -28,6 +29,7 @@ class Screen
 
         unique_ptr<BoardView>  _BoardView;
         unique_ptr<InfoPanel>  _InfoPanel;
+        unique_ptr<Minimap>    _Minimap;
 
         Clock _PauseCooldown;
         Time  _PauseTimer;
