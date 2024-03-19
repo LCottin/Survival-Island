@@ -20,9 +20,10 @@ Screen::Screen(const string &title)
     _Window.create(VideoMode(_ScreenWidthInPixel, _ScreenHeightInPixel), _WindowTitle, Style::Titlebar | Style::Close);
     _Window.setFramerateLimit(ConfigDev::framerateLimit);
 
-    _BoardView = make_unique<BoardView>(BoardViewSizeInTile::WIDTH * _TileSize.x, BoardViewSizeInTile::HEIGHT * _TileSize.y,_TileSize.x,  Vector2u(0U, 0U), _Window);
-    _InfoPanel = make_unique<InfoPanel>(InfoViewSizeInTile::WIDTH  * _TileSize.x, InfoViewSizeInTile::HEIGHT  * _TileSize.y,                                          Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
-    _Minimap   = make_unique<Minimap>  (MinimapSizeInTile::WIDTH   * _TileSize.x, MinimapSizeInTile::HEIGHT   * _TileSize.y,                                          Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, InfoViewSizeInTile::HEIGHT * _TileSize.y), _Window);
+    _BoardView = make_unique<GenericView>(BoardViewSizeInTile::WIDTH * _TileSize.x, BoardViewSizeInTile::HEIGHT * _TileSize.y, Vector2u(0U, 0U),                                                                             _Window, _TileSize.x);
+    _Minimap   = make_unique<GenericView>(MinimapSizeInTile::WIDTH   * _TileSize.x, MinimapSizeInTile::HEIGHT   * _TileSize.y, Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, InfoViewSizeInTile::HEIGHT * _TileSize.y), _Window, _TileSize.x, 10.0f);
+
+    _InfoPanel = make_unique<InfoPanel>(InfoViewSizeInTile::WIDTH  * _TileSize.x, InfoViewSizeInTile::HEIGHT  * _TileSize.y, Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
 
     _PauseTimer = seconds(0.5f);
     _PauseCooldown.restart();
@@ -182,7 +183,6 @@ bool Screen::isWindowOpen() const
 {
     return _Window.isOpen();
 }
-
 
 /**
  * @brief Draw all objects on the window

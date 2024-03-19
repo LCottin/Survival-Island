@@ -1,8 +1,9 @@
-#ifndef __BOARDVIEW_HPP__
-#define __BOARDVIEW_HPP__
+#ifndef __GENERICVIEW_HPP__
+#define __GENERICVIEW_HPP__
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 
 #include "Board.hpp"
 #include "Player.hpp"
@@ -10,7 +11,7 @@
 using namespace std;
 using namespace sf;
 
-class BoardView
+class GenericView
 {
     private:
         uint32_t _WidthInPixel;
@@ -20,11 +21,9 @@ class BoardView
         View     _View;
 
     public:
-        BoardView(const uint32_t widthInPixel, const uint32_t heightInPixel, const uint32_t limitOffsetInPixel, const Vector2u &position, const RenderWindow &window);
+        GenericView(const uint32_t widthInPixel, const uint32_t heightInPixel, const Vector2u &position, const RenderWindow &window, const uint32_t limitOffsetInPixel = 0, const float_t zoomFactor = 1.0f);
 
-        const View& getView()           const;
-        uint32_t    getWidthInPixel()   const;
-        uint32_t    getHeightInPixel()  const;
+        const View& getView()          const;
 
         void update(const Board &board, const Player &player);
 };

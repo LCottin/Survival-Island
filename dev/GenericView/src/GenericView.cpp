@@ -1,14 +1,12 @@
-#include "Minimap.hpp"
+#include "GenericView.hpp"
 #include "ConfigDev.hpp"
 
-Minimap::Minimap(const uint32_t widthInPixel, const uint32_t heightInPixel, const Vector2u &position, const RenderWindow &window)
+GenericView::GenericView(const uint32_t widthInPixel, const uint32_t heightInPixel, const Vector2u &position, const RenderWindow &window, const uint32_t limitOffsetInPixel, const float_t zoomFactor)
 {
-    _WidthInPixel  = widthInPixel;
-    _HeightInPixel = heightInPixel;
-    _Position      = position;
-
-    /* Set the center of the Minimap view to the position specified */
-    _View.setCenter(Vector2f(_Position.x + _WidthInPixel / 2.0f, _Position.y + _HeightInPixel / 2.0f));
+    _WidthInPixel       = widthInPixel;
+    _HeightInPixel      = heightInPixel;
+    _Position           = position;
+    _LimitOffsetInPixel = limitOffsetInPixel;
 
     /* Set the size of the Minimap view */
     _View.setSize(static_cast<float>(_WidthInPixel), static_cast<float>(_HeightInPixel));
@@ -23,7 +21,10 @@ Minimap::Minimap(const uint32_t widthInPixel, const uint32_t heightInPixel, cons
     _View.setViewport(FloatRect(viewportLeft, viewportTop, viewportWidth, viewportHeight));
 
     /* Zoom the Minimap view */
-    _View.zoom(10.0f);
+    _View.zoom(zoomFactor);
+
+    /* Set the center of the BoardView to the center of the  default view */
+    _View.setCenter(window.getDefaultView().getCenter());
 }
 
 /**
@@ -31,27 +32,9 @@ Minimap::Minimap(const uint32_t widthInPixel, const uint32_t heightInPixel, cons
  *
  * @return const View& Constant reference to the view
  */
-const View& Minimap::getView() const
+const View& GenericView::getView() const
 {
     return _View;
-}
-
-/**
- * @brief Return the width of the view in pixel
- *
- */
-uint32_t Minimap::getWidthInPixel() const
-{
-    return _WidthInPixel;
-}
-
-/**
- * @brief Return the height of the view in pixel
- *
- */
-uint32_t Minimap::getHeightInPixel() const
-{
-    return _HeightInPixel;
 }
 
 /**
@@ -60,13 +43,12 @@ uint32_t Minimap::getHeightInPixel() const
  * @param board Constant reference to the board
  * @param player Constant reference to the player
  */
-void Minimap::update(const Board &board, const Player &player)
+void GenericView::update(const Board &board, const Player &player)
 {
     const Vector2u playerPos = player.getPosition();
     const Vector2u boardSize = static_cast<const Vector2u>(board.getDimensionInTile());
     Vector2f newCenter       = static_cast<Vector2f>(playerPos);
 
-    uint32_t _LimitOffsetInPixel = 10;
     /* Calculate the half size of the view */
     const Vector2f halfViewSize = Vector2f(_WidthInPixel / 2.0f, _HeightInPixel / 2.0f);
 

@@ -8,9 +8,8 @@
 #include "Player.hpp"
 #include "NPC.hpp"
 #include "GamePub.hpp"
-#include "BoardView.hpp"
 #include "InfoPanel.hpp"
-#include "Minimap.hpp"
+#include "GenericView.hpp"
 
 using namespace std;
 using namespace sf;
@@ -27,9 +26,9 @@ class Screen
 
         string                   _WindowTitle;
 
-        unique_ptr<BoardView>  _BoardView;
-        unique_ptr<InfoPanel>  _InfoPanel;
-        unique_ptr<Minimap>    _Minimap;
+        unique_ptr<GenericView> _BoardView;
+        unique_ptr<GenericView> _Minimap;
+        unique_ptr<InfoPanel>   _InfoPanel;
 
         Clock _PauseCooldown;
         Time  _PauseTimer;
