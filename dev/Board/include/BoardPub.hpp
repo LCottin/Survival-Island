@@ -5,8 +5,8 @@
 
 namespace BoardSizeInTile
 {
-    constexpr uint32_t WIDTH  = 1000U;
-    constexpr uint32_t HEIGHT = 1000U;
+    constexpr uint32_t WIDTH  = 500U;
+    constexpr uint32_t HEIGHT = 500U;
 }
 
 #endif //__BOARD_PUB_HPP__
