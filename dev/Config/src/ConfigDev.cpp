@@ -7,13 +7,13 @@ namespace ConfigDev
     string   tilesetImgPath;
     string   playerImgPath;
     string   NPCImgPath;
+    string   fontPath;
     int32_t  framerateLimit;
     uint32_t tileSize;
 
     void loadConfig()
     {
         ifstream configFile("../dev/devConfig.json");
-        json config;
 
         if (configFile.is_open() == false)
         {
@@ -22,7 +22,7 @@ namespace ConfigDev
 
         try
         {
-            config = json::parse(configFile);
+            const json config = json::parse(configFile);
 
             try
             {
@@ -49,6 +49,15 @@ namespace ConfigDev
             catch(const exception& e)
             {
                 throw runtime_error("Failed to get NPC image path.");
+            }
+
+            try
+            {
+                fontPath = config["fontPath"].get<string>();
+            }
+            catch(const exception& e)
+            {
+                throw runtime_error("Failed to get font path.");
             }
 
             try

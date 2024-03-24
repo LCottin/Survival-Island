@@ -43,7 +43,8 @@ set(SOURCES
     ${DEV_DIR}/Config/src/ConfigDev.cpp
     ${DEV_DIR}/Config/src/ConfigUser.cpp
     ${DEV_DIR}/Config/src/ConfigUserPub.cpp
-    ${DEV_DIR}/WindowView/src/WindowView.cpp
+    ${DEV_DIR}/InfoPanel/src/InfoPanel.cpp
+    ${DEV_DIR}/GenericView/src/GenericView.cpp
 )
 
 # Collect header files
@@ -69,8 +70,8 @@ set(HEADERS
     ${DEV_DIR}/Config/include/ConfigUser.hpp
     ${DEV_DIR}/Config/include/ConfigUserPub.hpp
     ${DEV_DIR}/FastNoise/include/FastNoiseLite.hpp
-    ${DEV_DIR}/WindowView/include/WindowView.hpp
-    ${DEV_DIR}/WindowView/include/WindowViewPub.hpp
+    ${DEV_DIR}/InfoPanel/include/InfoPanel.hpp
+    ${DEV_DIR}/GenericView/include/GenericView.hpp
 )
 
 # Set the output directory for the binary
@@ -96,7 +97,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${DEV_DIR}/Random/include
     ${DEV_DIR}/Config/include
     ${DEV_DIR}/FastNoise/include
-    ${DEV_DIR}/WindowView/include
+    ${DEV_DIR}/InfoPanel/include
+    ${DEV_DIR}/GenericView/include
 )
 
 # Link libraries

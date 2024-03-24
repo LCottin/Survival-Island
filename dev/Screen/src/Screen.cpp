@@ -3,7 +3,6 @@
 #include "ConfigDev.hpp"
 #include "ConfigUser.hpp"
 #include "Random.hpp"
-#include "WindowViewPub.hpp"
 
 Screen::Screen(const string &title)
 {
@@ -15,27 +14,27 @@ Screen::Screen(const string &title)
         throw runtime_error("Failed to load tileset image.");
     }
 
-    _View            = make_unique<WindowView>();
-    _ViewWidthPixel  = _View->getWidthInPixel() + VIEW_PANEL_WIDTH_PIXEL;
-    _ViewHeightPixel = _View->getHeightInPixel();
+    _ScreenWidthInPixel  = ScreenSizeInTile::WIDTH  * _TileSize.x;
+    _ScreenHeightInPixel = ScreenSizeInTile::HEIGHT * _TileSize.y;
+
+    _Window.create(VideoMode(_ScreenWidthInPixel, _ScreenHeightInPixel), _WindowTitle, Style::Titlebar | Style::Close);
+    _Window.setFramerateLimit(ConfigDev::framerateLimit);
+
+    _BoardView = make_unique<GenericView>(BoardViewSizeInTile::WIDTH * _TileSize.x, BoardViewSizeInTile::HEIGHT * _TileSize.y, Vector2u(0U, 0U),                                                                             _Window, _TileSize.x);
+    _Minimap   = make_unique<GenericView>(MinimapSizeInTile::WIDTH   * _TileSize.x, MinimapSizeInTile::HEIGHT   * _TileSize.y, Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, InfoViewSizeInTile::HEIGHT * _TileSize.y), _Window, _TileSize.x, 10.0f);
+
+    _InfoPanel = make_unique<InfoPanel>(InfoViewSizeInTile::WIDTH  * _TileSize.x, InfoViewSizeInTile::HEIGHT  * _TileSize.y, Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
+
+    _VerticalLine.setFillColor(Color::Black);
+    _VerticalLine.setSize(Vector2f(2.0f, _ScreenHeightInPixel));
+    _VerticalLine.setPosition(Vector2f(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
+
+    _HorizontalLine.setFillColor(Color::Black);
+    _HorizontalLine.setSize(Vector2f(MinimapSizeInTile::WIDTH   * _TileSize.x, 2.0f));
+    _HorizontalLine.setPosition(Vector2f(BoardViewSizeInTile::WIDTH * _TileSize.x, InfoViewSizeInTile::HEIGHT * _TileSize.y - 2));
 
     _PauseTimer = seconds(0.5f);
     _PauseCooldown.restart();
-
-    _Window.create(VideoMode(_ViewWidthPixel, _ViewHeightPixel), _WindowTitle, Style::Titlebar | Style::Close);
-    _Window.setFramerateLimit(ConfigDev::framerateLimit);
-
-    _InfoPanel.setSize(Vector2f(VIEW_PANEL_WIDTH_PIXEL, _ViewHeightPixel));
-    _InfoPanel.setFillColor(Color(220, 200, 180)); /* Light brown */
-
-    if (_Font.loadFromFile("../assets/fonts/Italic_text.ttf") == false)
-    {
-        throw runtime_error("Failed to load text font.");
-    }
-
-    _PanelText.setFont(_Font);
-    _PanelText.setCharacterSize(20U);
-    _PanelText.setFillColor(Color(80, 60, 40)); /* Dark Brown */
 }
 
 /**
@@ -111,20 +110,11 @@ void Screen::_drawIndicators(Player &player, const vector<shared_ptr<NPC>> &NPCl
 /**
  * @brief Draw information panel on the screen
  *
- * @param player Reference to the player
  */
-void Screen::_drawInfoPanel(const Player &player)
+void Screen::_drawInfoPanel()
 {
-    Vector2u viewPos     = _View->getPosition();
-    String textToDisplay = "Player\nHealth:\n" + to_string(player.getHealth()) + "\n\n\n\n";
-    textToDisplay       += "Difficulty:\n" + GameDifficultyString[static_cast<uint32_t>(ConfigUser::difficulty)];
-
-    _InfoPanel.setPosition(viewPos.x + _View->getWidthInPixel() - VIEW_PANEL_WIDTH_PIXEL + 0U, viewPos.y);
-    _PanelText.setPosition(viewPos.x + _View->getWidthInPixel() - VIEW_PANEL_WIDTH_PIXEL + 5U, viewPos.y);
-    _PanelText.setString(textToDisplay);
-
-    _Window.draw(_InfoPanel);
-    _Window.draw(_PanelText);
+    _Window.draw(_InfoPanel->getShape());
+    _Window.draw(_InfoPanel->getText());
 }
 
 /**
@@ -203,34 +193,39 @@ bool Screen::isWindowOpen() const
 }
 
 /**
- * @brief Change the window title
- *
- * @param title The new window title
- */
-void Screen::setWindowTitle(const string &title)
-{
-    _WindowTitle = title;
-    _Window.setTitle(_WindowTitle);
-}
-
-
-/**
  * @brief Draw all objects on the window
  *
- * @param board Reference to the board
+ * @param board Constant reference to the board
  * @param player Reference to the player
- * @param NPClist  Reference to the NPCs
+ * @param NPClist Constant reference to the NPCs
  */
 void Screen::drawAll(const Board &board, Player &player, const vector<shared_ptr<NPC>> &NPClist)
 {
     _Window.clear();
-    _View->update(board, player);
-    _Window.setView(_View->getView());
+
+    /* Draw elements for the main view (BoardView) */
+    _BoardView->update(board, player);
+    _Window.setView(_BoardView->getView());
     _drawBoard(board);
     _drawPlayer(player);
     _drawNPCs(NPClist);
     _drawIndicators(player, NPClist);
-    _drawInfoPanel(player);
+
+    /* Draw elements for the minimap view (Minimap) */
+    _Minimap->update(board, player);
+    _Window.setView(_Minimap->getView());
+    _drawBoard(board);
+    _drawPlayer(player);
+
+    /* Reset view to default before drawing the information panel */
+    _Window.setView(_Window.getDefaultView());
+    _InfoPanel->update(player);
+    _drawInfoPanel();
+
+    /* Draw lines to split views */
+    _Window.draw(_HorizontalLine);
+    _Window.draw(_VerticalLine);
+
     _Window.display();
 }
 

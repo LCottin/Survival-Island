@@ -71,7 +71,6 @@ namespace ConfigUser
     bool loadConfig()
     {
         ifstream configFile("../userConfig.json");
-        json config;
         bool toReturn = true;
 
         if (configFile.is_open() == false)
@@ -81,7 +80,7 @@ namespace ConfigUser
 
         try
         {
-            config = json::parse(configFile);
+            const json config = json::parse(configFile);
 
             try
             {

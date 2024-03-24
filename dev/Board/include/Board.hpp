@@ -32,9 +32,6 @@ class Board
         Vector2i     getDimensionInTile() const;
         const VertexArray &getVertices() const;
 
-        bool setTile(const uint32_t x, const uint32_t y, const TileTypeBackground tile);
-
-        bool fillMap(const TileTypeBackground value);
         void computeVertices(const uint32_t tileSize, const Vector2u &imageSizeInPixel);
 
         ~Board();

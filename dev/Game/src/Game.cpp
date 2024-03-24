@@ -12,7 +12,7 @@ Game::Game(const string &playerName)
     _Player = make_shared<Player>(playerName);
     _Board  = make_shared<Board>();
     _Screen = make_shared<Screen>(ConfigUser::windowTitle);
-    _NPCs   = make_shared<vector<shared_ptr<NPC>>>(2U * static_cast<uint32_t>(ConfigUser::difficulty));
+    _NPCs   = make_shared<vector<shared_ptr<NPC>>>(10U * static_cast<uint32_t>(ConfigUser::difficulty));
 
     for (size_t i = 0; i < _NPCs->size(); i++)
     {
@@ -173,9 +173,9 @@ void Game::_MoveNPCs()
                 const float_t absDeltaX       = abs(deltaX);
                 const float_t absDeltaY       = abs(deltaY);
 
-                Vector2u npcSize     = npc->getSize();
-                Vector2u currentPos  = npc->getPosition();
-                Vector2u previousPos = npc->getPreviousPosition();
+                const Vector2u npcSize     = npc->getSize();
+                const Vector2u previousPos = npc->getPreviousPosition();
+                Vector2u currentPos        = npc->getPosition();
 
                 /* Compute new directions */
                 if (currentPos.x == (_BoardSizeInPixel.x - npcSize.x))

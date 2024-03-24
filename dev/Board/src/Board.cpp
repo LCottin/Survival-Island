@@ -37,15 +37,15 @@ void Board::_initMap()
         for (size_t i = 0; i < _WidthInTile; i++)
         {
             /* Check if the current position is on the border */
-            bool isTopBorder    = (j == 0);
-            bool isBottomBorder = (j == (_HeightInTile - 1U));
-            bool isLeftBorder   = (i == 0);
-            bool isRightBorder  = (i == (_WidthInTile - 1U));
+            const bool isTopBorder    = (j == 0);
+            const bool isBottomBorder = (j == (_HeightInTile - 1U));
+            const bool isLeftBorder   = (i == 0);
+            const bool isRightBorder  = (i == (_WidthInTile - 1U));
 
             /* Set the appropriate wall tile for the borders */
             if (isTopBorder || isBottomBorder || isLeftBorder || isRightBorder)
             {
-                float_t borderValue = noise.GetNoise(static_cast<float_t>(i) * 0.1f, static_cast<float_t>(j) * 0.1f);
+                const float_t borderValue = noise.GetNoise(static_cast<float_t>(i) * 0.1f, static_cast<float_t>(j) * 0.1f);
 
                 /* Add some variation to the corners */
                 if (isTopBorder && isLeftBorder)
@@ -69,7 +69,7 @@ void Board::_initMap()
             else
             {
                 /* Interior tiles */
-                float_t value = noise.GetNoise(static_cast<float_t>(i), static_cast<float_t>(j));
+                const float_t value = noise.GetNoise(static_cast<float_t>(i), static_cast<float_t>(j));
 
                 if (value < -0.2f)
                 {
@@ -199,46 +199,4 @@ Vector2i Board::getDimensionInTile() const
 const VertexArray& Board::getVertices() const
 {
     return _Vertices;
-}
-
-/**
- * @brief Set the tile object at the given position
- *
- * @param x Position on the X axis
- * @param y Position on the Y axis
- * @param tile The tile type to set
- * @return true if the tile has been set, false otherwise
- */
-bool Board::setTile(const uint32_t x, const uint32_t y, const TileTypeBackground tile)
-{
-    if ((x >= _WidthInTile) || (y >= _HeightInTile))
-    {
-        return false;
-    }
-    _Map[x][y] = tile;
-    return true;
-}
-
-/**
- * @brief Fill the map with one value
- *
- * @param value Value to fill the map with
- * @return true if the map is correctly filled, else false (error in value)
- */
-bool Board::fillMap(const TileTypeBackground value)
-{
-    if (value >= TileTypeBackground::TILE_COUNT)
-    {
-        return false;
-    }
-
-    for (uint32_t j = 0; j < _HeightInTile; j++)
-    {
-        for (uint32_t i = 0; i < _WidthInTile; i++)
-        {
-            _Map[i][j] = value;
-        }
-    }
-
-    return true;
 }
