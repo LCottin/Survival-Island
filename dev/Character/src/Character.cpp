@@ -26,7 +26,7 @@ Character::~Character()
  */
 json Character::_loadFromJson(const CharacterType type) const
 {
-    string filename = CharacterTypeString[static_cast<uint32_t>(type)];
+    const string filename = CharacterTypeString[static_cast<uint32_t>(type)];
     ifstream file("../assets/json/" + filename + ".json");
     json data;
 
@@ -68,15 +68,15 @@ void Character::_initCommon(const CharacterType type)
 
     const json data = _loadFromJson(type);
 
-    auto characterData  = data[_Name];
-    _Attributes         = { .Health     = characterData.contains("Health")     ? characterData["Health"].get<uint32_t>()     : 100U,
-                            .MaxHealth  = characterData.contains("Health")     ? characterData["Health"].get<uint32_t>()     : 100U,
-                            .Level      = characterData.contains("Level")      ? characterData["Level"].get<uint32_t>()      :   1U,
-                            .Experience = characterData.contains("Experience") ? characterData["Experience"].get<uint32_t>() :   0U,
-                            .Strength   = characterData.contains("Strength")   ? characterData["Strength"].get<uint32_t>()   :  10U,
-                            .Defense    = characterData.contains("Defense")    ? characterData["Defense"].get<uint32_t>()    :  10U,
-                            .Speed      = characterData.contains("Speed")      ? characterData["Speed"].get<uint32_t>()      :  10U,
-                            .Age        = characterData.contains("Age")        ? characterData["Age"].get<uint32_t>()        :  25U };
+    const auto characterData    = data[_Name];
+    _Attributes = { .Health     = characterData.contains("Health")     ? characterData["Health"].get<uint32_t>()     : 100U,
+                    .MaxHealth  = characterData.contains("Health")     ? characterData["Health"].get<uint32_t>()     : 100U,
+                    .Level      = characterData.contains("Level")      ? characterData["Level"].get<uint32_t>()      :   1U,
+                    .Experience = characterData.contains("Experience") ? characterData["Experience"].get<uint32_t>() :   0U,
+                    .Strength   = characterData.contains("Strength")   ? characterData["Strength"].get<uint32_t>()   :  10U,
+                    .Defense    = characterData.contains("Defense")    ? characterData["Defense"].get<uint32_t>()    :  10U,
+                    .Speed      = characterData.contains("Speed")      ? characterData["Speed"].get<uint32_t>()      :  10U,
+                    .Age        = characterData.contains("Age")        ? characterData["Age"].get<uint32_t>()        :  25U };
 
     _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<uint32_t>() : Random::getRandomInteger(0, BoardSizeInTile::WIDTH  * ConfigDev::tileSize);
     _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<uint32_t>() : Random::getRandomInteger(0, BoardSizeInTile::HEIGHT * ConfigDev::tileSize);
@@ -400,7 +400,7 @@ void Character::updateFrame(const DirectionType direction)
  */
 bool Character::attack(Character &defender)
 {
-    bool stillAlive = defender.defend(_Attributes.Strength);
+    const bool stillAlive = defender.defend(_Attributes.Strength);
 
     /* If defender is still alive, replicates with its defense stat when cooldown is over */
     if ((stillAlive == true) && (_DamageCooldown.getElapsedTime() >= _DamageTimer))
@@ -431,10 +431,10 @@ bool Character::attack(Character &defender)
 void Character::updateHealthBar()
 {
     /* Calculate the health percentage */
-    float_t healthPercentage = static_cast<float_t>(_Attributes.Health) / static_cast<float_t>(_Attributes.MaxHealth);
+    const float_t healthPercentage = static_cast<float_t>(_Attributes.Health) / static_cast<float_t>(_Attributes.MaxHealth);
 
     /* Calculate the width of the health bar based on the health percentage */
-    float_t barWidth = healthPercentage * _Size.x;
+    const float_t barWidth = healthPercentage * _Size.x;
 
     /* Set the size and position of the health bar */
     _HealthBar.setSize(Vector2f(barWidth, HEALTH_BAR_HEIGHT));

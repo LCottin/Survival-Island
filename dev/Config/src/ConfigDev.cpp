@@ -14,7 +14,6 @@ namespace ConfigDev
     void loadConfig()
     {
         ifstream configFile("../dev/devConfig.json");
-        json config;
 
         if (configFile.is_open() == false)
         {
@@ -23,7 +22,7 @@ namespace ConfigDev
 
         try
         {
-            config = json::parse(configFile);
+            const json config = json::parse(configFile);
 
             try
             {

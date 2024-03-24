@@ -23,11 +23,11 @@ class InfoPanel
     public:
         InfoPanel(const uint32_t widthInPixel, const uint32_t heightInPixel, const Vector2u &position);
 
-        uint32_t getWidthInPixel()   const;
-        uint32_t getHeightInPixel()  const;
+        uint32_t getWidthInPixel()  const;
+        uint32_t getHeightInPixel() const;
 
         const RectangleShape& getShape() const;
-        const Text&           getText() const;
+        const Text&           getText()  const;
 
         void update(const Player &player);
 };
