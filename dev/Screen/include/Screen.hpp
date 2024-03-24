@@ -20,6 +20,8 @@ class Screen
         RenderWindow             _Window;
         Vector2u                 _TileSize;
         Texture                  _TilesetTexture;
+        RectangleShape           _VerticalLine;
+        RectangleShape           _HorizontalLine;
 
         uint32_t                 _ScreenWidthInPixel;
         uint32_t                 _ScreenHeightInPixel;

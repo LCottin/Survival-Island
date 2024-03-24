@@ -25,6 +25,14 @@ Screen::Screen(const string &title)
 
     _InfoPanel = make_unique<InfoPanel>(InfoViewSizeInTile::WIDTH  * _TileSize.x, InfoViewSizeInTile::HEIGHT  * _TileSize.y, Vector2u(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
 
+    _VerticalLine.setFillColor(Color::Black);
+    _VerticalLine.setSize(Vector2f(2.0f, _ScreenHeightInPixel));
+    _VerticalLine.setPosition(Vector2f(BoardViewSizeInTile::WIDTH * _TileSize.x, 0));
+
+    _HorizontalLine.setFillColor(Color::Black);
+    _HorizontalLine.setSize(Vector2f(MinimapSizeInTile::WIDTH   * _TileSize.x, 2.0f));
+    _HorizontalLine.setPosition(Vector2f(BoardViewSizeInTile::WIDTH * _TileSize.x, InfoViewSizeInTile::HEIGHT * _TileSize.y - 2));
+
     _PauseTimer = seconds(0.5f);
     _PauseCooldown.restart();
 }
@@ -213,6 +221,10 @@ void Screen::drawAll(const Board &board, Player &player, const vector<shared_ptr
     _Window.setView(_Window.getDefaultView());
     _InfoPanel->update(player);
     _drawInfoPanel();
+
+    /* Draw lines to split views */
+    _Window.draw(_HorizontalLine);
+    _Window.draw(_VerticalLine);
 
     _Window.display();
 }
