@@ -76,7 +76,7 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
         {
             const Vector2u playerSize     = _Player->getSize();
             const int32_t playerSpeed     = static_cast<int32_t>(_Player->getSpeed());
-            Vector2i currentPos           = static_cast<Vector2i>(_Player->getPosition());
+            Vector2f currentPos           = _Player->getPosition();
             bool updateFrame              = false;
 
             /* Move player left */
@@ -144,7 +144,7 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
             }
 
             /* Update player final position */
-            _Player->setPosition(static_cast<Vector2u>(currentPos), updateFrame);
+            _Player->setPosition(currentPos, updateFrame);
         }
         else
         {
@@ -174,8 +174,8 @@ void Game::_MoveNPCs()
                 const float_t absDeltaY       = abs(deltaY);
 
                 const Vector2u npcSize     = npc->getSize();
-                const Vector2u previousPos = npc->getPreviousPosition();
-                Vector2u currentPos        = npc->getPosition();
+                const Vector2f previousPos = npc->getPreviousPosition();
+                Vector2f currentPos        = npc->getPosition();
 
                 /* Compute new directions */
                 if (currentPos.x == (_BoardSizeInPixel.x - npcSize.x))
@@ -309,14 +309,14 @@ void Game::_Draw()
  */
 bool Game::_AreClose(const Player &player, const NPC &npc, const uint32_t threshold) const
 {
-    const Vector2u playerPos = player.getPosition();
-    const Vector2u npcPos    = npc.getPosition();
+    const Vector2f playerPos = player.getPosition();
+    const Vector2f npcPos    = npc.getPosition();
 
     const Vector2u playerSize = player.getSize();
     const Vector2u npcSize    = npc.getSize();
 
-    const float_t distanceX = abs(static_cast<float_t>(playerPos.x - npcPos.x)) - (playerSize.x + npcSize.x) / 2.0f;
-    const float_t distanceY = abs(static_cast<float_t>(playerPos.y - npcPos.y)) - (playerSize.y + npcSize.y) / 2.0f;
+    const float_t distanceX = abs(playerPos.x - npcPos.x) - (playerSize.x + npcSize.x) / 2.0f;
+    const float_t distanceY = abs(playerPos.y - npcPos.y) - (playerSize.y + npcSize.y) / 2.0f;
 
     return ((distanceX < threshold) && (distanceY < threshold));
 }

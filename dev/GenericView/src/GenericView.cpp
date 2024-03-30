@@ -45,9 +45,9 @@ const View& GenericView::getView() const
  */
 void GenericView::update(const Board &board, const Player &player)
 {
-    const Vector2u playerPos = player.getPosition();
+    const Vector2f playerPos = player.getPosition();
     const Vector2u boardSize = static_cast<const Vector2u>(board.getDimensionInTile());
-    Vector2f newCenter       = static_cast<Vector2f>(playerPos);
+    Vector2f newCenter       = playerPos;
 
     /* Calculate the half size of the view */
     const Vector2f halfViewSize = Vector2f(_WidthInPixel / 2.0f, _HeightInPixel / 2.0f);
