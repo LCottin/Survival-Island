@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 project(Survival-Island)
 
+include(VersionConfig.cmake)
+
 # Set the default build type to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
@@ -121,5 +123,5 @@ endif()
 # Define a custom command to print build mode during the build process
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E echo "Compiled Survival-Island in ${CMAKE_BUILD_TYPE} mode"
+    COMMAND ${CMAKE_COMMAND} -E echo "Compiled Survival-Island version ${SURVIVAL_ISLAND_VERSION} in ${CMAKE_BUILD_TYPE} mode"
 )
