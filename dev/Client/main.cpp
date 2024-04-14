@@ -8,8 +8,8 @@ using namespace std;
 
 int main()
 {
-    ConfigUser::loadConfig();
     ConfigDev::loadConfig();
+    ConfigUser::loadConfig();
 
     Game game("LCottin");
 

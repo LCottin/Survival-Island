@@ -13,11 +13,11 @@ namespace ConfigDev
 
     void loadConfig()
     {
-        ifstream configFile("../dev/devConfig.json");
+        ifstream configFile("../dev/Client/devConfig.json");
 
         if (configFile.is_open() == false)
         {
-            throw runtime_error("Failed to open configUser file.");
+            throw runtime_error("Failed to open configDev file.");
         }
 
         try
