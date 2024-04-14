@@ -25,8 +25,8 @@ class Character
         Sprite              _Sprite;
         Vector2u            _Size;
         Vector2u            _Scale;
-        Vector2u            _Position;
-        Vector2u            _PreviousPosition;
+        Vector2f            _Position;
+        Vector2f            _PreviousPosition;
         RectangleShape      _HealthBar;
         Clock               _DamageCooldown;
         Time                _DamageTimer;
@@ -61,8 +61,8 @@ class Character
         uint32_t        getStrength()         const;
         uint32_t        getDefense()          const;
         uint32_t        getSpeed()            const;
-        Vector2u        getPosition()         const;
-        Vector2u        getPreviousPosition() const;
+        Vector2f        getPosition()         const;
+        Vector2f        getPreviousPosition() const;
         Vector2u        getScale()            const;
         Vector2u        getSize()             const;
         Sprite&         getSprite();
@@ -73,17 +73,14 @@ class Character
         /* Member functions (setters) */
         void setName(const string &name);
         bool defend(const uint32_t damage);
-        virtual void setPosition(const Vector2u position);
-        virtual void setPosition(const uint32_t x, const uint32_t y);
-        virtual void setPosition(const Vector2u position, const bool changeFrame);
-        virtual void setPosition(const uint32_t x, const uint32_t y, const bool changeFrame);
+        void setPosition(const Vector2f position);
+        void setPosition(const float_t x, const float_t y);
 
         /* Member functions (others) */
         void sayHello() const;
         void presentation() const;
         void updateHealthBar();
         bool attack(Character &defender);
-        virtual void updateFrame(const DirectionType direction);
 };
 
 #endif // __CHARACTER_HPP__

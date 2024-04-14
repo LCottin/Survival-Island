@@ -76,8 +76,8 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
         {
             const Vector2u playerSize     = _Player->getSize();
             const int32_t playerSpeed     = static_cast<int32_t>(_Player->getSpeed());
-            Vector2i currentPos           = static_cast<Vector2i>(_Player->getPosition());
-            bool updateFrame              = false;
+            Vector2f currentPos           = _Player->getPosition();
+            bool hasMoved                 = false;
 
             /* Move player left */
             if (sharedEvent.movePlayerLeft == true)
@@ -85,13 +85,13 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
                 if ((currentPos.x - playerSpeed) >= 0)
                 {
                     currentPos.x -= playerSpeed;
-                    updateFrame   = true;
+                    hasMoved      = true;
                 }
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
                     currentPos.x = 0;
-                    updateFrame  = false;
+                    hasMoved     = false;
                 }
             }
 
@@ -101,13 +101,13 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
                 if ((currentPos.x + playerSpeed + playerSize.x) <= _BoardSizeInPixel.x)
                 {
                     currentPos.x += playerSpeed;
-                    updateFrame  |= true;
+                    hasMoved     |= true;
                 }
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
                     currentPos.x  = _BoardSizeInPixel.x - playerSize.x;
-                    updateFrame  |= false;
+                    hasMoved     |= false;
                 }
             }
 
@@ -117,13 +117,13 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
                 if ((currentPos.y - playerSpeed) >= 0)
                 {
                     currentPos.y -= playerSpeed;
-                    updateFrame  |= true;
+                    hasMoved     |= true;
                 }
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
                     currentPos.y  = 0;
-                    updateFrame  |= false;
+                    hasMoved     |= false;
                 }
             }
 
@@ -133,18 +133,18 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
                 if ((currentPos.y + playerSpeed + playerSize.y) <= _BoardSizeInPixel.y)
                 {
                     currentPos.y += playerSpeed;
-                    updateFrame  |= true;
+                    hasMoved     |= true;
                 }
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
                     currentPos.y  = _BoardSizeInPixel.y - playerSize.y;
-                    updateFrame  |= false;
+                    hasMoved     |= false;
                 }
             }
 
             /* Update player final position */
-            _Player->setPosition(static_cast<Vector2u>(currentPos), updateFrame);
+            _Player->setPosition(currentPos, hasMoved);
         }
         else
         {
@@ -174,8 +174,8 @@ void Game::_MoveNPCs()
                 const float_t absDeltaY       = abs(deltaY);
 
                 const Vector2u npcSize     = npc->getSize();
-                const Vector2u previousPos = npc->getPreviousPosition();
-                Vector2u currentPos        = npc->getPosition();
+                const Vector2f previousPos = npc->getPreviousPosition();
+                Vector2f currentPos        = npc->getPosition();
 
                 /* Compute new directions */
                 if (currentPos.x == (_BoardSizeInPixel.x - npcSize.x))
@@ -309,14 +309,14 @@ void Game::_Draw()
  */
 bool Game::_AreClose(const Player &player, const NPC &npc, const uint32_t threshold) const
 {
-    const Vector2u playerPos = player.getPosition();
-    const Vector2u npcPos    = npc.getPosition();
+    const Vector2f playerPos = player.getPosition();
+    const Vector2f npcPos    = npc.getPosition();
 
     const Vector2u playerSize = player.getSize();
     const Vector2u npcSize    = npc.getSize();
 
-    const float_t distanceX = abs(static_cast<float_t>(playerPos.x - npcPos.x)) - (playerSize.x + npcSize.x) / 2.0f;
-    const float_t distanceY = abs(static_cast<float_t>(playerPos.y - npcPos.y)) - (playerSize.y + npcSize.y) / 2.0f;
+    const float_t distanceX = abs(playerPos.x - npcPos.x) - (playerSize.x + npcSize.x) / 2.0f;
+    const float_t distanceY = abs(playerPos.y - npcPos.y) - (playerSize.y + npcSize.y) / 2.0f;
 
     return ((distanceX < threshold) && (distanceY < threshold));
 }

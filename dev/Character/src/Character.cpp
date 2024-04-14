@@ -78,8 +78,8 @@ void Character::_initCommon(const CharacterType type)
                     .Speed      = characterData.contains("Speed")      ? characterData["Speed"].get<uint32_t>()      :  10U,
                     .Age        = characterData.contains("Age")        ? characterData["Age"].get<uint32_t>()        :  25U };
 
-    _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<uint32_t>() : Random::getRandomInteger(0, BoardSizeInTile::WIDTH  * ConfigDev::tileSize);
-    _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<uint32_t>() : Random::getRandomInteger(0, BoardSizeInTile::HEIGHT * ConfigDev::tileSize);
+    _Position.x = characterData.contains("Position_x") ? characterData["Position_x"].get<float_t>() : Random::getRandomFloat(0.0f, static_cast<float_t>(BoardSizeInTile::WIDTH  * ConfigDev::tileSize));
+    _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : Random::getRandomFloat(0.0f, static_cast<float_t>(BoardSizeInTile::HEIGHT * ConfigDev::tileSize));
 
     _Sprite.setPosition(static_cast<Vector2f>(_Position));
 
@@ -199,7 +199,7 @@ uint32_t Character::getSpeed() const
  * @brief Get character current position
  *
  */
-Vector2u Character::getPosition() const
+Vector2f Character::getPosition() const
 {
     return _Position;
 }
@@ -208,7 +208,7 @@ Vector2u Character::getPosition() const
  * @brief Get character previous position
  *
  */
-Vector2u Character::getPreviousPosition() const
+Vector2f Character::getPreviousPosition() const
 {
     return _PreviousPosition;
 }
@@ -301,63 +301,31 @@ bool Character::defend(const uint32_t damage)
 }
 
 /**
- * @brief Set new position of the player
+ * @brief Set new position of the character
  *
- * @param position Vector2u containing new position
+ * @param position Vector2f containing new position
  *
  */
-void Character::setPosition(const Vector2u position)
+void Character::setPosition(const Vector2f position)
 {
     _PreviousPosition = _Position;
     _Position         = position;
-    _Sprite.setPosition(static_cast<Vector2f>(_Position));
+    _Sprite.setPosition(_Position);
 }
 
 /**
- * @brief Set new position of the player
+ * @brief Set new position of the character
  *
  * @param x New position on x axis
  * @param y New position on y axis
  *
  */
-void Character::setPosition(const uint32_t x, const uint32_t y)
+void Character::setPosition(const float_t x, const float_t y)
 {
     _PreviousPosition = _Position;
     _Position.x       = x;
     _Position.y       = y;
-    _Sprite.setPosition(static_cast<Vector2f>(_Position));
-}
-
-/**
- * @brief Set new position of the player
- *
- * @param position Vector2u containing new position
- * @param changeFrame Boolean to change the frame displayed
- *
- */
-void Character::setPosition(const Vector2u position, const bool changeFrame)
-{
-    (void)changeFrame;
-    _PreviousPosition = _Position;
-    _Position         = position;
-    _Sprite.setPosition(static_cast<Vector2f>(_Position));
-}
-
-/**
- * @brief Set new position of the player
- *
- * @param x New position on x axis
- * @param y New position on y axis
- * @param changeFrame Boolean to change the frame displayed
- *
- */
-void Character::setPosition(const uint32_t x, const uint32_t y, const bool changeFrame)
-{
-    (void)changeFrame;
-    _PreviousPosition = _Position;
-    _Position.x       = x;
-    _Position.y       = y;
-    _Sprite.setPosition(static_cast<Vector2f>(_Position));
+    _Sprite.setPosition(_Position);
 }
 
 /**
@@ -378,17 +346,6 @@ void Character::presentation() const
     cout << "Hello, my name is " << _Name << " and I am " << _Attributes.Age << " years old." << endl;
     cout << "I am level " << _Attributes.Level << " and I have " << _Attributes.Health << " health points." << endl;
     cout << "I have " << _Attributes.Strength << " strength points, " << _Attributes.Defense << " defense points and " << _Attributes.Speed << " speed points." << endl;
-}
-
-/**
- * @brief Change the frame
- *
- * @param direction New direction to set
- *
- */
-void Character::updateFrame(const DirectionType direction)
-{
-    (void)direction;
 }
 
 /**
