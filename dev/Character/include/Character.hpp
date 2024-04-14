@@ -73,17 +73,14 @@ class Character
         /* Member functions (setters) */
         void setName(const string &name);
         bool defend(const uint32_t damage);
-        virtual void setPosition(const Vector2f position);
-        virtual void setPosition(const float_t x, const float_t y);
-        virtual void setPosition(const Vector2f position, const bool changeFrame);
-        virtual void setPosition(const float_t x, const float_t y, const bool changeFrame);
+        void setPosition(const Vector2f position);
+        void setPosition(const float_t x, const float_t y);
 
         /* Member functions (others) */
         void sayHello() const;
         void presentation() const;
         void updateHealthBar();
         bool attack(Character &defender);
-        virtual void updateFrame(const DirectionType direction);
 };
 
 #endif // __CHARACTER_HPP__

@@ -75,31 +75,14 @@ void Player::setMoney(const uint32_t money)
  * @brief Set new position of the player
  *
  * @param position Vector2f containing new position
- * @param changeFrame Boolean to change the frame displayed
+ * @param hasMoved Boolean to change the frame displayed
  *
  */
-void Player::setPosition(const Vector2f position, const bool changeFrame)
+void Player::setPosition(const Vector2f position, const bool hasMoved)
 {
-    if (changeFrame == true)
+    if (hasMoved == true)
     {
-        DirectionType newDirection = DirectionType::NONE;
-        if (_Position.x < position.x)
-        {
-            newDirection = DirectionType::RIGHT;
-        }
-        else if (_Position.x > position.x)
-        {
-            newDirection = DirectionType::LEFT;
-        }
-        else if (_Position.y < position.y)
-        {
-            newDirection = DirectionType::UP;
-        }
-        else if (_Position.y > position.y)
-        {
-            newDirection = DirectionType::DOWN;
-        }
-        updateFrame(newDirection);
+        _updateFrame(position);
     }
 
     _PreviousPosition = _Position;
@@ -112,31 +95,14 @@ void Player::setPosition(const Vector2f position, const bool changeFrame)
  *
  * @param x New position on x axis
  * @param y New position on y axis
- * @param changeFrame Boolean to change the frame displayed
+ * @param hasMoved Boolean to change the frame displayed
  *
  */
-void Player::setPosition(const float_t x, const float_t y, const bool changeFrame)
+void Player::setPosition(const float_t x, const float_t y, const bool hasMoved)
 {
-    if (changeFrame == true)
+    if (hasMoved == true)
     {
-        DirectionType newDirection = DirectionType::NONE;
-        if (_Position.x < x)
-        {
-            newDirection = DirectionType::RIGHT;
-        }
-        else if (_Position.x > x)
-        {
-            newDirection = DirectionType::LEFT;
-        }
-        else if (_Position.y < y)
-        {
-            newDirection = DirectionType::UP;
-        }
-        else if (_Position.y > y)
-        {
-            newDirection = DirectionType::DOWN;
-        }
-        updateFrame(newDirection);
+        _updateFrame(Vector2f(x, y));
     }
 
     _PreviousPosition = _Position;
@@ -148,31 +114,26 @@ void Player::setPosition(const float_t x, const float_t y, const bool changeFram
 /**
  * @brief Change the frame of the player
  *
- * @param direction New direction to set
+ * @param newDirection New direction to set
  *
  */
-void Player::updateFrame(const DirectionType direction)
+void Player::_updateFrame(const Vector2f newPosition)
 {
-    switch (direction)
+    if (_Position.x < newPosition.x)
     {
-        case DirectionType::UP:
-            _CurrentFrames     = &_UpFrames;
-            break;
-
-        case DirectionType::DOWN:
-            _CurrentFrames     = &_DownFrames;
-            break;
-
-        case DirectionType::LEFT:
-            _CurrentFrames     = &_LeftFrames;
-            break;
-
-        case DirectionType::RIGHT:
-            _CurrentFrames     = &_RightFrames;
-            break;
-
-        default:
-            break;
+        _CurrentFrames = &_RightFrames;
+    }
+    else if (_Position.x > newPosition.x)
+    {
+        _CurrentFrames = &_LeftFrames;
+    }
+    else if (_Position.y < newPosition.y)
+    {
+        _CurrentFrames = &_UpFrames;
+    }
+    else if (_Position.y > newPosition.y)
+    {
+        _CurrentFrames = &_DownFrames;
     }
 
     _CurrentFrameIndex = (_CurrentFrameIndex + 1U) % FRAMES_PER_DIRECTION;

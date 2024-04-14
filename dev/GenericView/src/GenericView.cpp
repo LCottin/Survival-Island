@@ -9,7 +9,7 @@ GenericView::GenericView(const uint32_t widthInPixel, const uint32_t heightInPix
     _LimitOffsetInPixel = limitOffsetInPixel;
 
     /* Set the size of the Minimap view */
-    _View.setSize(static_cast<float>(_WidthInPixel), static_cast<float>(_HeightInPixel));
+    _View.setSize(static_cast<float_t>(_WidthInPixel), static_cast<float_t>(_HeightInPixel));
 
     /* Calculate the viewport parameters */
     const float_t viewportLeft   = static_cast<float_t>(_Position.x)    / window.getSize().x;

@@ -77,7 +77,7 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
             const Vector2u playerSize     = _Player->getSize();
             const int32_t playerSpeed     = static_cast<int32_t>(_Player->getSpeed());
             Vector2f currentPos           = _Player->getPosition();
-            bool updateFrame              = false;
+            bool hasMoved                 = false;
 
             /* Move player left */
             if (sharedEvent.movePlayerLeft == true)
@@ -85,13 +85,13 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
                 if ((currentPos.x - playerSpeed) >= 0)
                 {
                     currentPos.x -= playerSpeed;
-                    updateFrame   = true;
+                    hasMoved      = true;
                 }
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
                     currentPos.x = 0;
-                    updateFrame  = false;
+                    hasMoved     = false;
                 }
             }
 
@@ -101,13 +101,13 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
                 if ((currentPos.x + playerSpeed + playerSize.x) <= _BoardSizeInPixel.x)
                 {
                     currentPos.x += playerSpeed;
-                    updateFrame  |= true;
+                    hasMoved     |= true;
                 }
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
                     currentPos.x  = _BoardSizeInPixel.x - playerSize.x;
-                    updateFrame  |= false;
+                    hasMoved     |= false;
                 }
             }
 
@@ -117,13 +117,13 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
                 if ((currentPos.y - playerSpeed) >= 0)
                 {
                     currentPos.y -= playerSpeed;
-                    updateFrame  |= true;
+                    hasMoved     |= true;
                 }
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
                     currentPos.y  = 0;
-                    updateFrame  |= false;
+                    hasMoved     |= false;
                 }
             }
 
@@ -133,18 +133,18 @@ void Game::_MovePlayer(const sharedEvents &sharedEvent)
                 if ((currentPos.y + playerSpeed + playerSize.y) <= _BoardSizeInPixel.y)
                 {
                     currentPos.y += playerSpeed;
-                    updateFrame  |= true;
+                    hasMoved     |= true;
                 }
                 else
                 {
                     /* Sprite out of bound, do not exceed window size */
                     currentPos.y  = _BoardSizeInPixel.y - playerSize.y;
-                    updateFrame  |= false;
+                    hasMoved     |= false;
                 }
             }
 
             /* Update player final position */
-            _Player->setPosition(currentPos, updateFrame);
+            _Player->setPosition(currentPos, hasMoved);
         }
         else
         {

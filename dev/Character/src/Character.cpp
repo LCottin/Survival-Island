@@ -301,7 +301,7 @@ bool Character::defend(const uint32_t damage)
 }
 
 /**
- * @brief Set new position of the player
+ * @brief Set new position of the character
  *
  * @param position Vector2f containing new position
  *
@@ -314,7 +314,7 @@ void Character::setPosition(const Vector2f position)
 }
 
 /**
- * @brief Set new position of the player
+ * @brief Set new position of the character
  *
  * @param x New position on x axis
  * @param y New position on y axis
@@ -322,38 +322,6 @@ void Character::setPosition(const Vector2f position)
  */
 void Character::setPosition(const float_t x, const float_t y)
 {
-    _PreviousPosition = _Position;
-    _Position.x       = x;
-    _Position.y       = y;
-    _Sprite.setPosition(_Position);
-}
-
-/**
- * @brief Set new position of the player
- *
- * @param position Vector2f containing new position
- * @param changeFrame Boolean to change the frame displayed
- *
- */
-void Character::setPosition(const Vector2f position, const bool changeFrame)
-{
-    (void)changeFrame;
-    _PreviousPosition = _Position;
-    _Position         = position;
-    _Sprite.setPosition(_Position);
-}
-
-/**
- * @brief Set new position of the player
- *
- * @param x New position on x axis
- * @param y New position on y axis
- * @param changeFrame Boolean to change the frame displayed
- *
- */
-void Character::setPosition(const float_t x, const float_t y, const bool changeFrame)
-{
-    (void)changeFrame;
     _PreviousPosition = _Position;
     _Position.x       = x;
     _Position.y       = y;
@@ -378,17 +346,6 @@ void Character::presentation() const
     cout << "Hello, my name is " << _Name << " and I am " << _Attributes.Age << " years old." << endl;
     cout << "I am level " << _Attributes.Level << " and I have " << _Attributes.Health << " health points." << endl;
     cout << "I have " << _Attributes.Strength << " strength points, " << _Attributes.Defense << " defense points and " << _Attributes.Speed << " speed points." << endl;
-}
-
-/**
- * @brief Change the frame
- *
- * @param direction New direction to set
- *
- */
-void Character::updateFrame(const DirectionType direction)
-{
-    (void)direction;
 }
 
 /**

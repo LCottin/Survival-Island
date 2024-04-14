@@ -25,16 +25,6 @@ enum class CharacterType : uint32_t
     COUNT,
 };
 
-enum class DirectionType : uint32_t
-{
-    NONE,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    COUNT,
-};
-
 extern const string CharacterDefaultName[static_cast<uint32_t>(CharacterType::COUNT)];
 
 #endif //__CHARACTER_PUB_HPP__
