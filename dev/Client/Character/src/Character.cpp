@@ -8,11 +8,13 @@
 Character::Character()
 {
     _Name = CharacterDefaultName[static_cast<uint32_t>(CharacterType::DEFAULT)];
+    _initCommon(CharacterType::DEFAULT);
 }
 
 Character::Character(const string &name)
 {
     _Name = name;
+    _initCommon(CharacterType::DEFAULT);
 }
 
 /* Destructor */
