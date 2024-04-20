@@ -13,7 +13,7 @@ namespace ConfigDev
 
     void loadConfig()
     {
-        ifstream configFile("../dev/Client/devConfig.json");
+        ifstream configFile("../dev/common/devConfig.json");
 
         if (configFile.is_open() == false)
         {
