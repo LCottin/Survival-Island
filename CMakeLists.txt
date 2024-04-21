@@ -30,7 +30,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 project(Survival-Island)
 
     find_package(nlohmann_json REQUIRED)
-    find_package(SFML 2.6.1 COMPONENTS graphics window REQUIRED)
+    find_package(SFML 2.6.1 COMPONENTS graphics window network REQUIRED)
 
     # Define directories
     set(DEV_COMMON_DIR ${CMAKE_SOURCE_DIR}/dev/common)
@@ -90,10 +90,12 @@ project(Survival-Island)
 
     # Collect server source files
     set(SERVER_SOURCES
-        ${DEV_SERVER_DIR}/main.cpp)
+        ${DEV_SERVER_DIR}/main.cpp
+        ${DEV_SERVER_DIR}/ServerNetwork/src/ServerNetwork.cpp)
 
     # Collect server headers files
-    set(SERVER_HEADERS)
+    set(SERVER_HEADERS
+        ${DEV_SERVER_DIR}/ServerNetwork/include/ServerNetwork.hpp)
 
     # Define include directories
     set(INCLUDE_COMMON
@@ -110,7 +112,7 @@ project(Survival-Island)
         ${DEV_CLIENT_DIR}/GenericView/include
         ${DEV_CLIENT_DIR}/Screen/include)
     set(INCLUDE_SERVER
-    )
+        ${DEV_SERVER_DIR}/ServerNetwork/include)
 
     # Define binaries
     set(COMMON_LIB ${PROJECT_NAME}_Lib)
@@ -161,7 +163,9 @@ project(Survival-Island)
 
     target_link_libraries(${SERVER_EXE} PRIVATE
                           ${CMAKE_DL_LIBS}
-                          ${COMMON_LIB})
+                          ${COMMON_LIB}
+                          nlohmann_json::nlohmann_json
+                          sfml-network)
 
     # Add source and header files to the target
     target_sources(${COMMON_LIB} PRIVATE ${COMMON_SOURCES} ${COMMON_HEADERS})
