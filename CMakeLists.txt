@@ -76,6 +76,7 @@ project(Survival-Island)
         ${DEV_CLIENT_DIR}/Game/src/Game.cpp
         ${DEV_CLIENT_DIR}/Screen/src/Screen.cpp
         ${DEV_CLIENT_DIR}/InfoPanel/src/InfoPanel.cpp
+        ${DEV_CLIENT_DIR}/ClientNetwork/src/ClientNetwork.cpp
         ${DEV_CLIENT_DIR}/GenericView/src/GenericView.cpp)
 
     # Collect client header files
@@ -86,7 +87,8 @@ project(Survival-Island)
         ${DEV_CLIENT_DIR}/Screen/include/Screen.hpp
         ${DEV_CLIENT_DIR}/Screen/include/ScreenPrv.hpp
         ${DEV_CLIENT_DIR}/InfoPanel/include/InfoPanel.hpp
-        ${DEV_CLIENT_DIR}/GenericView/include/GenericView.hpp)
+        ${DEV_CLIENT_DIR}/GenericView/include/GenericView.hpp
+        ${DEV_CLIENT_DIR}/ClientNetwork/include/ClientNetwork.hpp)
 
     # Collect server source files
     set(SERVER_SOURCES
@@ -110,6 +112,7 @@ project(Survival-Island)
         ${DEV_CLIENT_DIR}/Game/include
         ${DEV_CLIENT_DIR}/InfoPanel/include
         ${DEV_CLIENT_DIR}/GenericView/include
+        ${DEV_CLIENT_DIR}/ClientNetwork/include
         ${DEV_CLIENT_DIR}/Screen/include)
     set(INCLUDE_SERVER
         ${DEV_SERVER_DIR}/ServerNetwork/include)
@@ -159,7 +162,7 @@ project(Survival-Island)
                           ${CMAKE_DL_LIBS}
                           ${COMMON_LIB}
                           nlohmann_json::nlohmann_json
-                          sfml-graphics sfml-window)
+                          sfml-graphics sfml-window sfml-network)
 
     target_link_libraries(${SERVER_EXE} PRIVATE
                           ${CMAKE_DL_LIBS}
