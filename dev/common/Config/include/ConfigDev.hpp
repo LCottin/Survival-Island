@@ -17,6 +17,7 @@ namespace ConfigDev
     extern string   fontPath;
     extern int32_t  framerateLimit;
     extern uint32_t tileSize;
+    extern bool     configLoaded;
 
     extern void loadConfig();
 }

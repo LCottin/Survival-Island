@@ -22,6 +22,7 @@ namespace ConfigUser
     extern Keyboard::Key  leftKey;
     extern Keyboard::Key  rightKey;
     extern Keyboard::Key  pauseKey;
+    extern bool           configLoaded;
 
     extern bool loadConfig();
 }

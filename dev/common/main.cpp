@@ -5,6 +5,7 @@
 #include "Player.hpp"
 #include "ConfigDev.hpp"
 #include "ConfigUser.hpp"
+#include "ConfigNetwork.hpp"
 
 using namespace std;
 using namespace sf;
@@ -14,7 +15,8 @@ int main()
     /* Getting files */
     ConfigDev::loadConfig();
     ConfigUser::loadConfig();
-    
+    ConfigNetwork::loadConfig("localhost");
+
     /* Testing Board class */
     cout << "\nTesting Board class" << endl;
     Board board;

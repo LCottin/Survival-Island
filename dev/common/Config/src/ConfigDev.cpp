@@ -10,87 +10,97 @@ namespace ConfigDev
     string   fontPath;
     int32_t  framerateLimit;
     uint32_t tileSize;
+    bool     configLoaded = false;
 
     void loadConfig()
     {
-        ifstream configFile("../dev/common/devConfig.json");
-
-        if (configFile.is_open() == false)
+        if (configLoaded == false)
         {
-            throw runtime_error("Failed to open configDev file.");
-        }
+            configLoaded = true;
+            ifstream configFile("../dev/common/devConfig.json");
 
-        try
-        {
-            const json config = json::parse(configFile);
-
-            try
+            if (configFile.is_open() == false)
             {
-                tilesetImgPath = config["tilesetImgPath"].get<string>();
-            }
-            catch(const exception& e)
-            {
-                throw runtime_error("Failed to get tileset image path.");
+                throw runtime_error("Failed to open configDev file.");
             }
 
             try
             {
-                playerImgPath = config["playerImgPath"].get<string>();
-            }
-            catch(const exception& e)
-            {
-                throw runtime_error("Failed to get player image path.");
-            }
+                const json config = json::parse(configFile);
 
-            try
-            {
-                NPCImgPath = config["NPCImgPath"].get<string>();
-            }
-            catch(const exception& e)
-            {
-                throw runtime_error("Failed to get NPC image path.");
-            }
-
-            try
-            {
-                fontPath = config["fontPath"].get<string>();
-            }
-            catch(const exception& e)
-            {
-                throw runtime_error("Failed to get font path.");
-            }
-
-            try
-            {
-                framerateLimit = config["framerateLimit"].get<int32_t>();
-                if (framerateLimit < -1)
+                if ((config.is_null() == true) || (config.empty() == true))
                 {
-                    framerateLimit = -1;
+                    throw runtime_error("File devConfig.json is empty.");
                 }
-                if (framerateLimit > MAXIMUM_FRAMERATE_LIMIT)
+
+                try
                 {
-                    framerateLimit = MAXIMUM_FRAMERATE_LIMIT;
+                    tilesetImgPath = config["tilesetImgPath"].get<string>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get tileset image path.");
+                }
+
+                try
+                {
+                    playerImgPath = config["playerImgPath"].get<string>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get player image path.");
+                }
+
+                try
+                {
+                    NPCImgPath = config["NPCImgPath"].get<string>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get NPC image path.");
+                }
+
+                try
+                {
+                    fontPath = config["fontPath"].get<string>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get font path.");
+                }
+
+                try
+                {
+                    framerateLimit = config["framerateLimit"].get<int32_t>();
+                    if (framerateLimit < -1)
+                    {
+                        framerateLimit = -1;
+                    }
+                    if (framerateLimit > MAXIMUM_FRAMERATE_LIMIT)
+                    {
+                        framerateLimit = MAXIMUM_FRAMERATE_LIMIT;
+                    }
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get framerate limit.");
+                }
+
+                try
+                {
+                    tileSize = config["tileSize"].get<uint32_t>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get tile size.");
                 }
             }
-            catch(const exception& e)
+            catch (const exception& e)
             {
-                throw runtime_error("Failed to get framerate limit.");
+                throw runtime_error("Failed to parse configUser file.");
             }
 
-            try
-            {
-                tileSize = config["tileSize"].get<uint32_t>();
-            }
-            catch(const exception& e)
-            {
-                throw runtime_error("Failed to get tile size.");
-            }
+            configFile.close();
         }
-        catch (const exception& e)
-        {
-            throw runtime_error("Failed to parse configUser file.");
-        }
-
-        configFile.close();
     }
 }

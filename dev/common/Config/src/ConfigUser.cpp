@@ -67,179 +67,189 @@ namespace ConfigUser
     Keyboard::Key  leftKey;
     Keyboard::Key  rightKey;
     Keyboard::Key  pauseKey;
+    bool           configLoaded = false;
 
     bool loadConfig()
     {
-        ifstream configFile("../userConfig.json");
         bool toReturn = true;
 
-        if (configFile.is_open() == false)
+        if (configLoaded == false)
         {
-            throw runtime_error("Failed to open configUser file.");
-        }
+            configLoaded = true;
+            ifstream configFile("../userConfig.json");
 
-        try
-        {
-            const json config = json::parse(configFile);
-
-            try
+            if (configFile.is_open() == false)
             {
-                windowTitle = config["windowTitle"].get<string>();
-            }
-            catch (const exception& e)
-            {
-                /* Not critical value, hardcoded default */
-                windowTitle = DEFAULT_WINDOW_TITLE;
-                toReturn    = false;
+                throw runtime_error("Failed to open configUser file.");
             }
 
             try
             {
-                difficulty = config["difficulty"].get<GameDifficulty>();
-                if (difficulty > GameDifficulty::HARD)
+                const json config = json::parse(configFile);
+
+                if ((config.is_null() == true) || (config.empty() == true))
                 {
-                    difficulty = GameDifficulty::HARD;
+                    throw runtime_error("File userConfig.json is empty.");
                 }
-            }
-            catch (const exception& e)
-            {
-                /* Not critical value, hardcoded default */
-                difficulty = DEFAULT_DIFFICULTY;
-                toReturn   = false;
-            }
 
-            try
-            {
-                string upKeyString = toLowerCase(config["upKey"].get<string>());
-
-                auto key = keyMapping.find(upKeyString);
-                if (key != keyMapping.end())
+                try
                 {
-                    upKey = key->second;
+                    windowTitle = config["windowTitle"].get<string>();
                 }
-                else
+                catch (const exception& e)
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << upKeyString << "'. Using default." << endl;
+                    windowTitle = DEFAULT_WINDOW_TITLE;
+                    toReturn    = false;
+                }
+
+                try
+                {
+                    difficulty = config["difficulty"].get<GameDifficulty>();
+                    if (difficulty > GameDifficulty::HARD)
+                    {
+                        difficulty = GameDifficulty::HARD;
+                    }
+                }
+                catch (const exception& e)
+                {
+                    /* Not critical value, hardcoded default */
+                    difficulty = DEFAULT_DIFFICULTY;
+                    toReturn   = false;
+                }
+
+                try
+                {
+                    string upKeyString = toLowerCase(config["upKey"].get<string>());
+
+                    auto key = keyMapping.find(upKeyString);
+                    if (key != keyMapping.end())
+                    {
+                        upKey = key->second;
+                    }
+                    else
+                    {
+                        /* Not critical value, hardcoded default */
+                        cerr << "Warning: Unknown key '" << upKeyString << "'. Using default." << endl;
+                        upKey    = DEFAULT_UP_KEY;
+                        toReturn = false;
+                    }
+                }
+                catch (const exception& e)
+                {
+                    /* Not critical value, hardcoded default */
+                    cerr << "Error: Failed to parse upKey. Using default." << endl;
                     upKey    = DEFAULT_UP_KEY;
                     toReturn = false;
                 }
-            }
-            catch (const exception& e)
-            {
-                /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse upKey. Using default." << endl;
-                upKey    = DEFAULT_UP_KEY;
-                toReturn = false;
-            }
 
-            try
-            {
-                string downKeyString = toLowerCase(config["downKey"].get<string>());
-
-                auto key = keyMapping.find(downKeyString);
-                if (key != keyMapping.end())
+                try
                 {
-                    downKey = key->second;
+                    string downKeyString = toLowerCase(config["downKey"].get<string>());
+
+                    auto key = keyMapping.find(downKeyString);
+                    if (key != keyMapping.end())
+                    {
+                        downKey = key->second;
+                    }
+                    else
+                    {
+                        /* Not critical value, hardcoded default */
+                        cerr << "Warning: Unknown key '" << downKeyString << "'. Using default." << endl;
+                        downKey  = DEFAULT_DOWN_KEY;
+                        toReturn = false;
+                    }
                 }
-                else
+                catch (const exception& e)
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << downKeyString << "'. Using default." << endl;
+                    cerr << "Error: Failed to parse downKey. Using default." << endl;
                     downKey  = DEFAULT_DOWN_KEY;
                     toReturn = false;
                 }
-            }
-            catch (const exception& e)
-            {
-                /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse downKey. Using default." << endl;
-                downKey  = DEFAULT_DOWN_KEY;
-                toReturn = false;
-            }
 
-            try
-            {
-                string leftKeyString = toLowerCase(config["leftKey"].get<string>());
-
-                auto key = keyMapping.find(leftKeyString);
-                if (key != keyMapping.end())
+                try
                 {
-                    leftKey = key->second;
+                    string leftKeyString = toLowerCase(config["leftKey"].get<string>());
+
+                    auto key = keyMapping.find(leftKeyString);
+                    if (key != keyMapping.end())
+                    {
+                        leftKey = key->second;
+                    }
+                    else
+                    {
+                        /* Not critical value, hardcoded default */
+                        cerr << "Warning: Unknown key '" << leftKeyString << "'. Using default." << endl;
+                        leftKey  = DEFAULT_LEFT_KEY;
+                        toReturn = false;
+                    }
                 }
-                else
+                catch (const exception& e)
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << leftKeyString << "'. Using default." << endl;
+                    cerr << "Error: Failed to parse leftKey. Using default." << endl;
                     leftKey  = DEFAULT_LEFT_KEY;
                     toReturn = false;
                 }
-            }
-            catch (const exception& e)
-            {
-                /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse leftKey. Using default." << endl;
-                leftKey  = DEFAULT_LEFT_KEY;
-                toReturn = false;
-            }
 
-            try
-            {
-                string rightKeyString = toLowerCase(config["rightKey"].get<string>());
-
-                auto key = keyMapping.find(rightKeyString);
-                if (key != keyMapping.end())
+                try
                 {
-                    rightKey = key->second;
+                    string rightKeyString = toLowerCase(config["rightKey"].get<string>());
+
+                    auto key = keyMapping.find(rightKeyString);
+                    if (key != keyMapping.end())
+                    {
+                        rightKey = key->second;
+                    }
+                    else
+                    {
+                        /* Not critical value, hardcoded default */
+                        cerr << "Warning: Unknown key '" << rightKeyString << "'. Using default." << endl;
+                        rightKey = DEFAULT_RIGHT_KEY;
+                        toReturn = false;
+                    }
                 }
-                else
+                catch (const exception& e)
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << rightKeyString << "'. Using default." << endl;
-                    rightKey = DEFAULT_RIGHT_KEY;
+                    cerr << "Error: Failed to parse rightKey. Using default." << endl;
+                    rightKey = DEFAULT_UP_KEY;
                     toReturn = false;
                 }
-            }
-            catch (const exception& e)
-            {
-                /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse rightKey. Using default." << endl;
-                rightKey = DEFAULT_UP_KEY;
-                toReturn = false;
-            }
 
-            try
-            {
-                string pauseKeyString = toLowerCase(config["pauseKey"].get<string>());
-
-                auto key = keyMapping.find(pauseKeyString);
-                if (key != keyMapping.end())
+                try
                 {
-                    pauseKey = key->second;
+                    string pauseKeyString = toLowerCase(config["pauseKey"].get<string>());
+
+                    auto key = keyMapping.find(pauseKeyString);
+                    if (key != keyMapping.end())
+                    {
+                        pauseKey = key->second;
+                    }
+                    else
+                    {
+                        /* Not critical value, hardcoded default */
+                        cerr << "Warning: Unknown key '" << pauseKeyString << "'. Using default." << endl;
+                        pauseKey = DEFAULT_PAUSE_KEY;
+                        toReturn = false;
+                    }
                 }
-                else
+                catch (const exception& e)
                 {
                     /* Not critical value, hardcoded default */
-                    cerr << "Warning: Unknown key '" << pauseKeyString << "'. Using default." << endl;
+                    cerr << "Error: Failed to parse pauseKey. Using default." << endl;
                     pauseKey = DEFAULT_PAUSE_KEY;
                     toReturn = false;
                 }
             }
             catch (const exception& e)
             {
-                /* Not critical value, hardcoded default */
-                cerr << "Error: Failed to parse pauseKey. Using default." << endl;
-                pauseKey = DEFAULT_PAUSE_KEY;
-                toReturn = false;
+                throw runtime_error("Failed to parse configUser file.");
             }
-        }
-        catch (const exception& e)
-        {
-            throw runtime_error("Failed to parse configUser file.");
-        }
 
-        configFile.close();
-
+            configFile.close();
+        }
         return toReturn;
     }
 }

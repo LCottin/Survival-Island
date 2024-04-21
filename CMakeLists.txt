@@ -50,7 +50,8 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/Random/src/Random.cpp
         ${DEV_COMMON_DIR}/Config/src/ConfigDev.cpp
         ${DEV_COMMON_DIR}/Config/src/ConfigUser.cpp
-        ${DEV_COMMON_DIR}/Config/src/ConfigUserPub.cpp)
+        ${DEV_COMMON_DIR}/Config/src/ConfigUserPub.cpp
+        ${DEV_COMMON_DIR}/Config/src/ConfigNetwork.cpp)
 
     # Collect common header files
     set(COMMON_HEADERS
@@ -66,6 +67,7 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/Config/include/ConfigDev.hpp
         ${DEV_COMMON_DIR}/Config/include/ConfigUser.hpp
         ${DEV_COMMON_DIR}/Config/include/ConfigUserPub.hpp
+        ${DEV_COMMON_DIR}/Config/include/ConfigNetwork.hpp
         ${DEV_COMMON_DIR}/FastNoise/include/FastNoiseLite.hpp)
 
     # Collect client source files
