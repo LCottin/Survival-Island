@@ -1,5 +1,4 @@
 #include "NPC.hpp"
-#include "NPCPub.hpp"
 #include "NPCPrv.hpp"
 #include "Random.hpp"
 #include "ConfigDev.hpp"

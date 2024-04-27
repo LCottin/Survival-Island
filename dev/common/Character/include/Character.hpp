@@ -65,6 +65,7 @@ class Character
         Vector2f        getPreviousPosition() const;
         Vector2u        getScale()            const;
         Vector2u        getSize()             const;
+        CharacterType   getType()             const;
         Sprite&         getSprite();
         RectangleShape& getHealthBar();
         bool            isAlive()             const;

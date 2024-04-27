@@ -2,6 +2,7 @@
 #define __NPC_HPP__
 
 #include "Character.hpp"
+#include "NPCPub.hpp"
 
 class NPC: public Character
 {

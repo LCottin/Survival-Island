@@ -234,6 +234,15 @@ Vector2u Character::getSize() const
 }
 
 /**
+ * @brief Return character current type
+ *
+ */
+CharacterType Character::getType() const
+{
+    return _Type;
+}
+
+/**
  * @brief Get the current sprite
  *
  */
