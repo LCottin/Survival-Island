@@ -6,6 +6,7 @@
 #include "NPC.hpp"
 #include "Board.hpp"
 #include "GamePub.hpp"
+#include "ClientNetwork.hpp"
 
 using namespace std;
 using namespace sf;
@@ -17,6 +18,8 @@ class Game
         shared_ptr<Board>                   _Board;
         shared_ptr<Screen>                  _Screen;
         shared_ptr<vector<shared_ptr<NPC>>> _NPCs;
+
+        unique_ptr<ClientNetwork> _ClientNetwork;
 
         Vector2u   _BoardSizeInPixel;
         GameStatus _GameStatus;
@@ -30,7 +33,7 @@ class Game
         bool _AreClose(const Player &player, const NPC &npc, const uint32_t threshold) const;
 
     public:
-        Game(const string &playerName);
+        Game(const string &playerName, const string &configName);
 
         void play();
 

@@ -5,14 +5,15 @@
 #include "ConfigDev.hpp"
 #include "Random.hpp"
 
-Game::Game(const string &playerName)
+Game::Game(const string &playerName, const string &configName)
 {
     _GameStatus = GameStatus::INIT;
 
-    _Player = make_shared<Player>(playerName);
-    _Board  = make_shared<Board>();
-    _Screen = make_shared<Screen>(ConfigUser::windowTitle);
-    _NPCs   = make_shared<vector<shared_ptr<NPC>>>(10U * static_cast<uint32_t>(ConfigUser::difficulty));
+    _ClientNetwork = make_unique<ClientNetwork>(configName);
+    _Player        = make_shared<Player>(playerName);
+    _Board         = make_shared<Board>();
+    _Screen        = make_shared<Screen>(ConfigUser::windowTitle);
+    _NPCs          = make_shared<vector<shared_ptr<NPC>>>(10U * static_cast<uint32_t>(ConfigUser::difficulty));
 
     for (size_t i = 0; i < _NPCs->size(); i++)
     {
@@ -21,6 +22,22 @@ Game::Game(const string &playerName)
 
     _Board->computeVertices(ConfigDev::tileSize, _Screen->getImageSize());
     _BoardSizeInPixel  = Vector2u(_Board->getWidthInTile() * ConfigDev::tileSize, _Board->getHeightInTile() * ConfigDev::tileSize);
+
+    /* Create Characters on server side */
+    _ClientNetwork->connectCharacter(*_Player);
+    string confirmation = _ClientNetwork->receiveData();
+    if (confirmation == "OK")
+    {
+        for (size_t i = 0; i < _NPCs->size(); i++)
+        {
+            _ClientNetwork->connectCharacter(*_NPCs->at(i));
+            _ClientNetwork->receiveData();
+        }
+    }
+    else
+    {
+        cout << "Error, Received from server : " << confirmation << endl;
+    }
 }
 
 /**

@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "Player.hpp"
+#include "Character.hpp"
 #include "SFML/Network.hpp"
 
 using namespace std;
@@ -16,6 +16,7 @@ class ClientNetwork
         string    _IPAddress;
         string    _ConfigName;
         TcpSocket _Server;
+        Packet    _Packet;
 
         void _initCommon();
 
@@ -23,9 +24,9 @@ class ClientNetwork
         ClientNetwork();
         ClientNetwork(const string &configName);
 
-        void receiveData()  const;
+        string receiveData();
         void sendData()     const;
-        void connectPlayer(const Player& player);
+        void connectCharacter(const Character& character);
 
         ~ClientNetwork();
 };

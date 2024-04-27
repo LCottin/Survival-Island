@@ -22,16 +22,46 @@ void ClientNetwork::_initCommon()
 
     if (_Server.connect(_IPAddress, _Port) != Socket::Done)
     {
-        throw invalid_argument("Failed to connect to server.");
+        throw runtime_error("Failed to connect to server.");
     }
 }
 
-void ClientNetwork::connectPlayer(const Player& player)
+/**
+ * @brief Send a character to be created by server
+ *
+ * @param character character to send
+ */
+void ClientNetwork::connectCharacter(const Character& character)
 {
-    Packet packet;
-    packet << player.getName();
+    _Packet.clear();
 
-    _Server.send(packet);
+    _Packet << character.getName() << static_cast<uint32_t>(character.getType());
+
+    if (_Server.send(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to connect character.");
+    }
+}
+
+/**
+ * @brief Receive data from the server
+ *
+ * @return string Data received
+ */
+string ClientNetwork::receiveData()
+{
+    string data;
+
+    _Packet.clear();
+
+    if (_Server.receive(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to receive data from server.");
+    }
+
+    _Packet >> data;
+
+    return data;
 }
 
 ClientNetwork::~ClientNetwork()

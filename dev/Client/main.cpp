@@ -4,7 +4,6 @@
 #include "ConfigDev.hpp"
 #include "ConfigUser.hpp"
 #include "ConfigNetwork.hpp"
-#include "ClientNetwork.hpp"
 
 using namespace std;
 
@@ -14,12 +13,7 @@ int main()
     ConfigUser::loadConfig();
     ConfigNetwork::loadConfig("localhost");
 
-    Player player("LCottin");
-
-    ClientNetwork clientNetwork("localhost");
-    clientNetwork.connectPlayer(player);
-
-    Game game("LCottin");
+    Game game("LCottin", "localhost");
 
     game.play();
 
