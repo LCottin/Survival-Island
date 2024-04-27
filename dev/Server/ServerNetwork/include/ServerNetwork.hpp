@@ -4,7 +4,9 @@
 #include <iostream>
 #include <SFML/Network.hpp>
 
+#include "Character.hpp"
 #include "Player.hpp"
+#include "NPC.hpp"
 
 using namespace std;
 using namespace sf;
@@ -16,6 +18,7 @@ class ServerNetwork
         string      _ConfigName;
         TcpListener _Listener;
         TcpSocket   _Client;
+        Packet      _Packet;
 
         void _initCommon();
 
@@ -23,10 +26,11 @@ class ServerNetwork
         ServerNetwork();
         ServerNetwork(const string &configName);
 
-        Player& createPlayer() const;
-        void    waitForPlayer();
-        void    receiveData()  const;
-        void    sendData()     const;
+        void createCharacter(Packet &packet, shared_ptr<Player> player, shared_ptr<vector<shared_ptr<NPC>>> NPClist) const;
+        void waitForCharacter(shared_ptr<Player> player, shared_ptr<vector<shared_ptr<NPC>>> NPClist);
+        void acceptClient();
+        void receiveData()  const;
+        void sendData()     const;
 
         ~ServerNetwork();
 };
