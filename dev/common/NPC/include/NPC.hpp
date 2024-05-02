@@ -19,6 +19,9 @@ class NPC: public Character
 
         /* Member functions (setters) */
 
+        /* Member functions (getters) */
+        string getColor() const;
+
         /* Member functions (others) */
 };
 

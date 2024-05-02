@@ -63,3 +63,12 @@ void NPC::_initNPC()
     _Sprite.scale(static_cast<Vector2f>(_Scale));
     _Sprite.setTexture(_Texture);
 }
+
+/**
+ * @brief Return the color of the NPC
+ *
+ */
+string NPC::getColor() const
+{
+    return _Color;
+}
