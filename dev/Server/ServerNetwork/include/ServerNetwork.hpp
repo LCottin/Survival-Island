@@ -21,16 +21,20 @@ class ServerNetwork
         Packet      _Packet;
 
         void _initCommon();
+        void _acceptClient();
+        bool _waitForConfirmation();
+        void _sendConfirmation();
 
     public:
         ServerNetwork();
         ServerNetwork(const string &configName);
 
-        void createCharacter(Packet &packet, shared_ptr<Player> player, shared_ptr<vector<shared_ptr<NPC>>> NPClist) const;
-        void waitForCharacter(shared_ptr<Player> player, shared_ptr<vector<shared_ptr<NPC>>> NPClist);
-        void acceptClient();
-        void receiveData()  const;
-        void sendData()     const;
+        uint32_t receiveData(string *data,   const uint32_t sizeOfArray);
+        uint32_t receiveData(uint32_t *data, const uint32_t sizeOfArray);
+
+        void sendData(const string *data,   const uint32_t sizeOfArray);
+        void sendData(const uint32_t *data, const uint32_t sizeOfArray);
+        void sendNPC(const NPC &npc);
 
         ~ServerNetwork();
 };

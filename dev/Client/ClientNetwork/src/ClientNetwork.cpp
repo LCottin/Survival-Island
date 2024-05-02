@@ -27,30 +27,75 @@ void ClientNetwork::_initCommon()
 }
 
 /**
- * @brief Send a character to be created by server
+ * @brief Wait for a confirmation that the server has received the message
  *
- * @param character character to send
  */
-void ClientNetwork::connectCharacter(const Character& character)
+bool ClientNetwork::_waitForConfirmation()
 {
+    string confirmation;
+
     _Packet.clear();
 
-    _Packet << character.getName() << static_cast<uint32_t>(character.getType());
+    if (_Server.receive(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to receive confirmation from server.");
+    }
+
+    _Packet >> confirmation;
+    return (confirmation == "OK from server");
+}
+
+/**
+ * @brief Send confirmation to server
+ *
+ */
+void ClientNetwork::_sendConfirmation()
+{
+    const string confirmation = "OK from client";
+
+    _Packet.clear();
+    _Packet << confirmation;
 
     if (_Server.send(_Packet) != Socket::Done)
     {
-        throw runtime_error("Failed to connect character.");
+        throw runtime_error("Failed to send confirmation to server.");
     }
 }
 
 /**
- * @brief Receive data from the server
+ * @brief Send data to server
  *
- * @return string Data received
+ * @param data Array of data to send
+ * @param sizeOfArray size max of the array
  */
-string ClientNetwork::receiveData()
+void ClientNetwork::sendData(const string *data, const uint32_t sizeOfArray)
 {
-    string data;
+    _Packet.clear();
+
+    for (size_t i = 0; i < sizeOfArray; i++)
+    {
+        _Packet << data[i];
+    }
+
+    if (_Server.send(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to send data to server.");
+    }
+
+    // _waitForConfirmation();
+}
+
+/**
+ * @brief Receive data from server
+ *
+ * @param data data received
+ * @param sizeOfArray size max of the array
+ * @return uint32_t number of data received
+ */
+uint32_t ClientNetwork::receiveData(string *data, const uint32_t sizeOfArray)
+{
+    uint32_t numberOfDataReceived = 0;
+    string tmpData;
 
     _Packet.clear();
 
@@ -59,9 +104,46 @@ string ClientNetwork::receiveData()
         throw runtime_error("Failed to receive data from server.");
     }
 
-    _Packet >> data;
+    // _sendConfirmation();
 
-    return data;
+    for (size_t i = 0; i < sizeOfArray; ++i)
+    {
+        data[i].clear();
+    }
+
+    while ((numberOfDataReceived < sizeOfArray) && (_Packet >> data[numberOfDataReceived]))
+    {
+        numberOfDataReceived++;
+    }
+
+    return numberOfDataReceived;
+}
+
+/**
+ * @brief Receive data from server
+ *
+ * @param data data received
+ * @param sizeOfArray size max of the array
+ * @return uint32_t number of data received
+ */
+uint32_t ClientNetwork::receiveData(uint32_t *data, const uint32_t sizeOfArray)
+{
+    uint32_t numberOfDataReceived = 0;
+    _Packet.clear();
+
+    if (_Server.receive(_Packet) != Socket::Done)
+    {
+        throw std::runtime_error("Failed to receive data from server.");
+    }
+
+    // _sendConfirmation();
+
+    while ((numberOfDataReceived < sizeOfArray) && (_Packet >> data[numberOfDataReceived]))
+    {
+        numberOfDataReceived++;
+    }
+
+    return numberOfDataReceived;
 }
 
 ClientNetwork::~ClientNetwork()

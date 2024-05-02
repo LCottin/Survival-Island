@@ -24,14 +24,14 @@ void ServerNetwork::_initCommon()
 
     _Listener.listen(_Port);
 
-    acceptClient();
+    _acceptClient();
 }
 
 /**
  * @brief Accept an incoming connection
  *
  */
-void ServerNetwork::acceptClient()
+void ServerNetwork::_acceptClient()
 {
     if (_Listener.accept(_Client) != Socket::Done)
     {
@@ -40,40 +40,117 @@ void ServerNetwork::acceptClient()
 }
 
 /**
- * @brief Create a character from a given packet
+ * @brief Wait for a confirmation that the client has received the message
  *
- * @param packet Received data
- * @return shared_ptr<Character> Character created
  */
-void ServerNetwork::createCharacter(Packet &packet, shared_ptr<Player> player, shared_ptr<vector<shared_ptr<NPC>>> NPClist) const
+bool ServerNetwork::_waitForConfirmation()
 {
-    string   characterName;
-    uint32_t characterType;
-    uint32_t characterColor;
-    static int i = 0;
+    string confirmation;
 
-    packet >> characterName >> characterType >> characterColor;
+    _Packet.clear();
 
-    if (static_cast<CharacterType>(characterType) == CharacterType::PLAYER)
+    if (_Client.receive(_Packet) != Socket::Done)
     {
-        player = make_shared<Player>(characterName);
+        throw runtime_error("Failed to receive confirmation from client.");
     }
-    else if (static_cast<CharacterType>(characterType) == CharacterType::NPC)
+
+    _Packet >> confirmation;
+    return (confirmation == "OK from client");
+}
+
+/**
+ * @brief Send confirmation to client
+ *
+ */
+void ServerNetwork::_sendConfirmation()
+{
+    const string confirmation = "OK from server";
+
+    _Packet.clear();
+    _Packet << confirmation;
+
+    if (_Client.send(_Packet) != Socket::Done)
     {
-        NPClist->at(i) = make_shared<NPC>(characterName, NPCColorsString[characterColor]);
-        i++;
+        throw runtime_error("Failed to send confirmation to client.");
     }
 }
 
 /**
- * @brief wait for a character to connect
+ * @brief Send a NPC to client
  *
- * @param player Player of the game
- * @param NPClist List of all NPCs
+ * @param npc NPC to send
  */
-void ServerNetwork::waitForCharacter(shared_ptr<Player> player, shared_ptr<vector<shared_ptr<NPC>>> NPClist)
+void ServerNetwork::sendNPC(const NPC &npc)
 {
-    const string confirmation = "OK";
+    _Packet.clear();
+
+    _Packet << npc.getName() << npc.getColor();
+
+    if (_Client.send(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to send NPC to client.");
+    }
+
+    // _waitForConfirmation();
+}
+
+/**
+ * @brief Send data to server
+ *
+ * @param data Array of data to send
+ * @param sizeOfArray size max of the array
+ */
+void ServerNetwork::sendData(const string *data, const uint32_t sizeOfArray)
+{
+    _Packet.clear();
+
+    for (size_t i = 0; i < sizeOfArray; i++)
+    {
+        _Packet << data[i];
+    }
+
+    if (_Client.send(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to send data to client.");
+    }
+
+    // _waitForConfirmation();
+}
+
+/**
+ * @brief Send data to server
+ *
+ * @param data Array of data to send
+ * @param sizeOfArray size max of the array
+ */
+void ServerNetwork::sendData(const uint32_t *data, const uint32_t sizeOfArray)
+{
+    _Packet.clear();
+
+    for (size_t i = 0; i < sizeOfArray; i++)
+    {
+        _Packet << data[i];
+    }
+
+    if (_Client.send(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to send data to client.");
+    }
+
+    // _waitForConfirmation();
+}
+
+/**
+ * @brief Receive data from server
+ *
+ * @param data data received
+ * @param sizeOfArray size max of the array
+ * @return uint32_t number of data received
+ */
+uint32_t ServerNetwork::receiveData(string *data, const uint32_t sizeOfArray)
+{
+    uint32_t numberOfDataReceived = 0;
+    string tmpData;
 
     _Packet.clear();
 
@@ -82,15 +159,46 @@ void ServerNetwork::waitForCharacter(shared_ptr<Player> player, shared_ptr<vecto
         throw runtime_error("Failed to receive data from client.");
     }
 
-    createCharacter(_Packet, player, NPClist);
+    // _sendConfirmation();
 
-    _Packet.clear();
-    _Packet << confirmation;
-
-    if (_Client.send(_Packet) != Socket::Done)
+    for (size_t i = 0; i < sizeOfArray; i++)
     {
-        throw runtime_error("Failed to send data to client.");
+        data[i].clear();
     }
+
+    while ((numberOfDataReceived < sizeOfArray) && (_Packet >> data[numberOfDataReceived]))
+    {
+        numberOfDataReceived++;
+    }
+
+    return numberOfDataReceived;
+}
+
+/**
+ * @brief Receive data from server
+ *
+ * @param data data received
+ * @param sizeOfArray size max of the array
+ * @return uint32_t number of data received
+ */
+uint32_t ServerNetwork::receiveData(uint32_t *data, const uint32_t sizeOfArray)
+{
+    uint32_t numberOfDataReceived = 0;
+    _Packet.clear();
+
+    if (_Client.receive(_Packet) != Socket::Done)
+    {
+        throw std::runtime_error("Failed to receive data from client.");
+    }
+
+    // _sendConfirmation();
+
+    while ((numberOfDataReceived < sizeOfArray) && (_Packet >> data[numberOfDataReceived]))
+    {
+        numberOfDataReceived++;
+    }
+
+    return numberOfDataReceived;
 }
 
 ServerNetwork::~ServerNetwork()

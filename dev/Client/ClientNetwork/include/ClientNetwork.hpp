@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include "Character.hpp"
 #include "SFML/Network.hpp"
 
 using namespace std;
@@ -19,14 +18,16 @@ class ClientNetwork
         Packet    _Packet;
 
         void _initCommon();
+        bool _waitForConfirmation();
+        void _sendConfirmation();
 
     public:
         ClientNetwork();
         ClientNetwork(const string &configName);
 
-        string receiveData();
-        void sendData()     const;
-        void connectCharacter(const Character& character);
+        uint32_t receiveData(string *data,   const uint32_t sizeOfArray);
+        uint32_t receiveData(uint32_t *data, const uint32_t sizeOfArray);
+        void     sendData(const string *data, const uint32_t sizeOfArray);
 
         ~ClientNetwork();
 };
