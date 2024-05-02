@@ -6,8 +6,8 @@
 
 Screen::Screen(const string &title)
 {
-    _TileSize    = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
-    _WindowTitle = title;
+    _WindowTitle         = title;
+    _TileSize            = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
 
     if (_TilesetTexture.loadFromFile(ConfigDev::tilesetImgPath) == false)
     {
@@ -171,15 +171,6 @@ void Screen::handleAllEvents(sharedEvents &sharedEvent)
             }
         }
     }
-}
-
-/**
- * @brief Return image size
- *
- */
-Vector2u Screen::getImageSize() const
-{
-    return Vector2u(ImageSizeInPixel::WIDTH, ImageSizeInPixel::HEIGHT);
 }
 
 /**

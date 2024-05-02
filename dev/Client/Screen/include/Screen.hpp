@@ -45,7 +45,6 @@ class Screen
     public:
         Screen(const string &title);
 
-        Vector2u getImageSize()   const;
         bool     isWindowOpen()   const;
 
         void handleAllEvents(sharedEvents &sharedEvent);

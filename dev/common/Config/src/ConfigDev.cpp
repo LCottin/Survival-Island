@@ -10,6 +10,8 @@ namespace ConfigDev
     string   fontPath;
     int32_t  framerateLimit;
     uint32_t tileSize;
+    uint32_t imageSizeTileWidth;
+    uint32_t imageSizeTileHeight;
     bool     configLoaded = false;
 
     void loadConfig()
@@ -93,6 +95,24 @@ namespace ConfigDev
                 catch(const exception& e)
                 {
                     throw runtime_error("Failed to get tile size.");
+                }
+
+                try
+                {
+                    imageSizeTileWidth = config["imageSizeTileWidth"].get<uint32_t>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get width of image size.");
+                }
+
+                try
+                {
+                    imageSizeTileHeight = config["imageSizeTileHeight"].get<uint32_t>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get height of image size.");
                 }
             }
             catch (const exception& e)
