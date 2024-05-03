@@ -10,33 +10,28 @@ Game::Game(const string &playerName, const string &configName)
     _GameStatus = GameStatus::INIT;
 
     _ClientNetwork = make_unique<ClientNetwork>(configName);
-    _Player        = make_shared<Player>(playerName);
     _Board         = make_shared<Board>();
+    _Player        = make_shared<Player>(playerName);
     _Screen        = make_shared<Screen>(ConfigUser::windowTitle);
-    _NPCs          = make_shared<vector<shared_ptr<NPC>>>(10U * static_cast<uint32_t>(ConfigUser::difficulty));
+    _NPCs          = make_shared<vector<shared_ptr<NPC>>>(1);
 
-    for (size_t i = 0; i < _NPCs->size(); i++)
-    {
-        _NPCs->at(i) = make_shared<NPC>("NPC_" + to_string(i), NPCColorsString[Random::getRandomInteger(0, static_cast<uint32_t>(NPCColors::COUNT) - 1U)]);
-    }
-
-    _Board->computeVertices(ConfigDev::tileSize, _Screen->getImageSize());
+    _Board->computeVertices(ConfigDev::tileSize, Vector2u(ConfigDev::imageSizeTileWidth, ConfigDev::imageSizeTileHeight));
     _BoardSizeInPixel  = Vector2u(_Board->getWidthInTile() * ConfigDev::tileSize, _Board->getHeightInTile() * ConfigDev::tileSize);
 
-    /* Create Characters on server side */
-    _ClientNetwork->connectCharacter(*_Player);
-    string confirmation = _ClientNetwork->receiveData();
-    if (confirmation == "OK")
+    /* Send player name to server */
+    _ClientNetwork->sendData(&playerName, 1U);
+
+    /* Get NPC size list from server */
+    uint32_t NPCListSize;
+    _ClientNetwork->receiveData(&NPCListSize, 1U);
+    _NPCs->resize(NPCListSize);
+
+    /* Receive NPCs from server */
+    for (size_t i = 0; i < NPCListSize; i++)
     {
-        for (size_t i = 0; i < _NPCs->size(); i++)
-        {
-            _ClientNetwork->connectCharacter(*_NPCs->at(i));
-            _ClientNetwork->receiveData();
-        }
-    }
-    else
-    {
-        cout << "Error, Received from server : " << confirmation << endl;
+        string data[2];
+        _ClientNetwork->receiveData(data, 2U);
+        _NPCs->at(i) = make_shared<NPC>(data[0], data[1]);
     }
 }
 
@@ -55,7 +50,7 @@ void Game::_ResetSharedEvent(sharedEvents &sharedEvent)
 }
 
 /**
- * @brief Main loop of the game
+ * @brief Main loop of the game on client side
  *
  */
 void Game::play()
@@ -336,8 +331,4 @@ bool Game::_AreClose(const Player &player, const NPC &npc, const uint32_t thresh
     const float_t distanceY = abs(playerPos.y - npcPos.y) - (playerSize.y + npcSize.y) / 2.0f;
 
     return ((distanceX < threshold) && (distanceY < threshold));
-}
-
-Game::~Game()
-{
 }
