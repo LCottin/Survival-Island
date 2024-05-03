@@ -6,23 +6,27 @@
 /* Constructors */
 NPC::NPC() : Character()
 {
+    _Type  = CharacterType::NPC;
     _Name  = CharacterDefaultName[static_cast<uint32_t>(_Type)];
     _Color = NPCColorsString[Random::getRandomInteger(0, static_cast<uint32_t>(NPCColors::COUNT) - 1U)];
 
-    _initCommon(CharacterType::NPC);
+    _initCommon(_Type);
     _initNPC();
 }
 
 NPC::NPC(const string &name) : Character(name)
 {
+    _Type  = CharacterType::NPC;
     _Color = NPCColorsString[Random::getRandomInteger(0, static_cast<uint32_t>(NPCColors::COUNT) - 1U)];
 
-    _initCommon(CharacterType::NPC);
+    _initCommon(_Type);
     _initNPC();
 }
 
 NPC::NPC(const string &name, const string &color) : Character(name)
 {
+    _Type  = CharacterType::NPC;
+
     /* Makes sure color exists among available ones */
     bool colorExists = false;
     for (size_t i = 0; i < static_cast<uint32_t>(NPCColors::COUNT); i++)
@@ -42,7 +46,7 @@ NPC::NPC(const string &name, const string &color) : Character(name)
         _Color = NPCColorsString[Random::getRandomInteger(0, static_cast<uint32_t>(NPCColors::COUNT) - 1U)];
     }
 
-    _initCommon(CharacterType::NPC);
+    _initCommon(_Type);
     _initNPC();
 }
 

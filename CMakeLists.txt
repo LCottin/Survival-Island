@@ -19,7 +19,7 @@ set(COMMON_COMPILE_DEFINITIONS DEBUG_MODE)
 set(DEBUG_COMPILE_DEFINITIONS DEBUG_EXTRA)
 set(RELEASE_COMPILE_DEFINITIONS RELEASE_EXTRA)
 
-set(COMMON_COMPILE_OPTIONS  "-Wall" "-Wextra" "-march=native")
+set(COMMON_COMPILE_OPTIONS  "-Wall" "-Wextra" "-march=native" "-mtune=native" "-std=c++20")
 set(DEBUG_COMPILE_OPTIONS   "-g")
 set(RELEASE_COMPILE_OPTIONS "-O3" "-Werror")
 
@@ -162,16 +162,16 @@ project(Survival-Island)
                           sfml-graphics sfml-window)
 
     target_link_libraries(${CLIENT_EXE} PRIVATE
-                          ${CMAKE_DL_LIBS}
-                          ${COMMON_LIB}
-                          nlohmann_json::nlohmann_json
-                          sfml-graphics sfml-window sfml-network)
+                        ${CMAKE_DL_LIBS}
+                        ${COMMON_LIB}
+                        nlohmann_json::nlohmann_json
+                        sfml-graphics sfml-window sfml-network)
 
     target_link_libraries(${SERVER_EXE} PRIVATE
-                          ${CMAKE_DL_LIBS}
-                          ${COMMON_LIB}
-                          nlohmann_json::nlohmann_json
-                          sfml-network)
+                        ${CMAKE_DL_LIBS}
+                        ${COMMON_LIB}
+                        nlohmann_json::nlohmann_json
+                        sfml-network)
 
     # Add source and header files to the target
     target_sources(${COMMON_LIB} PRIVATE ${COMMON_SOURCES} ${COMMON_HEADERS})

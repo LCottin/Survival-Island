@@ -7,7 +7,6 @@ using namespace std;
 
 typedef struct
 {
-    uint32_t Age;
     uint32_t Health;
     uint32_t MaxHealth;
     uint32_t Level;
@@ -15,6 +14,7 @@ typedef struct
     uint32_t Strength;
     uint32_t Defense;
     uint32_t Speed;
+    uint32_t Age;
 } CharacterAttributes;
 
 enum class CharacterType : uint32_t
