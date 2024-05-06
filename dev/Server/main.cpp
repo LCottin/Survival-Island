@@ -9,8 +9,6 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello from main Server" << endl;
-
     string configName = "localhost";
     ConfigDev::loadConfig();
     ConfigUser::loadConfig();

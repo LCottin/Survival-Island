@@ -4,7 +4,6 @@
 #include <iostream>
 #include <SFML/Network.hpp>
 
-#include "Character.hpp"
 #include "Player.hpp"
 #include "NPC.hpp"
 
@@ -29,14 +28,17 @@ class ServerNetwork
         ServerNetwork();
         ServerNetwork(const string &configName);
 
-        uint32_t receiveData(string *data,   const uint32_t sizeOfArray);
-        uint32_t receiveData(uint32_t *data, const uint32_t sizeOfArray);
+        template<typename T>
+        uint32_t receiveData(T *data, const uint32_t sizeOfArray);
 
-        void sendData(const string *data,   const uint32_t sizeOfArray);
-        void sendData(const uint32_t *data, const uint32_t sizeOfArray);
+        template<typename T>
+        void sendData(const T *data, const uint32_t sizeOfArray);
+
         void sendNPC(const NPC &npc);
 
         ~ServerNetwork();
 };
+
+#include "ServerNetworkTemplate.hpp"
 
 #endif

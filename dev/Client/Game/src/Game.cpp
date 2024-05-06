@@ -19,18 +19,18 @@ Game::Game(const string &playerName, const string &configName)
     _BoardSizeInPixel  = Vector2u(_Board->getWidthInTile() * ConfigDev::tileSize, _Board->getHeightInTile() * ConfigDev::tileSize);
 
     /* Send player name to server */
-    _ClientNetwork->sendData(&playerName, 1U);
+    _ClientNetwork->sendData<string>(&playerName, 1U);
 
     /* Get NPC size list from server */
     uint32_t NPCListSize;
-    _ClientNetwork->receiveData(&NPCListSize, 1U);
+    _ClientNetwork->receiveData<uint32_t>(&NPCListSize, 1U);
     _NPCs->resize(NPCListSize);
 
     /* Receive NPCs from server */
     for (size_t i = 0; i < NPCListSize; i++)
     {
         string data[2];
-        _ClientNetwork->receiveData(data, 2U);
+        _ClientNetwork->receiveData<string>(data, 2U);
         _NPCs->at(i) = make_shared<NPC>(data[0], data[1]);
     }
 }

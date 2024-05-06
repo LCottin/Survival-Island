@@ -88,7 +88,8 @@ project(Survival-Island)
         ${DEV_CLIENT_DIR}/Screen/include/ScreenPrv.hpp
         ${DEV_CLIENT_DIR}/InfoPanel/include/InfoPanel.hpp
         ${DEV_CLIENT_DIR}/GenericView/include/GenericView.hpp
-        ${DEV_CLIENT_DIR}/ClientNetwork/include/ClientNetwork.hpp)
+        ${DEV_CLIENT_DIR}/ClientNetwork/include/ClientNetwork.hpp
+        ${DEV_CLIENT_DIR}/ClientNetwork/include/ClientNetworkTemplate.hpp)
 
     # Collect server source files
     set(SERVER_SOURCES
@@ -99,6 +100,7 @@ project(Survival-Island)
     # Collect server headers files
     set(SERVER_HEADERS
         ${DEV_SERVER_DIR}/ServerNetwork/include/ServerNetwork.hpp
+        ${DEV_SERVER_DIR}/ServerNetwork/include/ServerNetworkTemplate.hpp
         ${DEV_SERVER_DIR}/Game/include/Game.hpp)
 
     # Define include directories

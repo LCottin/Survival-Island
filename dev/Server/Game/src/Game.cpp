@@ -17,8 +17,6 @@ Game::Game(const string& configName)
     _Board->computeVertices(ConfigDev::tileSize, Vector2u(ConfigDev::imageSizeTileWidth, ConfigDev::imageSizeTileHeight));
 
     _sendInitData();
-
-    cout << "server init done" << endl;
 }
 
 /**
@@ -29,12 +27,12 @@ void Game::_sendInitData()
 {
     /* Create a player after the name receive from client */
     string playerName;
-    _ServerNetwork->receiveData(&playerName, 1);
+    _ServerNetwork->receiveData<string>(&playerName, 1);
     _Player = make_shared<Player>(playerName);
 
     /* Send all NPCs to client */
     const uint32_t NPCSize = _NPCs->size();
-    _ServerNetwork->sendData(&NPCSize, 1U);
+    _ServerNetwork->sendData<uint32_t>(&NPCSize, 1U);
 
     for (size_t i = 0; i < NPCSize; i++)
     {
