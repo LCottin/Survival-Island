@@ -281,13 +281,13 @@ void Character::setName(const string &name)
 }
 
 /**
- * @brief Decrease health when defending and update alive status
+ * @brief Decrease health when defending
  *
  * @param damage Damage to take
  * @return true if character is still alive, false if the character died
  *
  */
-bool Character::defend(const uint32_t damage)
+bool Character::takeDamage(const uint32_t damage)
 {
     if (_DamageCooldown.getElapsedTime() >= _DamageTimer)
     {
@@ -307,6 +307,40 @@ bool Character::defend(const uint32_t damage)
     }
 
     return _IsAlive;
+}
+
+/**
+ * @brief Set alive status
+ *
+ * @param isAlive New status of the character
+ */
+void Character::setAlive(const bool isAlive)
+{
+    _IsAlive = isAlive;
+}
+
+/**
+ * @brief Set new health and update status and health bar
+ *
+ * @param health New health of the character
+ */
+void Character::setHealth(const uint32_t health)
+{
+    if (health > _Attributes.MaxHealth)
+    {
+        _Attributes.Health = _Attributes.MaxHealth;
+    }
+    else
+    {
+        _Attributes.Health = health;
+    }
+
+    if (_Attributes.Health == 0)
+    {
+        _IsAlive = false;
+    }
+
+    updateHealthBar();
 }
 
 /**
@@ -366,21 +400,31 @@ void Character::presentation() const
  */
 bool Character::attack(Character &defender)
 {
-    const bool stillAlive = defender.defend(_Attributes.Strength);
-
-    /* If defender is still alive, replicates with its defense stat when cooldown is over */
-    if ((stillAlive == true) && (_DamageCooldown.getElapsedTime() >= _DamageTimer))
+    if (_DamageCooldown.getElapsedTime() >= _DamageTimer)
     {
-        uint32_t defense = defender.getDefense();
+        /* Attack opponent */
+        const uint32_t defense = defender.getDefense();
+        uint32_t damageToDeal  = 0U;
 
-        if (_Attributes.Health <= defense)
+        if (defense < _Attributes.Strength)
         {
-            _Attributes.Health = 0U;
-            _IsAlive           = false;
+            damageToDeal = _Attributes.Strength - defense;
         }
-        else
+
+        const bool isStillAlive = defender.takeDamage(damageToDeal);
+
+        /* If opponent is still alive, take damage according to its defense */
+        if (isStillAlive == true)
         {
-            _Attributes.Health -= defense;
+            if (_Attributes.Health <= defense)
+            {
+                _Attributes.Health = 0U;
+                _IsAlive           = false;
+            }
+            else
+            {
+                _Attributes.Health -= defense;
+            }
         }
 
         updateHealthBar();

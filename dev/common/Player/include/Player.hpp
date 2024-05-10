@@ -21,8 +21,8 @@ class Player: public Character
 
         /* Member functions (setters) */
         void setMoney(const uint32_t money);
-        void setPosition(const Vector2f position, const bool hasMoved);
-        void setPosition(const float_t x, const float_t y, const bool hasMoved);
+        void setPosition(const Vector2f position, const bool hasMoved = true);
+        void setPosition(const float_t x, const float_t y, const bool hasMoved = true);
 
         /* Member functions (others) */
 };

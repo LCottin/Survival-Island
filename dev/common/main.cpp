@@ -38,7 +38,7 @@ int main()
     cout << "Position: (" << character.getPosition().x << ", " << character.getPosition().y << ")" << endl;
     cout << "Is alive? " << (character.isAlive() ? "Yes\n" : "No\n") << endl;
     cout << "Current Health: " << character.getHealth() << endl;
-    character.defend(10);
+    character.takeDamage(10U);
     cout << "After taking 10 damage, current health: " << character.getHealth() << endl;
 
     /* Testing NPC class */

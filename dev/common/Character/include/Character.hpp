@@ -73,7 +73,8 @@ class Character
 
         /* Member functions (setters) */
         void setName(const string &name);
-        bool defend(const uint32_t damage);
+        void setAlive(const bool isAlive);
+        void setHealth(const uint32_t health);
         void setPosition(const Vector2f position);
         void setPosition(const float_t x, const float_t y);
 
@@ -82,6 +83,7 @@ class Character
         void presentation() const;
         void updateHealthBar();
         bool attack(Character &defender);
+        bool takeDamage(const uint32_t damage);
 };
 
 #endif // __CHARACTER_HPP__
