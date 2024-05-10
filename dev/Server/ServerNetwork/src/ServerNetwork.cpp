@@ -23,15 +23,13 @@ void ServerNetwork::_initCommon()
     _Port = ConfigNetwork::port;
 
     _Listener.listen(_Port);
-
-    _acceptClient();
 }
 
 /**
  * @brief Accept an incoming connection
  *
  */
-void ServerNetwork::_acceptClient()
+void ServerNetwork::acceptClient()
 {
     if (_Listener.accept(_Client) != Socket::Done)
     {
@@ -90,8 +88,42 @@ void ServerNetwork::sendNPC(const NPC &npc)
     {
         throw runtime_error("Failed to send NPC to client.");
     }
+}
 
-    // _waitForConfirmation();
+/**
+ * @brief Send current game status to client
+ *
+ * @param gameStatus current game status
+ */
+void ServerNetwork::sendGameStatus(const GameStatus *gameStatus)
+{
+    _Packet.clear();
+    _Packet << static_cast<uint32_t>(*gameStatus);
+
+    if (_Client.send(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to send game status to client.");
+    }
+}
+
+/**
+ * @brief Receive current game status from client
+ *
+ * @param gameStatus current game status
+ */
+void ServerNetwork::receiveGameStatus(GameStatus *gameStatus)
+{
+    uint32_t gameStatus_tmp;
+
+    _Packet.clear();
+
+    if (_Client.receive(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to receive game status from client.");
+    }
+
+    _Packet >> gameStatus_tmp;
+    *gameStatus = static_cast<GameStatus>(gameStatus_tmp);
 }
 
 ServerNetwork::~ServerNetwork()

@@ -2,8 +2,9 @@
 #define __CLIENTNETWORK_HPP__
 
 #include <iostream>
+#include <SFML/Network.hpp>
 
-#include "SFML/Network.hpp"
+#include "Types.hpp"
 
 using namespace std;
 using namespace sf;
@@ -29,7 +30,16 @@ class ClientNetwork
         uint32_t receiveData(T *data, const uint32_t sizeOfArray);
 
         template<typename T>
+        void receiveStructure(T *data);
+
+        template<typename T>
         void sendData(const T *data, const uint32_t sizeOfArray);
+
+        template<typename T>
+        void sendStructure(const T *data);
+
+        void receiveGameStatus(GameStatus *gameStatus);
+        void sendGameStatus(const GameStatus *gameStatus);
 
         ~ClientNetwork();
 };

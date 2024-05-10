@@ -26,6 +26,42 @@ void ServerNetwork::sendData(const T *data, const uint32_t sizeOfArray)
 }
 
 /**
+ * @brief Send a structure to client
+ *
+ * @param data structure to send
+ */
+template<typename T>
+void ServerNetwork::sendStructure(const T *data)
+{
+    _Packet.clear();
+
+    data->serialize(_Packet);
+
+    if (_Client.send(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to send structure to client.");
+    }
+}
+
+/**
+ * @brief Receive a structure from client
+ *
+ * @param data structure to receive
+ */
+template<typename T>
+void ServerNetwork::receiveStructure(T *data)
+{
+    _Packet.clear();
+
+    if (_Client.receive(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to receive data from client.");
+    }
+
+    data->deserialize(_Packet);
+}
+
+/**
  * @brief Receive data from client
  *
  * @param data data received

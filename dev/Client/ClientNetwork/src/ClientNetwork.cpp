@@ -62,6 +62,42 @@ void ClientNetwork::_sendConfirmation()
     }
 }
 
+/**
+ * @brief Send current game status to server
+ *
+ * @param gameStatus current game status
+ */
+void ClientNetwork::sendGameStatus(const GameStatus *gameStatus)
+{
+    _Packet.clear();
+    _Packet << static_cast<uint32_t>(*gameStatus);
+
+    if (_Server.send(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to send game status to server.");
+    }
+}
+
+/**
+ * @brief Receive current game status from server
+ *
+ * @param gameStatus current game status
+ */
+void ClientNetwork::receiveGameStatus(GameStatus *gameStatus)
+{
+    uint32_t gameStatus_tmp;
+
+    _Packet.clear();
+
+    if (_Server.receive(_Packet) != Socket::Done)
+    {
+        throw runtime_error("Failed to receive game status from server.");
+    }
+
+    _Packet >> gameStatus_tmp;
+    *gameStatus = static_cast<GameStatus>(gameStatus_tmp);
+}
+
 ClientNetwork::~ClientNetwork()
 {
     _Server.disconnect();
