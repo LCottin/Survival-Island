@@ -7,7 +7,7 @@
 #include "Board.hpp"
 #include "Player.hpp"
 #include "NPC.hpp"
-#include "GamePub.hpp"
+#include "Types.hpp"
 #include "InfoPanel.hpp"
 #include "GenericView.hpp"
 
@@ -47,7 +47,7 @@ class Screen
 
         bool     isWindowOpen()   const;
 
-        void handleAllEvents(sharedEvents &sharedEvent);
+        void catchEvents(inputEvents &sharedEvent);
         void drawAll(const Board &board, Player &player, const vector<shared_ptr<NPC>> &NPClist);
 
         ~Screen();

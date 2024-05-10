@@ -51,7 +51,8 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/Config/src/ConfigDev.cpp
         ${DEV_COMMON_DIR}/Config/src/ConfigUser.cpp
         ${DEV_COMMON_DIR}/Config/src/ConfigUserPub.cpp
-        ${DEV_COMMON_DIR}/Config/src/ConfigNetwork.cpp)
+        ${DEV_COMMON_DIR}/Config/src/ConfigNetwork.cpp
+        ${DEV_COMMON_DIR}/Types/src/Types.cpp)
 
     # Collect common header files
     set(COMMON_HEADERS
@@ -68,6 +69,7 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/Config/include/ConfigUser.hpp
         ${DEV_COMMON_DIR}/Config/include/ConfigUserPub.hpp
         ${DEV_COMMON_DIR}/Config/include/ConfigNetwork.hpp
+        ${DEV_COMMON_DIR}/Types/include/Types.hpp
         ${DEV_COMMON_DIR}/FastNoise/include/FastNoiseLite.hpp)
 
     # Collect client source files
@@ -82,8 +84,6 @@ project(Survival-Island)
     # Collect client header files
     set(CLIENT_HEADERS
         ${DEV_CLIENT_DIR}/Game/include/Game.hpp
-        ${DEV_CLIENT_DIR}/Game/include/GamePub.hpp
-        ${DEV_CLIENT_DIR}/Game/include/GamePrv.hpp
         ${DEV_CLIENT_DIR}/Screen/include/Screen.hpp
         ${DEV_CLIENT_DIR}/Screen/include/ScreenPrv.hpp
         ${DEV_CLIENT_DIR}/InfoPanel/include/InfoPanel.hpp
@@ -101,7 +101,8 @@ project(Survival-Island)
     set(SERVER_HEADERS
         ${DEV_SERVER_DIR}/ServerNetwork/include/ServerNetwork.hpp
         ${DEV_SERVER_DIR}/ServerNetwork/include/ServerNetworkTemplate.hpp
-        ${DEV_SERVER_DIR}/Game/include/Game.hpp)
+        ${DEV_SERVER_DIR}/Game/include/Game.hpp
+        ${DEV_SERVER_DIR}/Game/include/GamePrv.hpp)
 
     # Define include directories
     set(INCLUDE_COMMON
@@ -111,7 +112,8 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/FastNoise/include
         ${DEV_COMMON_DIR}/NPC/include
         ${DEV_COMMON_DIR}/Player/include
-        ${DEV_COMMON_DIR}/Random/include)
+        ${DEV_COMMON_DIR}/Random/include
+        ${DEV_COMMON_DIR}/Types/include)
     set(INCLUDE_CLIENT
         ${DEV_CLIENT_DIR}/Game/include
         ${DEV_CLIENT_DIR}/InfoPanel/include
@@ -157,11 +159,11 @@ project(Survival-Island)
     # Link libraries
     target_link_libraries(${COMMON_LIB} PRIVATE
                           nlohmann_json::nlohmann_json
-                          sfml-graphics sfml-window)
+                          sfml-graphics sfml-window sfml-network)
 
     target_link_libraries(${COMMON_EXE} PRIVATE
                           nlohmann_json::nlohmann_json
-                          sfml-graphics sfml-window)
+                          sfml-graphics sfml-window sfml-network)
 
     target_link_libraries(${CLIENT_EXE} PRIVATE
                         ${CMAKE_DL_LIBS}

@@ -118,11 +118,11 @@ void Screen::_drawInfoPanel()
 }
 
 /**
- * @brief Handle all events on the screen
+ * @brief Catch all events on the screen
  *
- * @param sharedEvent Reference to the structure
+ * @param inputEvent Reference to the structure of input events
  */
-void Screen::handleAllEvents(sharedEvents &sharedEvent)
+void Screen::catchEvents(inputEvents &inputEvent)
 {
     Event event;
     while (_Window.pollEvent(event))
@@ -138,7 +138,7 @@ void Screen::handleAllEvents(sharedEvents &sharedEvent)
         {
             if (_PauseCooldown.getElapsedTime() > _PauseTimer)
             {
-                sharedEvent.isGamePaused = !sharedEvent.isGamePaused;
+                inputEvent.isGamePaused = !inputEvent.isGamePaused;
                 _PauseCooldown.restart();
             }
         }
@@ -149,25 +149,25 @@ void Screen::handleAllEvents(sharedEvents &sharedEvent)
             /* ... left */
             if (Keyboard::isKeyPressed(ConfigUser::leftKey))
             {
-                sharedEvent.movePlayerLeft = true;
+                inputEvent.movePlayerLeft = true;
             }
 
             /* ... right */
             if (Keyboard::isKeyPressed(ConfigUser::rightKey))
             {
-                sharedEvent.movePlayerRight = true;
+                inputEvent.movePlayerRight = true;
             }
 
             /* ... up */
             if (Keyboard::isKeyPressed(ConfigUser::upKey))
             {
-                sharedEvent.movePlayerUp = true;
+                inputEvent.movePlayerUp = true;
             }
 
             /* ... down */
             if (Keyboard::isKeyPressed(ConfigUser::downKey))
             {
-                sharedEvent.movePlayerDown = true;
+                inputEvent.movePlayerDown = true;
             }
         }
     }
