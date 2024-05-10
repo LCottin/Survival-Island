@@ -5,7 +5,6 @@
 #include "Screen.hpp"
 #include "NPC.hpp"
 #include "Board.hpp"
-#include "GamePub.hpp"
 #include "ClientNetwork.hpp"
 
 using namespace std;
@@ -21,16 +20,17 @@ class Game
 
         unique_ptr<ClientNetwork> _ClientNetwork;
 
-        Vector2u   _BoardSizeInPixel;
-        GameStatus _GameStatus;
+        GameStatus     _GameStatus;
+        inputEvents    _InputEvents;
+        outputCommands _OutputCommands;
 
-        void _ResetSharedEvent(sharedEvents &sharedEvent);
-        void _HandleEvents(sharedEvents &sharedEvent);
-        void _MovePlayer(const sharedEvents &sharedEvent);
-        void _MoveNPCs();
-        void _HandleInteractions();
-        void _Draw();
-        bool _AreClose(const Player &player, const NPC &npc, const uint32_t threshold) const;
+        void _WaitForStatus();
+        void _SynchronizeToServer() const;
+        void _SynchronizeFromServer();
+        void _ResetInputEvent();
+        void _CatchEvents();
+        void _UpdateGame();
+        void _Draw() const;
 
     public:
         Game(const string &playerName, const string &configName);
