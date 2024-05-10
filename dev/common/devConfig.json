@@ -1,0 +1,15 @@
+{
+    "tilesetImgPath"    : "../assets/images/tileset.png",
+    "playerImgPath"     : "../assets/images/player.png",
+    "NPCImgPath"        : "../assets/images/NPC.png",
+
+    "fontPath"          : "../assets/fonts/Italic_text.ttf",
+
+    "commentFrameLimit" : "Set to -1 to disable framerateLimit",
+    "framerateLimit"    : 10,
+
+    "tileSize" : 16,
+
+    "imageSizeTileWidth"  : 256,
+    "imageSizeTileHeight" : 224
+}

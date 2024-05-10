@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-
-project(Survival-Island)
-
 include(VersionConfig.cmake)
+
+set(CMAKE_CXX_STANDARD 20)
 
 # Set the default build type to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
@@ -12,116 +11,214 @@ endif()
 # Provide options for the build type
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
 
-find_package(nlohmann_json REQUIRED)
-find_package(SFML 2.6.1 COMPONENTS graphics window REQUIRED)
-
-set(CMAKE_CXX_STANDARD 20)
-
-# Define directories
-set(DEV_DIR ${CMAKE_SOURCE_DIR}/dev)
-set(BIN_DIR ${CMAKE_BINARY_DIR})
+# Set the minimum OS X deployment version to 12.0
+set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0" CACHE STRING "Minimum OS X deployment version" FORCE)
 
 # Define common and specific compile definitions and options
 set(COMMON_COMPILE_DEFINITIONS DEBUG_MODE)
 set(DEBUG_COMPILE_DEFINITIONS DEBUG_EXTRA)
 set(RELEASE_COMPILE_DEFINITIONS RELEASE_EXTRA)
 
-set(COMMON_COMPILE_OPTIONS  "-Wall" "-Wextra" "-march=native")
+set(COMMON_COMPILE_OPTIONS  "-Wall" "-Wextra" "-march=native" "-mtune=native" "-std=c++20")
 set(DEBUG_COMPILE_OPTIONS   "-g")
 set(RELEASE_COMPILE_OPTIONS "-O3" "-Werror")
 
-# Collect source files
-set(SOURCES
-    ${DEV_DIR}/main.cpp
-    ${DEV_DIR}/Character/src/Character.cpp
-    ${DEV_DIR}/Character/src/CharacterPrv.cpp
-    ${DEV_DIR}/Player/src/Player.cpp
-    ${DEV_DIR}/Game/src/Game.cpp
-    ${DEV_DIR}/NPC/src/NPC.cpp
-    ${DEV_DIR}/NPC/src/NPCPub.cpp
-    ${DEV_DIR}/Board/src/Board.cpp
-    ${DEV_DIR}/Screen/src/Screen.cpp
-    ${DEV_DIR}/Random/src/Random.cpp
-    ${DEV_DIR}/Config/src/ConfigDev.cpp
-    ${DEV_DIR}/Config/src/ConfigUser.cpp
-    ${DEV_DIR}/Config/src/ConfigUserPub.cpp
-    ${DEV_DIR}/InfoPanel/src/InfoPanel.cpp
-    ${DEV_DIR}/GenericView/src/GenericView.cpp
-)
-
-# Collect header files
-set(HEADERS
-    ${DEV_DIR}/Character/include/Character.hpp
-    ${DEV_DIR}/Character/include/CharacterPub.hpp
-    ${DEV_DIR}/Character/include/CharacterPrv.hpp
-    ${DEV_DIR}/Player/include/Player.hpp
-    ${DEV_DIR}/Player/include/PlayerPrv.hpp
-    ${DEV_DIR}/Game/include/Game.hpp
-    ${DEV_DIR}/Game/include/GamePub.hpp
-    ${DEV_DIR}/Game/include/GamePrv.hpp
-    ${DEV_DIR}/NPC/include/NPC.hpp
-    ${DEV_DIR}/NPC/include/NPCPub.hpp
-    ${DEV_DIR}/NPC/include/NPCPrv.hpp
-    ${DEV_DIR}/Board/include/Board.hpp
-    ${DEV_DIR}/Board/include/BoardPub.hpp
-    ${DEV_DIR}/Board/include/TileType.hpp
-    ${DEV_DIR}/Screen/include/Screen.hpp
-    ${DEV_DIR}/Screen/include/ScreenPrv.hpp
-    ${DEV_DIR}/Random/include/Random.hpp
-    ${DEV_DIR}/Config/include/ConfigDev.hpp
-    ${DEV_DIR}/Config/include/ConfigUser.hpp
-    ${DEV_DIR}/Config/include/ConfigUserPub.hpp
-    ${DEV_DIR}/FastNoise/include/FastNoiseLite.hpp
-    ${DEV_DIR}/InfoPanel/include/InfoPanel.hpp
-    ${DEV_DIR}/GenericView/include/GenericView.hpp
-)
-
 # Set the output directory for the binary
+set(BIN_DIR ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
-# Set the minimum OS X deployment version to 12.0
-set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0" CACHE STRING "Minimum OS X deployment version" FORCE)
+project(Survival-Island)
 
-# Add the executable
-add_executable(${PROJECT_NAME})
+    find_package(nlohmann_json REQUIRED)
+    find_package(SFML 2.6.1 COMPONENTS graphics window network REQUIRED)
 
-# Add source and header files to the target
-target_sources(${PROJECT_NAME} PRIVATE ${SOURCES} ${HEADERS})
+    # Define directories
+    set(DEV_COMMON_DIR ${CMAKE_SOURCE_DIR}/dev/common)
+    set(DEV_CLIENT_DIR ${CMAKE_SOURCE_DIR}/dev/Client)
+    set(DEV_SERVER_DIR ${CMAKE_SOURCE_DIR}/dev/Server)
 
-# Add include directories
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${DEV_DIR}/Character/include
-    ${DEV_DIR}/Player/include
-    ${DEV_DIR}/Board/include
-    ${DEV_DIR}/Screen/include
-    ${DEV_DIR}/Game/include
-    ${DEV_DIR}/NPC/include
-    ${DEV_DIR}/Random/include
-    ${DEV_DIR}/Config/include
-    ${DEV_DIR}/FastNoise/include
-    ${DEV_DIR}/InfoPanel/include
-    ${DEV_DIR}/GenericView/include
-)
+    # Collect common source files
+    set(COMMON_SOURCES
+        ${DEV_COMMON_DIR}/main.cpp
+        ${DEV_COMMON_DIR}/Character/src/Character.cpp
+        ${DEV_COMMON_DIR}/Character/src/CharacterPrv.cpp
+        ${DEV_COMMON_DIR}/Character/src/CharacterPub.cpp
+        ${DEV_COMMON_DIR}/Player/src/Player.cpp
+        ${DEV_COMMON_DIR}/NPC/src/NPC.cpp
+        ${DEV_COMMON_DIR}/NPC/src/NPCPub.cpp
+        ${DEV_COMMON_DIR}/Board/src/Board.cpp
+        ${DEV_COMMON_DIR}/Random/src/Random.cpp
+        ${DEV_COMMON_DIR}/Config/src/ConfigDev.cpp
+        ${DEV_COMMON_DIR}/Config/src/ConfigUser.cpp
+        ${DEV_COMMON_DIR}/Config/src/ConfigUserPub.cpp
+        ${DEV_COMMON_DIR}/Config/src/ConfigNetwork.cpp
+        ${DEV_COMMON_DIR}/Types/src/Types.cpp)
 
-# Link libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_DL_LIBS} PRIVATE nlohmann_json::nlohmann_json)
+    # Collect common header files
+    set(COMMON_HEADERS
+        ${DEV_COMMON_DIR}/Character/include/Character.hpp
+        ${DEV_COMMON_DIR}/Character/include/CharacterPub.hpp
+        ${DEV_COMMON_DIR}/Character/include/CharacterPrv.hpp
+        ${DEV_COMMON_DIR}/Player/include/Player.hpp
+        ${DEV_COMMON_DIR}/Player/include/PlayerPrv.hpp
+        ${DEV_COMMON_DIR}/NPC/include/NPC.hpp
+        ${DEV_COMMON_DIR}/NPC/include/NPCPub.hpp
+        ${DEV_COMMON_DIR}/NPC/include/NPCPrv.hpp
+        ${DEV_COMMON_DIR}/Random/include/Random.hpp
+        ${DEV_COMMON_DIR}/Config/include/ConfigDev.hpp
+        ${DEV_COMMON_DIR}/Config/include/ConfigUser.hpp
+        ${DEV_COMMON_DIR}/Config/include/ConfigUserPub.hpp
+        ${DEV_COMMON_DIR}/Config/include/ConfigNetwork.hpp
+        ${DEV_COMMON_DIR}/Types/include/Types.hpp
+        ${DEV_COMMON_DIR}/FastNoise/include/FastNoiseLite.hpp)
 
-# Link SFML libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window)
+    # Collect client source files
+    set(CLIENT_SOURCES
+        ${DEV_CLIENT_DIR}/main.cpp
+        ${DEV_CLIENT_DIR}/Game/src/Game.cpp
+        ${DEV_CLIENT_DIR}/Screen/src/Screen.cpp
+        ${DEV_CLIENT_DIR}/InfoPanel/src/InfoPanel.cpp
+        ${DEV_CLIENT_DIR}/ClientNetwork/src/ClientNetwork.cpp
+        ${DEV_CLIENT_DIR}/GenericView/src/GenericView.cpp)
 
-# Set compilation options based on the selected build type
-target_compile_definitions(${PROJECT_NAME} PRIVATE ${COMMON_COMPILE_DEFINITIONS})
+    # Collect client header files
+    set(CLIENT_HEADERS
+        ${DEV_CLIENT_DIR}/Game/include/Game.hpp
+        ${DEV_CLIENT_DIR}/Screen/include/Screen.hpp
+        ${DEV_CLIENT_DIR}/Screen/include/ScreenPrv.hpp
+        ${DEV_CLIENT_DIR}/InfoPanel/include/InfoPanel.hpp
+        ${DEV_CLIENT_DIR}/GenericView/include/GenericView.hpp
+        ${DEV_CLIENT_DIR}/ClientNetwork/include/ClientNetwork.hpp
+        ${DEV_CLIENT_DIR}/ClientNetwork/include/ClientNetworkTemplate.hpp)
 
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE ${DEBUG_COMPILE_DEFINITIONS})
-    target_compile_options(${PROJECT_NAME} PRIVATE ${COMMON_COMPILE_OPTIONS} ${DEBUG_COMPILE_OPTIONS})
-elseif(CMAKE_BUILD_TYPE MATCHES "Release")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE ${RELEASE_COMPILE_DEFINITIONS})
-    target_compile_options(${PROJECT_NAME} PRIVATE ${COMMON_COMPILE_OPTIONS} ${RELEASE_COMPILE_OPTIONS})
-endif()
+    # Collect server source files
+    set(SERVER_SOURCES
+        ${DEV_SERVER_DIR}/main.cpp
+        ${DEV_SERVER_DIR}/ServerNetwork/src/ServerNetwork.cpp
+        ${DEV_SERVER_DIR}/Game/src/Game.cpp)
 
-# Define a custom command to print build mode during the build process
-add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E echo "Compiled Survival-Island version ${SURVIVAL_ISLAND_VERSION} in ${CMAKE_BUILD_TYPE} mode"
-)
+    # Collect server headers files
+    set(SERVER_HEADERS
+        ${DEV_SERVER_DIR}/ServerNetwork/include/ServerNetwork.hpp
+        ${DEV_SERVER_DIR}/ServerNetwork/include/ServerNetworkTemplate.hpp
+        ${DEV_SERVER_DIR}/Game/include/Game.hpp
+        ${DEV_SERVER_DIR}/Game/include/GamePrv.hpp)
+
+    # Define include directories
+    set(INCLUDE_COMMON
+        ${DEV_COMMON_DIR}/Board/include
+        ${DEV_COMMON_DIR}/Character/include
+        ${DEV_COMMON_DIR}/Config/include
+        ${DEV_COMMON_DIR}/FastNoise/include
+        ${DEV_COMMON_DIR}/NPC/include
+        ${DEV_COMMON_DIR}/Player/include
+        ${DEV_COMMON_DIR}/Random/include
+        ${DEV_COMMON_DIR}/Types/include)
+    set(INCLUDE_CLIENT
+        ${DEV_CLIENT_DIR}/Game/include
+        ${DEV_CLIENT_DIR}/InfoPanel/include
+        ${DEV_CLIENT_DIR}/GenericView/include
+        ${DEV_CLIENT_DIR}/ClientNetwork/include
+        ${DEV_CLIENT_DIR}/Screen/include)
+    set(INCLUDE_SERVER
+        ${DEV_SERVER_DIR}/ServerNetwork/include
+        ${DEV_SERVER_DIR}/Game/include)
+
+    # Define binaries
+    set(COMMON_LIB ${PROJECT_NAME}_Lib)
+    set(COMMON_EXE ${PROJECT_NAME}_Common)
+    set(CLIENT_EXE ${PROJECT_NAME}_Client)
+    set(SERVER_EXE ${PROJECT_NAME}_Server)
+
+    # Add the executable
+    add_executable(${COMMON_EXE})
+    add_executable(${CLIENT_EXE})
+    add_executable(${SERVER_EXE})
+
+    # Create library for common files
+    add_library(${COMMON_LIB})
+
+    # Add common include directories
+    foreach(INCLUDE_DIR ${INCLUDE_COMMON})
+        target_include_directories(${COMMON_EXE} PRIVATE ${INCLUDE_DIR})
+        target_include_directories(${COMMON_LIB} PRIVATE ${INCLUDE_DIR})
+        target_include_directories(${CLIENT_EXE} PRIVATE ${INCLUDE_DIR})
+        target_include_directories(${SERVER_EXE} PRIVATE ${INCLUDE_DIR})
+    endforeach()
+
+    # Add client include directories
+    foreach(INCLUDE_DIR ${INCLUDE_CLIENT})
+        target_include_directories(${CLIENT_EXE} PRIVATE ${INCLUDE_DIR})
+    endforeach()
+
+    # Add server include directories
+    foreach(INCLUDE_DIR ${INCLUDE_SERVER})
+        target_include_directories(${SERVER_EXE} PRIVATE ${INCLUDE_DIR})
+    endforeach()
+
+    # Link libraries
+    target_link_libraries(${COMMON_LIB} PRIVATE
+                          nlohmann_json::nlohmann_json
+                          sfml-graphics sfml-window sfml-network)
+
+    target_link_libraries(${COMMON_EXE} PRIVATE
+                          nlohmann_json::nlohmann_json
+                          sfml-graphics sfml-window sfml-network)
+
+    target_link_libraries(${CLIENT_EXE} PRIVATE
+                        ${CMAKE_DL_LIBS}
+                        ${COMMON_LIB}
+                        nlohmann_json::nlohmann_json
+                        sfml-graphics sfml-window sfml-network)
+
+    target_link_libraries(${SERVER_EXE} PRIVATE
+                        ${CMAKE_DL_LIBS}
+                        ${COMMON_LIB}
+                        nlohmann_json::nlohmann_json
+                        sfml-network)
+
+    # Add source and header files to the target
+    target_sources(${COMMON_LIB} PRIVATE ${COMMON_SOURCES} ${COMMON_HEADERS})
+    target_sources(${COMMON_EXE} PRIVATE ${COMMON_SOURCES} ${COMMON_HEADERS})
+    target_sources(${CLIENT_EXE} PRIVATE ${CLIENT_SOURCES} ${CLIENT_HEADERS})
+    target_sources(${SERVER_EXE} PRIVATE ${SERVER_SOURCES} ${SERVER_HEADERS})
+
+    # Set compilation options based on the selected build type
+    target_compile_definitions(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_DEFINITIONS})
+    target_compile_definitions(${CLIENT_EXE} PRIVATE ${COMMON_COMPILE_DEFINITIONS})
+    target_compile_definitions(${SERVER_EXE} PRIVATE ${COMMON_COMPILE_DEFINITIONS})
+
+    # Set C++ standard
+    target_compile_features(${COMMON_EXE} PRIVATE cxx_std_20)
+    target_compile_features(${CLIENT_EXE} PRIVATE cxx_std_20)
+    target_compile_features(${SERVER_EXE} PRIVATE cxx_std_20)
+
+    if(CMAKE_BUILD_TYPE MATCHES "Debug")
+        target_compile_definitions(${COMMON_EXE} PRIVATE ${DEBUG_COMPILE_DEFINITIONS})
+        target_compile_options(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${DEBUG_COMPILE_OPTIONS})
+
+        target_compile_definitions(${CLIENT_EXE} PRIVATE ${DEBUG_COMPILE_DEFINITIONS})
+        target_compile_options(${CLIENT_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${DEBUG_COMPILE_OPTIONS})
+
+        target_compile_definitions(${SERVER_EXE} PRIVATE ${DEBUG_COMPILE_DEFINITIONS})
+        target_compile_options(${SERVER_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${DEBUG_COMPILE_OPTIONS})
+
+    elseif(CMAKE_BUILD_TYPE MATCHES "Release")
+        target_compile_definitions(${COMMON_EXE} PRIVATE ${RELEASE_COMPILE_DEFINITIONS})
+        target_compile_options(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${RELEASE_COMPILE_OPTIONS})
+
+        target_compile_definitions(${CLIENT_EXE} PRIVATE ${RELEASE_COMPILE_DEFINITIONS})
+        target_compile_options(${CLIENT_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${RELEASE_COMPILE_OPTIONS})
+
+        target_compile_definitions(${SERVER_EXE} PRIVATE ${RELEASE_COMPILE_DEFINITIONS})
+        target_compile_options(${SERVER_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${RELEASE_COMPILE_OPTIONS})
+
+    endif()
+
+    # Define a custom command to print build mode during the build process
+    add_custom_command(TARGET ${COMMON_EXE} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E echo "Compiled Survival-Island_Common in ${CMAKE_BUILD_TYPE} mode.")
+    add_custom_command(TARGET ${CLIENT_EXE} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E echo "Compiled Survival-Island_Client version ${SURVIVAL_ISLAND_CLIENT_VERSION} in ${CMAKE_BUILD_TYPE} mode.")
+    add_custom_command(TARGET ${SERVER_EXE} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E echo "Compiled Survival-Island_Server version ${SURVIVAL_ISLAND_SERVER_VERSION} in ${CMAKE_BUILD_TYPE} mode.")

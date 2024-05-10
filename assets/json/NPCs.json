@@ -5,7 +5,7 @@
         "Health" : 100,
         "Level" : 1,
         "Experience" : 0,
-        "Strength" : 100,
+        "Strength" : 20,
         "Defense" : 10,
         "Speed" : 10
     },
@@ -15,7 +15,7 @@
         "Health" : 100,
         "Level" : 1,
         "Experience" : 0,
-        "Strength" : 100,
+        "Strength" : 20,
         "Defense" : 10,
         "Speed" : 10
     },
@@ -25,7 +25,7 @@
         "Health" : 100,
         "Level" : 1,
         "Experience" : 0,
-        "Strength" : 100,
+        "Strength" : 20,
         "Defense" : 10,
         "Speed" : 10
     },
@@ -35,7 +35,7 @@
         "Health" : 100,
         "Level" : 1,
         "Experience" : 0,
-        "Strength" : 100,
+        "Strength" : 20,
         "Defense" : 10,
         "Speed" : 10
     },
@@ -45,7 +45,7 @@
         "Health" : 100,
         "Level" : 1,
         "Experience" : 0,
-        "Strength" : 100,
+        "Strength" : 20,
         "Defense" : 10,
         "Speed" : 10
     },
@@ -55,7 +55,7 @@
         "Health" : 100,
         "Level" : 1,
         "Experience" : 0,
-        "Strength" : 100,
+        "Strength" : 20,
         "Defense" : 10,
         "Speed" : 10
     },
@@ -65,7 +65,247 @@
         "Health" : 100,
         "Level" : 1,
         "Experience" : 0,
-        "Strength" : 100,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_7":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_8":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_9":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_10":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_11":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_12":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_13":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_14":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_15":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_16":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_17":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_18":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_19":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_20":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_21":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_22":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_23":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_24":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_25":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_26":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_27":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_28":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_29":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
+        "Defense" : 10,
+        "Speed" : 10
+    },
+    "NPC_30":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 20,
         "Defense" : 10,
         "Speed" : 10
     }
