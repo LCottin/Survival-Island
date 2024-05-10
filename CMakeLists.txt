@@ -159,23 +159,23 @@ project(Survival-Island)
     # Link libraries
     target_link_libraries(${COMMON_LIB} PRIVATE
                           nlohmann_json::nlohmann_json
-                          sfml-graphics sfml-window sfml-network)
+                          sfml-graphics sfml-window sfml-network sfml-system)
 
     target_link_libraries(${COMMON_EXE} PRIVATE
                           nlohmann_json::nlohmann_json
-                          sfml-graphics sfml-window sfml-network)
+                          sfml-graphics sfml-window sfml-network sfml-system)
 
     target_link_libraries(${CLIENT_EXE} PRIVATE
-                        ${CMAKE_DL_LIBS}
-                        ${COMMON_LIB}
-                        nlohmann_json::nlohmann_json
-                        sfml-graphics sfml-window sfml-network)
+                          ${CMAKE_DL_LIBS}
+                          ${COMMON_LIB}
+                          nlohmann_json::nlohmann_json
+                          sfml-graphics sfml-window sfml-network sfml-system)
 
     target_link_libraries(${SERVER_EXE} PRIVATE
-                        ${CMAKE_DL_LIBS}
-                        ${COMMON_LIB}
-                        nlohmann_json::nlohmann_json
-                        sfml-network)
+                          ${CMAKE_DL_LIBS}
+                          ${COMMON_LIB}
+                          nlohmann_json::nlohmann_json
+                          sfml-network sfml-system)
 
     # Add source and header files to the target
     target_sources(${COMMON_LIB} PRIVATE ${COMMON_SOURCES} ${COMMON_HEADERS})
