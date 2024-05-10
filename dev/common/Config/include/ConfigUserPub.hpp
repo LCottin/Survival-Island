@@ -7,6 +7,7 @@ using namespace std;
 
 enum class GameDifficulty : uint32_t
 {
+    NONE,
     EASY,
     MEDIUM,
     HARD,
