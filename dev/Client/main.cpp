@@ -7,13 +7,20 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc != 2)
+    {
+        cerr << "Usage: " << argv[0] << " <network_configuration_name>" << endl;
+        return -1;
+    }
+
+    string configName = string(argv[1]);
     ConfigDev::loadConfig();
     ConfigUser::loadConfig();
-    ConfigNetwork::loadConfig("localhost");
+    ConfigNetwork::loadConfig(configName);
 
-    Game game("LCottin", "localhost");
+    Game game("LCottin", configName);
 
     game.play();
 

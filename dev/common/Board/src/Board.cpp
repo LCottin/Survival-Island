@@ -121,8 +121,8 @@ void Board::computeVertices(const uint32_t tileSize, const Vector2u &imageSizeIn
             const uint32_t tileIndex = static_cast<uint32_t>(_Map[i][j]);
 
             /* Calculate the position of the current tile in the vertex array */
-            const float_t x = static_cast<const float_t>(i * tileSize);
-            const float_t y = static_cast<const float_t>(j * tileSize);
+            const float_t x = static_cast<float_t>(i * tileSize);
+            const float_t y = static_cast<float_t>(j * tileSize);
 
             /* Get a pointer to the current tile quad */
             Vertex* quad = &_Vertices[(i + j * _WidthInTile) * 4U];
@@ -134,8 +134,8 @@ void Board::computeVertices(const uint32_t tileSize, const Vector2u &imageSizeIn
             quad[3].position = Vector2f(x           , y + tileSize);
 
             /* Calculate coordinate of the index in the image */
-            const float_t tile_x = static_cast<const float_t>((tileIndex % (imageSizeInPixel.x / tileSize)) * tileSize);
-            const float_t tile_y = static_cast<const float_t>((tileIndex / (imageSizeInPixel.y / tileSize)) * tileSize);
+            const float_t tile_x = static_cast<float_t>((tileIndex % (imageSizeInPixel.x / tileSize)) * tileSize);
+            const float_t tile_y = static_cast<float_t>((tileIndex / (imageSizeInPixel.y / tileSize)) * tileSize);
 
             /* Define its 4 texture coordinates */
             quad[0].texCoords = Vector2f(tile_x           , tile_y);
