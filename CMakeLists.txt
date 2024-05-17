@@ -11,6 +11,9 @@ endif()
 # Provide options for the build type
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
 
+# Option to build the common binary
+option(BUILD_COMMON "Build common binary" OFF)
+
 # Set the minimum OS X deployment version to 12.0
 set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0" CACHE STRING "Minimum OS X deployment version" FORCE)
 
@@ -126,21 +129,46 @@ project(Survival-Island)
 
     # Define binaries
     set(COMMON_LIB ${PROJECT_NAME}_Lib)
-    set(COMMON_EXE ${PROJECT_NAME}_Common)
     set(CLIENT_EXE ${PROJECT_NAME}_Client)
     set(SERVER_EXE ${PROJECT_NAME}_Server)
 
     # Add the executable
-    add_executable(${COMMON_EXE})
     add_executable(${CLIENT_EXE})
     add_executable(${SERVER_EXE})
 
     # Create library for common files
     add_library(${COMMON_LIB})
 
+    # Add the common executable if BUILD_COMMON is ON
+    if(BUILD_COMMON)
+        set(COMMON_EXE ${PROJECT_NAME}_Common)
+
+        add_executable(${COMMON_EXE})
+
+        foreach(INCLUDE_DIR ${INCLUDE_COMMON})
+            target_include_directories(${COMMON_EXE} PRIVATE ${INCLUDE_DIR})
+        endforeach()
+
+        target_link_libraries(${COMMON_EXE} PRIVATE
+                                nlohmann_json::nlohmann_json
+                                sfml-graphics sfml-window sfml-network sfml-system)
+
+        target_sources(${COMMON_EXE} PRIVATE ${COMMON_SOURCES} ${COMMON_HEADERS})
+        target_compile_definitions(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_DEFINITIONS})
+        target_compile_features(${COMMON_EXE} PRIVATE cxx_std_20)
+
+        if(CMAKE_BUILD_TYPE MATCHES "Debug")
+            target_compile_definitions(${COMMON_EXE} PRIVATE ${DEBUG_COMPILE_DEFINITIONS})
+            target_compile_options(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${DEBUG_COMPILE_OPTIONS})
+        elseif(CMAKE_BUILD_TYPE MATCHES "Release")
+            target_compile_definitions(${COMMON_EXE} PRIVATE ${RELEASE_COMPILE_DEFINITIONS})
+            target_compile_options(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${RELEASE_COMPILE_OPTIONS})
+        endif()
+
+    endif()
+
     # Add common include directories
     foreach(INCLUDE_DIR ${INCLUDE_COMMON})
-        target_include_directories(${COMMON_EXE} PRIVATE ${INCLUDE_DIR})
         target_include_directories(${COMMON_LIB} PRIVATE ${INCLUDE_DIR})
         target_include_directories(${CLIENT_EXE} PRIVATE ${INCLUDE_DIR})
         target_include_directories(${SERVER_EXE} PRIVATE ${INCLUDE_DIR})
@@ -161,10 +189,6 @@ project(Survival-Island)
                           nlohmann_json::nlohmann_json
                           sfml-graphics sfml-window sfml-network sfml-system)
 
-    target_link_libraries(${COMMON_EXE} PRIVATE
-                          nlohmann_json::nlohmann_json
-                          sfml-graphics sfml-window sfml-network sfml-system)
-
     target_link_libraries(${CLIENT_EXE} PRIVATE
                           ${CMAKE_DL_LIBS}
                           ${COMMON_LIB}
@@ -179,24 +203,18 @@ project(Survival-Island)
 
     # Add source and header files to the target
     target_sources(${COMMON_LIB} PRIVATE ${COMMON_SOURCES} ${COMMON_HEADERS})
-    target_sources(${COMMON_EXE} PRIVATE ${COMMON_SOURCES} ${COMMON_HEADERS})
     target_sources(${CLIENT_EXE} PRIVATE ${CLIENT_SOURCES} ${CLIENT_HEADERS})
     target_sources(${SERVER_EXE} PRIVATE ${SERVER_SOURCES} ${SERVER_HEADERS})
 
     # Set compilation options based on the selected build type
-    target_compile_definitions(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_DEFINITIONS})
     target_compile_definitions(${CLIENT_EXE} PRIVATE ${COMMON_COMPILE_DEFINITIONS})
     target_compile_definitions(${SERVER_EXE} PRIVATE ${COMMON_COMPILE_DEFINITIONS})
 
     # Set C++ standard
-    target_compile_features(${COMMON_EXE} PRIVATE cxx_std_20)
     target_compile_features(${CLIENT_EXE} PRIVATE cxx_std_20)
     target_compile_features(${SERVER_EXE} PRIVATE cxx_std_20)
 
     if(CMAKE_BUILD_TYPE MATCHES "Debug")
-        target_compile_definitions(${COMMON_EXE} PRIVATE ${DEBUG_COMPILE_DEFINITIONS})
-        target_compile_options(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${DEBUG_COMPILE_OPTIONS})
-
         target_compile_definitions(${CLIENT_EXE} PRIVATE ${DEBUG_COMPILE_DEFINITIONS})
         target_compile_options(${CLIENT_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${DEBUG_COMPILE_OPTIONS})
 
@@ -204,9 +222,6 @@ project(Survival-Island)
         target_compile_options(${SERVER_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${DEBUG_COMPILE_OPTIONS})
 
     elseif(CMAKE_BUILD_TYPE MATCHES "Release")
-        target_compile_definitions(${COMMON_EXE} PRIVATE ${RELEASE_COMPILE_DEFINITIONS})
-        target_compile_options(${COMMON_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${RELEASE_COMPILE_OPTIONS})
-
         target_compile_definitions(${CLIENT_EXE} PRIVATE ${RELEASE_COMPILE_DEFINITIONS})
         target_compile_options(${CLIENT_EXE} PRIVATE ${COMMON_COMPILE_OPTIONS} ${RELEASE_COMPILE_OPTIONS})
 
@@ -216,8 +231,6 @@ project(Survival-Island)
     endif()
 
     # Define a custom command to print build mode during the build process
-    add_custom_command(TARGET ${COMMON_EXE} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E echo "Compiled Survival-Island_Common in ${CMAKE_BUILD_TYPE} mode.")
     add_custom_command(TARGET ${CLIENT_EXE} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E echo "Compiled Survival-Island_Client version ${SURVIVAL_ISLAND_CLIENT_VERSION} in ${CMAKE_BUILD_TYPE} mode.")
     add_custom_command(TARGET ${SERVER_EXE} POST_BUILD
