@@ -4,88 +4,51 @@
 #include "ServerNetwork.hpp"
 
 /**
- * @brief Send data to client
+ * @brief Encode and send data to client
  *
- * @param data Array of data to send
- * @param sizeOfArray size max of the array
+ * @param data Data to send
+ * @param numberOfElement Number of data to send in case of an array
  */
-template<typename T>
-void ServerNetwork::sendData(const T *data, const uint32_t sizeOfArray)
+template<MessageType T>
+void ServerNetwork::send(const void *data, const uint32_t numberOfElement)
 {
     _Packet.clear();
 
-    for (size_t i = 0; i < sizeOfArray; i++)
+    _Packet << static_cast<uint32_t>(T);
+
+    if constexpr (T == MessageType::DATA)
     {
-        _Packet << data[i];
+        for (size_t i = 0; i < numberOfElement; i++)
+        {
+            _Packet << static_cast<const uint32_t *>(data)[i];
+        }
+    }
+    else if constexpr (T == MessageType::STRING)
+    {
+        const string *strArray = static_cast<const string *>(data);
+        for (size_t i = 0; i < numberOfElement; i++)
+        {
+            _Packet << strArray[i];
+        }
+    }
+    else if constexpr (T == MessageType::STATUS)
+    {
+        const uint32_t statusToSend = *static_cast<const uint32_t *>(data);
+        _Packet << statusToSend;
+    }
+    else if constexpr (T == MessageType::INPUT_EVENTS)
+    {
+        static_cast<const inputEvents *>(data)->serialize(_Packet);
+    }
+    else if constexpr (T == MessageType::OUTPUT_COMMANDS)
+    {
+        static_cast<const outputCommands *>(data)->serialize(_Packet);
     }
 
     if (_Client.send(_Packet) != Socket::Done)
     {
         throw runtime_error("Failed to send data to client.");
     }
-}
-
-/**
- * @brief Send a structure to client
- *
- * @param data structure to send
- */
-template<typename T>
-void ServerNetwork::sendStructure(const T *data)
-{
-    _Packet.clear();
-
-    data->serialize(_Packet);
-
-    if (_Client.send(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to send structure to client.");
-    }
-}
-
-/**
- * @brief Receive a structure from client
- *
- * @param data structure to receive
- */
-template<typename T>
-void ServerNetwork::receiveStructure(T *data)
-{
-    _Packet.clear();
-
-    if (_Client.receive(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to receive data from client.");
-    }
-
-    data->deserialize(_Packet);
-}
-
-/**
- * @brief Receive data from client
- *
- * @param data data received
- * @param sizeOfArray size max of the array
- * @return uint32_t number of data received
- */
-template<typename T>
-uint32_t ServerNetwork::receiveData(T *data, const uint32_t sizeOfArray)
-{
-    uint32_t numberOfDataReceived = 0;
-
-    _Packet.clear();
-
-    if (_Client.receive(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to receive data from client.");
-    }
-
-    while ((numberOfDataReceived < sizeOfArray) && (_Packet >> data[numberOfDataReceived]))
-    {
-        numberOfDataReceived++;
-    }
-
-    return numberOfDataReceived;
 }
 
 #endif

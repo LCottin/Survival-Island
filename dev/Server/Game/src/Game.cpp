@@ -54,16 +54,19 @@ void Game::_sendInitData()
 {
     /* Create a player after the name receive from client */
     string playerName;
-    _ServerNetwork->receiveData<string>(&playerName, 1);
+    _ServerNetwork->receive(&playerName);
     _Player = make_shared<Player>(playerName);
 
     /* Send all NPCs to client */
     const uint32_t NPCSize = _NPCs->size();
-    _ServerNetwork->sendData<uint32_t>(&NPCSize, 1U);
+    _ServerNetwork->send<MessageType::DATA>(&NPCSize, 1U);
 
     for (size_t i = 0; i < NPCSize; i++)
     {
-        _ServerNetwork->sendNPC(*(_NPCs->at(i)));
+        string data[2];
+        data[0] = _NPCs->at(i)->getName();
+        data[1] = _NPCs->at(i)->getColor();
+        _ServerNetwork->send<MessageType::STRING>(data, 2U);
     }
 }
 
@@ -78,7 +81,7 @@ void Game::_waitForPlayer()
     _sendInitData();
 
     /* Wait for player to be ready */
-    _ServerNetwork->receiveGameStatus(&_GameStatus);
+    _ServerNetwork->receive(&_GameStatus);
 }
 
 /**
@@ -87,7 +90,7 @@ void Game::_waitForPlayer()
  */
 void Game::_SynchronizeToClient() const
 {
-    _ServerNetwork->sendStructure<outputCommands>(&_OutputCommands);
+    _ServerNetwork->send<MessageType::OUTPUT_COMMANDS>(&_OutputCommands);
 }
 
 /**
@@ -96,7 +99,7 @@ void Game::_SynchronizeToClient() const
  */
 void Game::_SynchronizeFromClient()
 {
-    _ServerNetwork->receiveStructure<inputEvents>(&_InputEvents);
+    _ServerNetwork->receive(&_InputEvents);
 }
 /**
  * @brief Move player after computing new position
@@ -343,7 +346,7 @@ void Game::play()
     {
         cout << "Player connected and ready, starting game ..." << endl;
         _GameStatus = GameStatus::PLAY;
-        _ServerNetwork->sendGameStatus(&_GameStatus);
+        _ServerNetwork->send<MessageType::STATUS>(&_GameStatus);
     }
 
     while(_GameStatus == GameStatus::PLAY)

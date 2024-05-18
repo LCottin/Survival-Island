@@ -74,56 +74,66 @@ void ServerNetwork::_sendConfirmation()
 }
 
 /**
- * @brief Send a NPC to client
+ * @brief Receive and decode data from client
  *
- * @param npc NPC to send
+ * @param data Data to receive
+ * @param maxNumberOfElement Maximum number of element that can be received in case of an array
+ * @return Number of data received
  */
-void ServerNetwork::sendNPC(const NPC &npc)
+uint32_t ServerNetwork::receive(void *data, const uint32_t maxNumberOfElement)
 {
-    _Packet.clear();
-
-    _Packet << npc.getName() << npc.getColor();
-
-    if (_Client.send(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to send NPC to client.");
-    }
-}
-
-/**
- * @brief Send current game status to client
- *
- * @param gameStatus current game status
- */
-void ServerNetwork::sendGameStatus(const GameStatus *gameStatus)
-{
-    _Packet.clear();
-    _Packet << static_cast<uint32_t>(*gameStatus);
-
-    if (_Client.send(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to send game status to client.");
-    }
-}
-
-/**
- * @brief Receive current game status from client
- *
- * @param gameStatus current game status
- */
-void ServerNetwork::receiveGameStatus(GameStatus *gameStatus)
-{
-    uint32_t gameStatus_tmp;
+    uint32_t numberOfDataReceived = 0;
 
     _Packet.clear();
 
     if (_Client.receive(_Packet) != Socket::Done)
     {
-        throw runtime_error("Failed to receive game status from client.");
+        throw runtime_error("Failed to receive data from client.");
+    }
+    else
+    {
+        /* Manage message type */
+        uint32_t    packetReceived;
+        MessageType messageTypeReceived;
+
+        _Packet >> packetReceived;
+        messageTypeReceived = static_cast<MessageType>(packetReceived);
+
+        if (messageTypeReceived == MessageType::DATA)
+        {
+            while ((numberOfDataReceived < maxNumberOfElement) && (_Packet >> static_cast<uint32_t *>(data)[numberOfDataReceived]))
+            {
+                numberOfDataReceived++;
+            }
+        }
+        else if (messageTypeReceived == MessageType::STRING)
+        {
+            while ((numberOfDataReceived < maxNumberOfElement) && (_Packet >> static_cast<string *>(data)[numberOfDataReceived]))
+            {
+                numberOfDataReceived++;
+            }
+
+            numberOfDataReceived++;
+        }
+        else if (messageTypeReceived == MessageType::STATUS)
+        {
+            uint32_t gameStatusReceived;
+            _Packet >> gameStatusReceived;
+            *static_cast<uint32_t *>(data) = gameStatusReceived;
+
+            numberOfDataReceived++;
+        }
+        else if (messageTypeReceived == MessageType::INPUT_EVENTS)
+        {
+            static_cast<inputEvents *>(data)->deserialize(_Packet);
+        }
+        else if (messageTypeReceived == MessageType::OUTPUT_COMMANDS)
+        {
+            static_cast<outputCommands *>(data)->deserialize(_Packet);
+        }
     }
 
-    _Packet >> gameStatus_tmp;
-    *gameStatus = static_cast<GameStatus>(gameStatus_tmp);
+    return numberOfDataReceived;
 }
 
 ServerNetwork::~ServerNetwork()
