@@ -17,6 +17,15 @@ enum class GameStatus : uint32_t
     STOP,
 };
 
+enum class MessageType : uint32_t
+{
+    DATA,
+    STRING,
+    STATUS,
+    INPUT_EVENTS,
+    OUTPUT_COMMANDS,
+};
+
 typedef struct
 {
     bool     isAlive;
