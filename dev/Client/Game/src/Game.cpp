@@ -17,18 +17,18 @@ Game::Game(const string &playerName, const string &configName)
     _Board->computeVertices(ConfigDev::tileSize, Vector2u(ConfigDev::imageSizeTileWidth, ConfigDev::imageSizeTileHeight));
 
     /* Send player name to server */
-    _ClientNetwork->sendData<string>(&playerName, 1U);
+    _ClientNetwork->send<MessageType::STRING>(&playerName, 1U);
 
     /* Get NPC size list from server */
     uint32_t NPCListSize;
-    _ClientNetwork->receiveData<uint32_t>(&NPCListSize, 1U);
+    _ClientNetwork->receive(&NPCListSize, 1U);
     _NPCs->resize(NPCListSize);
 
     /* Receive NPCs from server */
     for (size_t i = 0; i < NPCListSize; i++)
     {
         string data[2];
-        _ClientNetwork->receiveData<string>(data, 2U);
+        _ClientNetwork->receive(data, 2U);
         _NPCs->at(i) = make_shared<NPC>(data[0], data[1]);
     }
 
@@ -38,7 +38,7 @@ Game::Game(const string &playerName, const string &configName)
 
     /* Send ready status to server */
     _GameStatus = GameStatus::READY;
-    _ClientNetwork->sendGameStatus(&_GameStatus);
+    _ClientNetwork->send<MessageType::STATUS>(&_GameStatus);
 }
 
 /**
@@ -60,7 +60,7 @@ void Game::_ResetInputEvent()
  */
 void Game::_WaitForStatus()
 {
-    _ClientNetwork->receiveGameStatus(&_GameStatus);
+    _ClientNetwork->receive(&_GameStatus);
 }
 
 /**
@@ -69,7 +69,7 @@ void Game::_WaitForStatus()
  */
 void Game::_SynchronizeToServer() const
 {
-    _ClientNetwork->sendStructure<inputEvents>(&_InputEvents);
+    _ClientNetwork->send<MessageType::INPUT_EVENTS>(&_InputEvents);
 }
 
 /**
@@ -78,7 +78,7 @@ void Game::_SynchronizeToServer() const
  */
 void Game::_SynchronizeFromServer()
 {
-    _ClientNetwork->receiveStructure<outputCommands>(&_OutputCommands);
+    _ClientNetwork->receive(&_OutputCommands);
 }
 
 /**

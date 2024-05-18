@@ -26,20 +26,10 @@ class ClientNetwork
         ClientNetwork();
         ClientNetwork(const string &configName);
 
-        template<typename T>
-        uint32_t receiveData(T *data, const uint32_t sizeOfArray);
+        uint32_t receive(void *data, const uint32_t maxNumberOfElement = 1U);
 
-        template<typename T>
-        void receiveStructure(T *data);
-
-        template<typename T>
-        void sendData(const T *data, const uint32_t sizeOfArray);
-
-        template<typename T>
-        void sendStructure(const T *data);
-
-        void receiveGameStatus(GameStatus *gameStatus);
-        void sendGameStatus(const GameStatus *gameStatus);
+        template<MessageType T>
+        void send(const void *data, const uint32_t numberOfElement = 1U);
 
         ~ClientNetwork();
 };
