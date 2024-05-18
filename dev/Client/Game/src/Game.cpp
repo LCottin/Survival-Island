@@ -48,6 +48,7 @@ Game::Game(const string &playerName, const string &configName)
 void Game::_ResetInputEvent()
 {
     _InputEvents.isGamePaused    = (_GameStatus == GameStatus::PAUSE);
+    _InputEvents.isWindowClosed  = false;
     _InputEvents.movePlayerDown  = false;
     _InputEvents.movePlayerUp    = false;
     _InputEvents.movePlayerLeft  = false;
@@ -97,14 +98,22 @@ void Game::play()
         /* Send events to server */
         _SynchronizeToServer();
 
-        /* Receive commands from server */
-        _SynchronizeFromServer();
+        /* Continue execution if window is still opened */
+        if (_InputEvents.isWindowClosed == false)
+        {
+            /* Receive commands from server */
+            _SynchronizeFromServer();
 
-        /* Update according to commands */
-        _UpdateGame();
+            /* Update according to commands */
+            _UpdateGame();
 
-        /* Refresh screen */
-        _Draw();
+            /* Refresh screen */
+            _Draw();
+        }
+        else
+        {
+            cout << "Closing window ... bye !" << endl;
+        }
     }
 }
 

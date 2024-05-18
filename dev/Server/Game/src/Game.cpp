@@ -100,6 +100,11 @@ void Game::_SynchronizeToClient() const
 void Game::_SynchronizeFromClient()
 {
     _ServerNetwork->receive(&_InputEvents);
+
+    if (_InputEvents.isWindowClosed == true)
+    {
+        _GameStatus = GameStatus::STOP;
+    }
 }
 /**
  * @brief Move player after computing new position
@@ -361,8 +366,15 @@ void Game::play()
         /* Manage interactions between player and NPCs */
         _HandleInteractions();
 
-        /* Send to client new outputs */
-        _UpdateOutputCommands();
-        _SynchronizeToClient();
+        if (_InputEvents.isWindowClosed == false)
+        {
+            /* Send to client new outputs */
+            _UpdateOutputCommands();
+            _SynchronizeToClient();
+        }
+        else
+        {
+            cout << "Client closed the window. Good bye !" << endl;
+        }
     }
 }

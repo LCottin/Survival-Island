@@ -37,6 +37,7 @@ typedef struct
 struct inputEvents
 {
     bool isGamePaused;
+    bool isWindowClosed;
     bool movePlayerUp;
     bool movePlayerDown;
     bool movePlayerLeft;

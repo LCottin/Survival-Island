@@ -131,6 +131,7 @@ void Screen::catchEvents(inputEvents &inputEvent)
         if (event.type == Event::Closed)
         {
             _Window.close();
+            inputEvent.isWindowClosed = true;
         }
 
         /* Update pause status */
