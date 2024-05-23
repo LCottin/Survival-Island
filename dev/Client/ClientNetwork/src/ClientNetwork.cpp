@@ -110,6 +110,10 @@ uint32_t ClientNetwork::receive(void *data, const uint32_t maxNumberOfElement)
 
             numberOfDataReceived++;
         }
+        else if (messageTypeReceived == MessageType::SERVER_STOP)
+        {
+            static_cast<outputCommands *>(data)->deserialize(_Packet);
+        }
         else if (messageTypeReceived == MessageType::INPUT_EVENTS)
         {
             static_cast<inputEvents *>(data)->deserialize(_Packet);

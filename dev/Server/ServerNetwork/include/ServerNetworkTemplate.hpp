@@ -36,6 +36,10 @@ void ServerNetwork::send(const void *data, const uint32_t numberOfElement)
         const uint32_t statusToSend = *static_cast<const uint32_t *>(data);
         _Packet << statusToSend;
     }
+    else if constexpr (T == MessageType::SERVER_STOP)
+    {
+        static_cast<const outputCommands *>(data)->serialize(_Packet);
+    }
     else if constexpr (T == MessageType::INPUT_EVENTS)
     {
         static_cast<const inputEvents *>(data)->serialize(_Packet);

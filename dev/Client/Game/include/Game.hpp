@@ -36,6 +36,8 @@ class Game
         Game(const string &playerName, const string &configName);
 
         void play();
+
+        ~Game();
 };
 
 #endif

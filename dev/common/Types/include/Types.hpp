@@ -22,6 +22,7 @@ enum class MessageType : uint32_t
     DATA,
     STRING,
     STATUS,
+    SERVER_STOP,
     INPUT_EVENTS,
     OUTPUT_COMMANDS,
 };

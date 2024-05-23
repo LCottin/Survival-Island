@@ -80,6 +80,7 @@ void Game::_SynchronizeToServer() const
 void Game::_SynchronizeFromServer()
 {
     _ClientNetwork->receive(&_OutputCommands);
+    _GameStatus = _OutputCommands.gameStatus;
 }
 
 /**
@@ -110,10 +111,6 @@ void Game::play()
             /* Refresh screen */
             _Draw();
         }
-        else
-        {
-            cout << "Closing window ... bye !" << endl;
-        }
     }
 }
 
@@ -123,7 +120,6 @@ void Game::play()
  */
 void Game::_UpdateGame()
 {
-    _GameStatus = _OutputCommands.gameStatus;
     _Player->setAlive(_OutputCommands.playerCommand.isAlive);
 
     if (_GameStatus == GameStatus::PLAY)
@@ -161,5 +157,17 @@ void Game::_Draw() const
     if (_GameStatus == GameStatus::PLAY)
     {
         _Screen->drawAll(*_Board, *_Player, *_NPCs);
+    }
+}
+
+Game::~Game()
+{
+    if (_InputEvents.isWindowClosed == true)
+    {
+        cout << "Closing window. Good bye !" << endl;
+    }
+    else if (_GameStatus == GameStatus::STOP)
+    {
+        cout << "Server stopped running, stopping game." << endl;
     }
 }

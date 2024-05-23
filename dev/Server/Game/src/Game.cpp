@@ -3,6 +3,10 @@
 #include "ConfigUser.hpp"
 #include "ConfigDev.hpp"
 #include "Random.hpp"
+#include <csignal>
+#include <atomic>
+
+static volatile atomic_bool _ServerRunning;
 
 Game::Game(const string& configName)
 {
@@ -22,6 +26,8 @@ Game::Game(const string& configName)
 
     /* Initialize event and command structures */
     _OutputCommands.NPCsCommands.resize(_NPCs->size());
+
+    _ServerRunning = true;
 
     _GameStatus = GameStatus::WAITING;
 }
@@ -103,7 +109,8 @@ void Game::_SynchronizeFromClient()
 
     if (_InputEvents.isWindowClosed == true)
     {
-        _GameStatus = GameStatus::STOP;
+        _GameStatus    = GameStatus::STOP;
+        _ServerRunning = false;
     }
 }
 /**
@@ -345,6 +352,8 @@ bool Game::_AreClose(const Player &player, const NPC &npc, const uint32_t thresh
  */
 void Game::play()
 {
+    _Shutdown = thread(&Game::_HandleShutdown, this);
+
     _waitForPlayer();
 
     if (_GameStatus == GameStatus::READY)
@@ -353,8 +362,12 @@ void Game::play()
         _GameStatus = GameStatus::PLAY;
         _ServerNetwork->send<MessageType::STATUS>(&_GameStatus);
     }
+    else
+    {
+        throw runtime_error("Player not ready to start, restart server.");
+    }
 
-    while(_GameStatus == GameStatus::PLAY)
+    while((_GameStatus == GameStatus::PLAY) && (_ServerRunning == true))
     {
         /* Receive events from client */
         _SynchronizeFromClient();
@@ -377,4 +390,35 @@ void Game::play()
             cout << "Client closed the window. Good bye !" << endl;
         }
     }
+}
+
+/**
+ * @brief Handle shutting down the server properly
+ *
+ */
+void Game::_HandleShutdown()
+{
+    signal(SIGINT, [](int32_t signum)
+    {
+        (void)signum;
+        cout << "Received signal to stop server. Shutting down ... " << endl;
+        _ServerRunning = false;
+    });
+
+    while (_ServerRunning == true)
+    {
+        sleep(Time(milliseconds(500)));
+    }
+}
+
+Game::~Game()
+{
+    if (_Shutdown.joinable() == true)
+    {
+        _Shutdown.join();
+    }
+
+    _GameStatus                = GameStatus::STOP;
+    _OutputCommands.gameStatus = _GameStatus;
+    _ServerNetwork->send<MessageType::SERVER_STOP>(&_OutputCommands);
 }
