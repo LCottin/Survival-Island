@@ -3,6 +3,10 @@
 #include "ConfigUser.hpp"
 #include "ConfigDev.hpp"
 #include "Random.hpp"
+#include <csignal>
+#include <atomic>
+
+static volatile atomic_bool _GameRunning;
 
 Game::Game(const string &playerName, const string &configName)
 {
@@ -17,28 +21,61 @@ Game::Game(const string &playerName, const string &configName)
     _Board->computeVertices(ConfigDev::tileSize, Vector2u(ConfigDev::imageSizeTileWidth, ConfigDev::imageSizeTileHeight));
 
     /* Send player name to server */
-    _ClientNetwork->send<MessageType::STRING>(&playerName, 1U);
-
-    /* Get NPC size list from server */
+    const bool sendStatus = _ClientNetwork->send<MessageType::STRING>(&playerName, 1U);
+    bool     readStatus;
     uint32_t NPCListSize;
-    _ClientNetwork->receive(&NPCListSize, 1U);
-    _NPCs->resize(NPCListSize);
 
-    /* Receive NPCs from server */
-    for (size_t i = 0; i < NPCListSize; i++)
+    if (sendStatus == true)
     {
-        string data[2];
-        _ClientNetwork->receive(data, 2U);
-        _NPCs->at(i) = make_shared<NPC>(data[0], data[1]);
+        /* Get NPC size list from server */
+        readStatus = _ClientNetwork->receive(&NPCListSize, nullptr, 1U);
+    }
+    else
+    {
+        readStatus = false;
     }
 
-    /* Initialize event and command structures */
-    _ResetInputEvent();
-    _OutputCommands.NPCsCommands.resize(_NPCs->size());
+    if (readStatus == true)
+    {
+        _NPCs->resize(NPCListSize);
 
-    /* Send ready status to server */
-    _GameStatus = GameStatus::READY;
-    _ClientNetwork->send<MessageType::STATUS>(&_GameStatus);
+        /* Initialize event and command structures */
+        _ResetInputEvent();
+        _OutputCommands.NPCsCommands.resize(NPCListSize);
+    }
+    else
+    {
+        _GameStatus = GameStatus::STOP;
+    }
+
+    /* Receive NPCs from server */
+    for (size_t i = 0; (readStatus == true) && (i < NPCListSize); i++)
+    {
+        string data[2];
+        readStatus = _ClientNetwork->receive(data, nullptr, 2U);
+
+        if (readStatus == true)
+        {
+            _NPCs->at(i) = make_shared<NPC>(data[0], data[1]);
+        }
+    }
+
+    if (readStatus == true)
+    {
+        _GameRunning   = true;
+        _ServerRunning = true;
+        _GameStatus    = GameStatus::READY;
+
+        _ClientNetwork->send<MessageType::STATUS>(&_GameStatus);
+    }
+    else
+    {
+        _GameRunning   = false;
+        _ServerRunning = false;
+        _GameStatus    = GameStatus::STOP;
+
+        _ClientNetwork->send<MessageType::CLIENT_STOP>(&_GameStatus);
+    }
 }
 
 /**
@@ -49,6 +86,7 @@ void Game::_ResetInputEvent()
 {
     _InputEvents.isGamePaused    = (_GameStatus == GameStatus::PAUSE);
     _InputEvents.isWindowClosed  = false;
+    _InputEvents.isClientStopped = false;
     _InputEvents.movePlayerDown  = false;
     _InputEvents.movePlayerUp    = false;
     _InputEvents.movePlayerLeft  = false;
@@ -61,16 +99,28 @@ void Game::_ResetInputEvent()
  */
 void Game::_WaitForStatus()
 {
-    _ClientNetwork->receive(&_GameStatus);
+    const bool status = _ClientNetwork->receive(&_GameStatus);
+
+    /* Error when reading the message */
+    if (status == false)
+    {
+        _ServerRunning = false;
+    }
 }
 
 /**
  * @brief Send InputEvent structure to server
  *
  */
-void Game::_SynchronizeToServer() const
+void Game::_SynchronizeToServer()
 {
-    _ClientNetwork->send<MessageType::INPUT_EVENTS>(&_InputEvents);
+    const bool status = _ClientNetwork->send<MessageType::INPUT_EVENTS>(&_InputEvents);
+
+    /* Error when sending the message */
+    if (status == false)
+    {
+        _ServerRunning = false;
+    }
 }
 
 /**
@@ -79,8 +129,14 @@ void Game::_SynchronizeToServer() const
  */
 void Game::_SynchronizeFromServer()
 {
-    _ClientNetwork->receive(&_OutputCommands);
-    _GameStatus = _OutputCommands.gameStatus;
+    const bool status = _ClientNetwork->receive(&_OutputCommands);
+    _GameStatus       = _OutputCommands.gameStatus;
+
+    /* Error when reading message or if server has stopped the game */
+    if ((status == false) || (_OutputCommands.gameStatus == GameStatus::STOP))
+    {
+        _ServerRunning = false;
+    }
 }
 
 /**
@@ -89,9 +145,11 @@ void Game::_SynchronizeFromServer()
  */
 void Game::play()
 {
+    _Shutdown = thread(&Game::_HandleShutdown, this);
+
     _WaitForStatus();
 
-    while ((_Screen->isWindowOpen()) && (_GameStatus != GameStatus::STOP))
+    while ((_GameStatus != GameStatus::STOP) && (_GameRunning == true) && (_ServerRunning == true))
     {
         /* Catch events */
         _CatchEvents();
@@ -111,6 +169,10 @@ void Game::play()
             /* Refresh screen */
             _Draw();
         }
+        else
+        {
+            _GameRunning = false;
+        }
     }
 }
 
@@ -122,17 +184,25 @@ void Game::_UpdateGame()
 {
     _Player->setAlive(_OutputCommands.playerCommand.isAlive);
 
-    if (_GameStatus == GameStatus::PLAY)
+    if (_OutputCommands.playerCommand.isAlive == true)
     {
-        _Player->setPosition(_OutputCommands.playerCommand.position, _OutputCommands.playerCommand.hasMoved);
-        _Player->setHealth(_OutputCommands.playerCommand.health);
-
-        for(size_t i = 0; i < _NPCs->size(); i++)
+        if (_GameStatus == GameStatus::PLAY)
         {
-            _NPCs->at(i)->setAlive(_OutputCommands.NPCsCommands[i].isAlive);
-            _NPCs->at(i)->setHealth(_OutputCommands.NPCsCommands[i].health);
-            _NPCs->at(i)->setPosition(_OutputCommands.NPCsCommands[i].position);
+            _Player->setPosition(_OutputCommands.playerCommand.position, _OutputCommands.playerCommand.hasMoved);
+            _Player->setHealth(_OutputCommands.playerCommand.health);
+
+            for(size_t i = 0; i < _NPCs->size(); i++)
+            {
+                _NPCs->at(i)->setAlive(_OutputCommands.NPCsCommands[i].isAlive);
+                _NPCs->at(i)->setHealth(_OutputCommands.NPCsCommands[i].health);
+                _NPCs->at(i)->setPosition(_OutputCommands.NPCsCommands[i].position);
+            }
         }
+    }
+    else
+    {
+        _GameRunning = false;
+        _GameStatus  = GameStatus::STOP;
     }
 }
 
@@ -160,14 +230,53 @@ void Game::_Draw() const
     }
 }
 
+/**
+ * @brief Handle shutting down the client properly
+ *
+ */
+void Game::_HandleShutdown()
+{
+    signal(SIGINT, [](int32_t signum)
+    {
+        (void)signum;
+        _GameRunning = false;
+    });
+
+    while (_GameRunning == true)
+    {
+        sleep(Time(milliseconds(500)));
+    }
+}
+
 Game::~Game()
 {
     if (_InputEvents.isWindowClosed == true)
     {
         cout << "Closing window. Good bye !" << endl;
     }
+    else if (_Player->isAlive() == false)
+    {
+        cout << "Player is dead, end of game." << endl;
+    }
+    else if (_ServerRunning == false)
+    {
+        cout << "Server has stopped, end of game." << endl;
+    }
+    else if (_GameRunning == false)
+    {
+        cout << "Stopping client ... " << endl;
+
+        _InputEvents.isClientStopped = true;
+        _ClientNetwork->send<MessageType::CLIENT_STOP>(&_InputEvents);
+    }
     else if (_GameStatus == GameStatus::STOP)
     {
         cout << "Server stopped running, stopping game." << endl;
+    }
+
+    _GameRunning = false;
+    if (_Shutdown.joinable() == true)
+    {
+        _Shutdown.join();
     }
 }

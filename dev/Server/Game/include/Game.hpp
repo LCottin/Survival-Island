@@ -28,7 +28,7 @@ class Game
         void _UpdateOutputCommands();
         void _sendInitData();
         void _waitForPlayer();
-        void _SynchronizeToClient() const;
+        void _SynchronizeToClient();
         void _SynchronizeFromClient();
         void _MovePlayer();
         void _MoveNPCs();

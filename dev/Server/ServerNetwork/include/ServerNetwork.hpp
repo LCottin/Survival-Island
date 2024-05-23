@@ -30,10 +30,10 @@ class ServerNetwork
 
         void acceptClient();
 
-        uint32_t receive(void *data, const uint32_t maxNumberOfElement = 1U);
+        bool receive(void *data, int32_t *numberOfElementReceived = nullptr, const uint32_t maxNumberOfElement = 1U);
 
         template<MessageType T>
-        void send(const void *data, const uint32_t numberOfElement = 1U);
+        bool send(const void *data, const uint32_t numberOfElement = 1U);
 
         ~ServerNetwork();
 };

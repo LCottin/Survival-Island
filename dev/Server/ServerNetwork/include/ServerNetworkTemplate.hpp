@@ -8,9 +8,10 @@
  *
  * @param data Data to send
  * @param numberOfElement Number of data to send in case of an array
+ * @return true if successfully sent, else false
  */
 template<MessageType T>
-void ServerNetwork::send(const void *data, const uint32_t numberOfElement)
+bool ServerNetwork::send(const void *data, const uint32_t numberOfElement)
 {
     _Packet.clear();
 
@@ -49,10 +50,9 @@ void ServerNetwork::send(const void *data, const uint32_t numberOfElement)
         static_cast<const outputCommands *>(data)->serialize(_Packet);
     }
 
-    if (_Client.send(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to send data to client.");
-    }
+    const Socket::Status sendStatus = _Client.send(_Packet);
+
+    return (sendStatus == Socket::Status::Done);
 }
 
 #endif

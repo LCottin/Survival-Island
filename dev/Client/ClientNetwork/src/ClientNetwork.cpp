@@ -66,18 +66,20 @@ void ClientNetwork::_sendConfirmation()
  * @brief Receive and decode data from server
  *
  * @param data Data to receive
+ * @param numberOfElementReceived number of element received and decoded
  * @param maxNumberOfElement Maximum number of element that can be received in case of an array
- * @return Number of data received
+ * @return true if successfully received from server, else false
  */
-uint32_t ClientNetwork::receive(void *data, const uint32_t maxNumberOfElement)
+bool ClientNetwork::receive(void *data, int32_t *numberOfElementReceived, const uint32_t maxNumberOfElement)
 {
-    uint32_t numberOfDataReceived = 0;
+    int32_t numberOfDataReceived = 0;
 
     _Packet.clear();
+    const Socket::Status receiveStatus = _Server.receive(_Packet);
 
-    if (_Server.receive(_Packet) != Socket::Done)
+    if (receiveStatus != Socket::Done)
     {
-        throw runtime_error("Failed to receive data from server.");
+        numberOfDataReceived = -1;
     }
     else
     {
@@ -90,14 +92,14 @@ uint32_t ClientNetwork::receive(void *data, const uint32_t maxNumberOfElement)
 
         if (messageTypeReceived == MessageType::DATA)
         {
-            while ((numberOfDataReceived < maxNumberOfElement) && (_Packet >> static_cast<uint32_t *>(data)[numberOfDataReceived]))
+            while ((numberOfDataReceived < static_cast<int32_t>(maxNumberOfElement)) && (_Packet >> static_cast<uint32_t *>(data)[numberOfDataReceived]))
             {
                 numberOfDataReceived++;
             }
         }
         else if (messageTypeReceived == MessageType::STRING)
         {
-            while ((numberOfDataReceived < maxNumberOfElement) && (_Packet >> static_cast<string *>(data)[numberOfDataReceived]))
+            while ((numberOfDataReceived < static_cast<int32_t>(maxNumberOfElement)) && (_Packet >> static_cast<string *>(data)[numberOfDataReceived]))
             {
                 numberOfDataReceived++;
             }
@@ -124,7 +126,12 @@ uint32_t ClientNetwork::receive(void *data, const uint32_t maxNumberOfElement)
         }
     }
 
-    return numberOfDataReceived;
+    if (numberOfElementReceived != nullptr)
+    {
+        *numberOfElementReceived = numberOfDataReceived;
+    }
+
+    return (receiveStatus == Socket::Status::Done);
 }
 
 ClientNetwork::~ClientNetwork()

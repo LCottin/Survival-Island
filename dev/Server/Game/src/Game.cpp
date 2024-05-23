@@ -60,19 +60,33 @@ void Game::_sendInitData()
 {
     /* Create a player after the name receive from client */
     string playerName;
-    _ServerNetwork->receive(&playerName);
-    _Player = make_shared<Player>(playerName);
+    const bool readStatus = _ServerNetwork->receive(&playerName);
+    if (readStatus == true)
+    {
+        _Player = make_shared<Player>(playerName);
+    }
+    else
+    {
+        _ServerRunning = false;
+        _GameStatus    = GameStatus::STOP;
+    }
 
     /* Send all NPCs to client */
     const uint32_t NPCSize = _NPCs->size();
-    _ServerNetwork->send<MessageType::DATA>(&NPCSize, 1U);
+    bool sendStatus = _ServerNetwork->send<MessageType::DATA>(&NPCSize, 1U);
 
-    for (size_t i = 0; i < NPCSize; i++)
+    for (size_t i = 0; (sendStatus == true) && (i < NPCSize); i++)
     {
         string data[2];
         data[0] = _NPCs->at(i)->getName();
         data[1] = _NPCs->at(i)->getColor();
-        _ServerNetwork->send<MessageType::STRING>(data, 2U);
+        sendStatus = _ServerNetwork->send<MessageType::STRING>(data, 2U);
+    }
+
+    if (sendStatus == false)
+    {
+        _ServerRunning = false;
+        _GameStatus    = GameStatus::STOP;
     }
 }
 
@@ -86,17 +100,31 @@ void Game::_waitForPlayer()
 
     _sendInitData();
 
-    /* Wait for player to be ready */
-    _ServerNetwork->receive(&_GameStatus);
+    if (_GameStatus == GameStatus::WAITING)
+    {
+        /* Wait for player to be ready */
+        const bool readStatus = _ServerNetwork->receive(&_GameStatus);
+
+        if (readStatus == false)
+        {
+            _ServerRunning = false;
+            _GameStatus    = GameStatus::STOP;
+        }
+    }
 }
 
 /**
  * @brief Send outputCommands structure to client
  *
  */
-void Game::_SynchronizeToClient() const
+void Game::_SynchronizeToClient()
 {
-    _ServerNetwork->send<MessageType::OUTPUT_COMMANDS>(&_OutputCommands);
+    const bool sendStatus = _ServerNetwork->send<MessageType::OUTPUT_COMMANDS>(&_OutputCommands);
+
+    if (sendStatus == false)
+    {
+        _ServerRunning = false;
+    }
 }
 
 /**
@@ -105,12 +133,15 @@ void Game::_SynchronizeToClient() const
  */
 void Game::_SynchronizeFromClient()
 {
-    _ServerNetwork->receive(&_InputEvents);
+    const bool readStatus = _ServerNetwork->receive(&_InputEvents);
 
-    if (_InputEvents.isWindowClosed == true)
+    if (readStatus == false)
+    {
+        _ServerRunning = false;
+    }
+    else if (_InputEvents.isWindowClosed == true)
     {
         _GameStatus    = GameStatus::STOP;
-        _ServerRunning = false;
     }
 }
 /**
@@ -359,12 +390,14 @@ void Game::play()
     if (_GameStatus == GameStatus::READY)
     {
         cout << "Player connected and ready, starting game ..." << endl;
-        _GameStatus = GameStatus::PLAY;
-        _ServerNetwork->send<MessageType::STATUS>(&_GameStatus);
-    }
-    else
-    {
-        throw runtime_error("Player not ready to start, restart server.");
+
+        _GameStatus           = GameStatus::PLAY;
+        const bool sendStatus = _ServerNetwork->send<MessageType::STATUS>(&_GameStatus);
+
+        if (sendStatus == false)
+        {
+            _ServerRunning = false;
+        }
     }
 
     while((_GameStatus == GameStatus::PLAY) && (_ServerRunning == true))
@@ -387,7 +420,7 @@ void Game::play()
         }
         else
         {
-            cout << "Client closed the window. Good bye !" << endl;
+            _GameStatus = GameStatus::STOP;
         }
     }
 }
@@ -413,12 +446,29 @@ void Game::_HandleShutdown()
 
 Game::~Game()
 {
+    if (_InputEvents.isWindowClosed)
+    {
+        cout << "Player closed the window. End of game." << endl;
+    }
+    else if (_Player->isAlive() == false)
+    {
+        cout << "Player is dead, end of game." << endl;
+    }
+    else if (_ServerRunning == false)
+    {
+        cout << "Server stopping ... " << endl;
+        _GameStatus                = GameStatus::STOP;
+        _OutputCommands.gameStatus = _GameStatus;
+        _ServerNetwork->send<MessageType::SERVER_STOP>(&_OutputCommands);
+    }
+    else if (_GameStatus == GameStatus::STOP)
+    {
+        cout << "Stopping game ... " << endl;
+    }
+
+    _ServerRunning = false;
     if (_Shutdown.joinable() == true)
     {
         _Shutdown.join();
     }
-
-    _GameStatus                = GameStatus::STOP;
-    _OutputCommands.gameStatus = _GameStatus;
-    _ServerNetwork->send<MessageType::SERVER_STOP>(&_OutputCommands);
 }

@@ -22,6 +22,7 @@ enum class MessageType : uint32_t
     DATA,
     STRING,
     STATUS,
+    CLIENT_STOP,
     SERVER_STOP,
     INPUT_EVENTS,
     OUTPUT_COMMANDS,
@@ -39,6 +40,7 @@ struct inputEvents
 {
     bool isGamePaused;
     bool isWindowClosed;
+    bool isClientStopped;
     bool movePlayerUp;
     bool movePlayerDown;
     bool movePlayerLeft;
