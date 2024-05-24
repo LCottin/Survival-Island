@@ -95,7 +95,7 @@ bool ClientNetwork::receive(void *data, int32_t *numberOfElementReceived, const 
         *numberOfElementReceived = numberOfDataReceived;
     }
 
-    return (receiveStatus == Socket::Status::Done);
+    return (receiveStatus == Socket::Done);
 }
 
 ClientNetwork::~ClientNetwork()

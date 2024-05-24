@@ -60,8 +60,8 @@ void Game::_sendInitData()
 {
     /* Create a player after the name receive from client */
     string playerName;
-    const bool readStatus = _ServerNetwork->receive(&playerName);
-    if (readStatus == true)
+
+    if (_ServerNetwork->receive(&playerName) == true)
     {
         _Player = make_shared<Player>(playerName);
     }
@@ -73,7 +73,7 @@ void Game::_sendInitData()
 
     /* Send all NPCs to client */
     const uint32_t NPCSize = _NPCs->size();
-    bool sendStatus = _ServerNetwork->send<MessageType::DATA>(&NPCSize, 1U);
+    bool sendStatus        = _ServerNetwork->send<MessageType::DATA>(&NPCSize, 1U);
 
     for (size_t i = 0; (sendStatus == true) && (i < NPCSize); i++)
     {
@@ -103,9 +103,7 @@ void Game::_waitForPlayer()
     if (_GameStatus == GameStatus::WAITING)
     {
         /* Wait for player to be ready */
-        const bool readStatus = _ServerNetwork->receive(&_GameStatus);
-
-        if (readStatus == false)
+        if (_ServerNetwork->receive(&_GameStatus) == false)
         {
             _ServerRunning = false;
             _GameStatus    = GameStatus::STOP;
@@ -119,9 +117,8 @@ void Game::_waitForPlayer()
  */
 void Game::_SynchronizeToClient()
 {
-    const bool sendStatus = _ServerNetwork->send<MessageType::OUTPUT_COMMANDS>(&_OutputCommands);
-
-    if (sendStatus == false)
+    /* Detect error when sending the message */
+    if (_ServerNetwork->send<MessageType::OUTPUT_COMMANDS>(&_OutputCommands) == false)
     {
         _ServerRunning = false;
     }
@@ -133,9 +130,8 @@ void Game::_SynchronizeToClient()
  */
 void Game::_SynchronizeFromClient()
 {
-    const bool readStatus = _ServerNetwork->receive(&_InputEvents);
-
-    if (readStatus == false)
+    /* Detect error when reading the message */
+    if (_ServerNetwork->receive(&_InputEvents) == false)
     {
         _ServerRunning = false;
     }
@@ -392,9 +388,8 @@ void Game::play()
         cout << "Player connected and ready, starting game ..." << endl;
 
         _GameStatus           = GameStatus::PLAY;
-        const bool sendStatus = _ServerNetwork->send<MessageType::STATUS>(&_GameStatus);
 
-        if (sendStatus == false)
+        if (_ServerNetwork->send<MessageType::STATUS>(&_GameStatus) == false)
         {
             _ServerRunning = false;
         }

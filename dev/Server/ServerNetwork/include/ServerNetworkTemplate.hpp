@@ -50,9 +50,7 @@ bool ServerNetwork::send(const void *data, const uint32_t numberOfElement)
         static_cast<const outputCommands *>(data)->serialize(_Packet);
     }
 
-    const Socket::Status sendStatus = _Client.send(_Packet);
-
-    return (sendStatus == Socket::Status::Done);
+    return (_Client.send(_Packet) == Socket::Done);
 }
 
 #endif

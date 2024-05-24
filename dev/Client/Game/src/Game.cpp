@@ -21,11 +21,10 @@ Game::Game(const string &playerName, const string &configName)
     _Board->computeVertices(ConfigDev::tileSize, Vector2u(ConfigDev::imageSizeTileWidth, ConfigDev::imageSizeTileHeight));
 
     /* Send player name to server */
-    const bool sendStatus = _ClientNetwork->send<MessageType::STRING>(&playerName, 1U);
     bool     readStatus;
     uint32_t NPCListSize;
 
-    if (sendStatus == true)
+    if (_ClientNetwork->send<MessageType::STRING>(&playerName, 1U) == true)
     {
         /* Get NPC size list from server */
         readStatus = _ClientNetwork->receive(&NPCListSize, nullptr, 1U);
@@ -99,10 +98,8 @@ void Game::_ResetInputEvent()
  */
 void Game::_WaitForStatus()
 {
-    const bool status = _ClientNetwork->receive(&_GameStatus);
-
-    /* Error when reading the message */
-    if (status == false)
+    /* Detect error when reading the message */
+    if (_ClientNetwork->receive(&_GameStatus) == false)
     {
         _ServerRunning = false;
     }
@@ -114,10 +111,8 @@ void Game::_WaitForStatus()
  */
 void Game::_SynchronizeToServer()
 {
-    const bool status = _ClientNetwork->send<MessageType::INPUT_EVENTS>(&_InputEvents);
-
-    /* Error when sending the message */
-    if (status == false)
+    /* Detect error when sending the message */
+    if (_ClientNetwork->send<MessageType::INPUT_EVENTS>(&_InputEvents) == false)
     {
         _ServerRunning = false;
     }
