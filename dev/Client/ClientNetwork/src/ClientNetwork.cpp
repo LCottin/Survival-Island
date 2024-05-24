@@ -27,75 +27,75 @@ void ClientNetwork::_initCommon()
 }
 
 /**
- * @brief Wait for a confirmation that the server has received the message
+ * @brief Receive and decode data from server
  *
+ * @param data Data to receive
+ * @param numberOfElementReceived number of element received and decoded
+ * @param maxNumberOfElement Maximum number of element that can be received in case of an array
+ * @return true if successfully received from server, else false
  */
-bool ClientNetwork::_waitForConfirmation()
+bool ClientNetwork::receive(void *data, int32_t *numberOfElementReceived, const uint32_t maxNumberOfElement)
 {
-    string confirmation;
+    int32_t numberOfDataReceived = 0;
 
     _Packet.clear();
+    const Socket::Status receiveStatus = _Server.receive(_Packet);
 
-    if (_Server.receive(_Packet) != Socket::Done)
+    if (receiveStatus != Socket::Done)
     {
-        throw runtime_error("Failed to receive confirmation from server.");
+        numberOfDataReceived = -1;
+    }
+    else
+    {
+        /* Manage message type */
+        uint32_t    packetReceived;
+        MessageType messageTypeReceived;
+
+        _Packet >> packetReceived;
+        messageTypeReceived = static_cast<MessageType>(packetReceived);
+
+        if (messageTypeReceived == MessageType::DATA)
+        {
+            while ((numberOfDataReceived < static_cast<int32_t>(maxNumberOfElement)) && (_Packet >> static_cast<uint32_t *>(data)[numberOfDataReceived]))
+            {
+                numberOfDataReceived++;
+            }
+        }
+        else if (messageTypeReceived == MessageType::STRING)
+        {
+            while ((numberOfDataReceived < static_cast<int32_t>(maxNumberOfElement)) && (_Packet >> static_cast<string *>(data)[numberOfDataReceived]))
+            {
+                numberOfDataReceived++;
+            }
+        }
+        else if (messageTypeReceived == MessageType::STATUS)
+        {
+            uint32_t gameStatusReceived;
+            _Packet >> gameStatusReceived;
+            *static_cast<uint32_t *>(data) = gameStatusReceived;
+
+            numberOfDataReceived++;
+        }
+        else if (messageTypeReceived == MessageType::SERVER_STOP)
+        {
+            static_cast<outputCommands *>(data)->deserialize(_Packet);
+        }
+        else if (messageTypeReceived == MessageType::INPUT_EVENTS)
+        {
+            static_cast<inputEvents *>(data)->deserialize(_Packet);
+        }
+        else if (messageTypeReceived == MessageType::OUTPUT_COMMANDS)
+        {
+            static_cast<outputCommands *>(data)->deserialize(_Packet);
+        }
     }
 
-    _Packet >> confirmation;
-    return (confirmation == "OK from server");
-}
-
-/**
- * @brief Send confirmation to server
- *
- */
-void ClientNetwork::_sendConfirmation()
-{
-    const string confirmation = "OK from client";
-
-    _Packet.clear();
-    _Packet << confirmation;
-
-    if (_Server.send(_Packet) != Socket::Done)
+    if (numberOfElementReceived != nullptr)
     {
-        throw runtime_error("Failed to send confirmation to server.");
-    }
-}
-
-/**
- * @brief Send current game status to server
- *
- * @param gameStatus current game status
- */
-void ClientNetwork::sendGameStatus(const GameStatus *gameStatus)
-{
-    _Packet.clear();
-    _Packet << static_cast<uint32_t>(*gameStatus);
-
-    if (_Server.send(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to send game status to server.");
-    }
-}
-
-/**
- * @brief Receive current game status from server
- *
- * @param gameStatus current game status
- */
-void ClientNetwork::receiveGameStatus(GameStatus *gameStatus)
-{
-    uint32_t gameStatus_tmp;
-
-    _Packet.clear();
-
-    if (_Server.receive(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to receive game status from server.");
+        *numberOfElementReceived = numberOfDataReceived;
     }
 
-    _Packet >> gameStatus_tmp;
-    *gameStatus = static_cast<GameStatus>(gameStatus_tmp);
+    return (receiveStatus == Socket::Done);
 }
 
 ClientNetwork::~ClientNetwork()

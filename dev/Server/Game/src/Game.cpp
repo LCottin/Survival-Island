@@ -3,6 +3,10 @@
 #include "ConfigUser.hpp"
 #include "ConfigDev.hpp"
 #include "Random.hpp"
+#include <csignal>
+#include <atomic>
+
+static volatile atomic_bool _ServerRunning;
 
 Game::Game(const string& configName)
 {
@@ -22,6 +26,8 @@ Game::Game(const string& configName)
 
     /* Initialize event and command structures */
     _OutputCommands.NPCsCommands.resize(_NPCs->size());
+
+    _ServerRunning = true;
 
     _GameStatus = GameStatus::WAITING;
 }
@@ -54,16 +60,33 @@ void Game::_sendInitData()
 {
     /* Create a player after the name receive from client */
     string playerName;
-    _ServerNetwork->receiveData<string>(&playerName, 1);
-    _Player = make_shared<Player>(playerName);
+
+    if (_ServerNetwork->receive(&playerName) == true)
+    {
+        _Player = make_shared<Player>(playerName);
+    }
+    else
+    {
+        _ServerRunning = false;
+        _GameStatus    = GameStatus::STOP;
+    }
 
     /* Send all NPCs to client */
     const uint32_t NPCSize = _NPCs->size();
-    _ServerNetwork->sendData<uint32_t>(&NPCSize, 1U);
+    bool sendStatus        = _ServerNetwork->send<MessageType::DATA>(&NPCSize, 1U);
 
-    for (size_t i = 0; i < NPCSize; i++)
+    for (size_t i = 0; (sendStatus == true) && (i < NPCSize); i++)
     {
-        _ServerNetwork->sendNPC(*(_NPCs->at(i)));
+        string data[2];
+        data[0] = _NPCs->at(i)->getName();
+        data[1] = _NPCs->at(i)->getColor();
+        sendStatus = _ServerNetwork->send<MessageType::STRING>(data, 2U);
+    }
+
+    if (sendStatus == false)
+    {
+        _ServerRunning = false;
+        _GameStatus    = GameStatus::STOP;
     }
 }
 
@@ -77,17 +100,28 @@ void Game::_waitForPlayer()
 
     _sendInitData();
 
-    /* Wait for player to be ready */
-    _ServerNetwork->receiveGameStatus(&_GameStatus);
+    if (_GameStatus == GameStatus::WAITING)
+    {
+        /* Wait for player to be ready */
+        if (_ServerNetwork->receive(&_GameStatus) == false)
+        {
+            _ServerRunning = false;
+            _GameStatus    = GameStatus::STOP;
+        }
+    }
 }
 
 /**
  * @brief Send outputCommands structure to client
  *
  */
-void Game::_SynchronizeToClient() const
+void Game::_SynchronizeToClient()
 {
-    _ServerNetwork->sendStructure<outputCommands>(&_OutputCommands);
+    /* Detect error when sending the message */
+    if (_ServerNetwork->send<MessageType::OUTPUT_COMMANDS>(&_OutputCommands) == false)
+    {
+        _ServerRunning = false;
+    }
 }
 
 /**
@@ -96,7 +130,15 @@ void Game::_SynchronizeToClient() const
  */
 void Game::_SynchronizeFromClient()
 {
-    _ServerNetwork->receiveStructure<inputEvents>(&_InputEvents);
+    /* Detect error when reading the message */
+    if (_ServerNetwork->receive(&_InputEvents) == false)
+    {
+        _ServerRunning = false;
+    }
+    else if (_InputEvents.isWindowClosed == true)
+    {
+        _GameStatus    = GameStatus::STOP;
+    }
 }
 /**
  * @brief Move player after computing new position
@@ -337,16 +379,23 @@ bool Game::_AreClose(const Player &player, const NPC &npc, const uint32_t thresh
  */
 void Game::play()
 {
+    _Shutdown = thread(&Game::_HandleShutdown, this);
+
     _waitForPlayer();
 
     if (_GameStatus == GameStatus::READY)
     {
         cout << "Player connected and ready, starting game ..." << endl;
-        _GameStatus = GameStatus::PLAY;
-        _ServerNetwork->sendGameStatus(&_GameStatus);
+
+        _GameStatus           = GameStatus::PLAY;
+
+        if (_ServerNetwork->send<MessageType::STATUS>(&_GameStatus) == false)
+        {
+            _ServerRunning = false;
+        }
     }
 
-    while(_GameStatus == GameStatus::PLAY)
+    while((_GameStatus == GameStatus::PLAY) && (_ServerRunning == true))
     {
         /* Receive events from client */
         _SynchronizeFromClient();
@@ -358,8 +407,63 @@ void Game::play()
         /* Manage interactions between player and NPCs */
         _HandleInteractions();
 
-        /* Send to client new outputs */
-        _UpdateOutputCommands();
-        _SynchronizeToClient();
+        if (_InputEvents.isWindowClosed == false)
+        {
+            /* Send to client new outputs */
+            _UpdateOutputCommands();
+            _SynchronizeToClient();
+        }
+        else
+        {
+            _GameStatus = GameStatus::STOP;
+        }
+    }
+}
+
+/**
+ * @brief Handle shutting down the server properly
+ *
+ */
+void Game::_HandleShutdown()
+{
+    signal(SIGINT, [](int32_t signum)
+    {
+        (void)signum;
+        cout << "Received signal to stop server. Shutting down ... " << endl;
+        _ServerRunning = false;
+    });
+
+    while (_ServerRunning == true)
+    {
+        sleep(Time(milliseconds(500)));
+    }
+}
+
+Game::~Game()
+{
+    if (_InputEvents.isWindowClosed)
+    {
+        cout << "Player closed the window. End of game." << endl;
+    }
+    else if (_Player->isAlive() == false)
+    {
+        cout << "Player is dead, end of game." << endl;
+    }
+    else if (_ServerRunning == false)
+    {
+        cout << "Server stopping ... " << endl;
+        _GameStatus                = GameStatus::STOP;
+        _OutputCommands.gameStatus = _GameStatus;
+        _ServerNetwork->send<MessageType::SERVER_STOP>(&_OutputCommands);
+    }
+    else if (_GameStatus == GameStatus::STOP)
+    {
+        cout << "Stopping game ... " << endl;
+    }
+
+    _ServerRunning = false;
+    if (_Shutdown.joinable() == true)
+    {
+        _Shutdown.join();
     }
 }

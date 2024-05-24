@@ -2,6 +2,7 @@
 #define __GAME_HPP__
 
 #include <iostream>
+#include <thread>
 
 #include "ServerNetwork.hpp"
 #include "Player.hpp"
@@ -22,20 +23,26 @@ class Game
         inputEvents    _InputEvents;
         outputCommands _OutputCommands;
 
+        thread _Shutdown;
+
         void _UpdateOutputCommands();
         void _sendInitData();
         void _waitForPlayer();
-        void _SynchronizeToClient() const;
+        void _SynchronizeToClient();
         void _SynchronizeFromClient();
         void _MovePlayer();
         void _MoveNPCs();
         void _HandleInteractions();
         bool _AreClose(const Player &player, const NPC &npc, const uint32_t threshold) const;
 
+        void _HandleShutdown();
+
     public:
         Game(const string& configName);
 
         void play();
+
+        ~Game();
 };
 
 #endif

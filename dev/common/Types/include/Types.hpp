@@ -17,6 +17,17 @@ enum class GameStatus : uint32_t
     STOP,
 };
 
+enum class MessageType : uint32_t
+{
+    DATA,
+    STRING,
+    STATUS,
+    CLIENT_STOP,
+    SERVER_STOP,
+    INPUT_EVENTS,
+    OUTPUT_COMMANDS,
+};
+
 typedef struct
 {
     bool     isAlive;
@@ -28,6 +39,8 @@ typedef struct
 struct inputEvents
 {
     bool isGamePaused;
+    bool isWindowClosed;
+    bool isClientStopped;
     bool movePlayerUp;
     bool movePlayerDown;
     bool movePlayerLeft;

@@ -8,6 +8,8 @@
 void inputEvents::serialize(Packet &packet) const
 {
     packet << isGamePaused;
+    packet << isWindowClosed;
+    packet << isClientStopped;
     packet << movePlayerUp;
     packet << movePlayerDown;
     packet << movePlayerLeft;
@@ -22,6 +24,8 @@ void inputEvents::serialize(Packet &packet) const
 void inputEvents::deserialize(Packet &packet)
 {
     packet >> isGamePaused;
+    packet >> isWindowClosed;
+    packet >> isClientStopped;
     packet >> movePlayerUp;
     packet >> movePlayerDown;
     packet >> movePlayerLeft;

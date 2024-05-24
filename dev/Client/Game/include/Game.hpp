@@ -1,6 +1,8 @@
 #ifndef __GAME_HPP__
 #define __GAME_HPP__
 
+#include <thread>
+
 #include "Player.hpp"
 #include "Screen.hpp"
 #include "NPC.hpp"
@@ -24,18 +26,26 @@ class Game
         inputEvents    _InputEvents;
         outputCommands _OutputCommands;
 
+        thread _Shutdown;
+
+        bool _ServerRunning;
+
         void _WaitForStatus();
-        void _SynchronizeToServer() const;
+        void _SynchronizeToServer();
         void _SynchronizeFromServer();
         void _ResetInputEvent();
         void _CatchEvents();
         void _UpdateGame();
         void _Draw() const;
 
+        void _HandleShutdown();
+
     public:
         Game(const string &playerName, const string &configName);
 
         void play();
+
+        ~Game();
 };
 
 #endif
