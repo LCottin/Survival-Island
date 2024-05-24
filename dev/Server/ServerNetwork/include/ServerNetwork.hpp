@@ -4,8 +4,6 @@
 #include <iostream>
 #include <SFML/Network.hpp>
 
-#include "Player.hpp"
-#include "NPC.hpp"
 #include "Types.hpp"
 
 using namespace std;
@@ -21,8 +19,6 @@ class ServerNetwork
         Packet      _Packet;
 
         void _initCommon();
-        bool _waitForConfirmation();
-        void _sendConfirmation();
 
     public:
         ServerNetwork();

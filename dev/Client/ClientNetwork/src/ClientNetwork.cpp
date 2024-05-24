@@ -27,42 +27,6 @@ void ClientNetwork::_initCommon()
 }
 
 /**
- * @brief Wait for a confirmation that the server has received the message
- *
- */
-bool ClientNetwork::_waitForConfirmation()
-{
-    string confirmation;
-
-    _Packet.clear();
-
-    if (_Server.receive(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to receive confirmation from server.");
-    }
-
-    _Packet >> confirmation;
-    return (confirmation == "OK from server");
-}
-
-/**
- * @brief Send confirmation to server
- *
- */
-void ClientNetwork::_sendConfirmation()
-{
-    const string confirmation = "OK from client";
-
-    _Packet.clear();
-    _Packet << confirmation;
-
-    if (_Server.send(_Packet) != Socket::Done)
-    {
-        throw runtime_error("Failed to send confirmation to server.");
-    }
-}
-
-/**
  * @brief Receive and decode data from server
  *
  * @param data Data to receive

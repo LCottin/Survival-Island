@@ -19,8 +19,6 @@ class ClientNetwork
         Packet    _Packet;
 
         void _initCommon();
-        bool _waitForConfirmation();
-        void _sendConfirmation();
 
     public:
         ClientNetwork();
