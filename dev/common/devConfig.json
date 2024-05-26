@@ -2,6 +2,8 @@
     "tilesetImgPath"    : "../assets/images/tileset.png",
     "playerImgPath"     : "../assets/images/Characters/player.png",
     "NPCImgPath"        : "../assets/images/Characters/NPC.png",
+    
+    "knifeImgPath"      : "../assets/images/Weapons/Knife.png",
 
     "fontPath"          : "../assets/fonts/Italic_text.ttf",
 

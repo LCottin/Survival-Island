@@ -58,6 +58,7 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/Weapon/src/Weapon.cpp
         ${DEV_COMMON_DIR}/Weapon/src/WeaponPrv.cpp
         ${DEV_COMMON_DIR}/Weapon/src/WeaponPub.cpp
+        ${DEV_COMMON_DIR}/Knife/src/Knife.cpp
         ${DEV_COMMON_DIR}/Types/src/Types.cpp)
 
     # Collect common header files
@@ -79,6 +80,7 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/Weapon/include/Weapon.hpp
         ${DEV_COMMON_DIR}/Weapon/include/WeaponPrv.hpp
         ${DEV_COMMON_DIR}/Weapon/include/WeaponPub.hpp
+        ${DEV_COMMON_DIR}/Knife/include/Knife.hpp
         ${DEV_COMMON_DIR}/FastNoise/include/FastNoiseLite.hpp)
 
     # Collect client source files
@@ -123,6 +125,7 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/Player/include
         ${DEV_COMMON_DIR}/Random/include
         ${DEV_COMMON_DIR}/Weapon/include
+        ${DEV_COMMON_DIR}/Knife/include
         ${DEV_COMMON_DIR}/Types/include)
     set(INCLUDE_CLIENT
         ${DEV_CLIENT_DIR}/Game/include
