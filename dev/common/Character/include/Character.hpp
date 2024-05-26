@@ -8,6 +8,7 @@
 #include <nlohmann/json.hpp>
 
 #include "CharacterPub.hpp"
+#include "Weapon.hpp"
 
 using namespace std;
 using namespace sf;
@@ -39,6 +40,8 @@ class Character
         vector<IntRect>    *_CurrentFrames;
         uint8_t             _CurrentFrameIndex;
 
+        unique_ptr<Weapon>  _CurrentWeapon;
+
         void _initCommon(const CharacterType type);
         json _loadFromJson(const CharacterType type) const;
         void _restartTimer();
@@ -67,6 +70,7 @@ class Character
         Vector2u        getSize()             const;
         CharacterType   getType()             const;
         Sprite&         getSprite();
+        Sprite&         getWeaponSprite();
         RectangleShape& getHealthBar();
         bool            isAlive()             const;
         bool            isCooldownElapsed()   const;
