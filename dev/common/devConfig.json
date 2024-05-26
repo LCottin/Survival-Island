@@ -1,7 +1,7 @@
 {
     "tilesetImgPath"    : "../assets/images/tileset.png",
-    "playerImgPath"     : "../assets/images/player.png",
-    "NPCImgPath"        : "../assets/images/NPC.png",
+    "playerImgPath"     : "../assets/images/Characters/player.png",
+    "NPCImgPath"        : "../assets/images/Characters/NPC.png",
 
     "fontPath"          : "../assets/fonts/Italic_text.ttf",
 

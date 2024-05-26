@@ -27,7 +27,7 @@ Character::~Character()
 json Character::_loadFromJson(const CharacterType type) const
 {
     const string filename = CharacterTypeString[static_cast<uint32_t>(type)];
-    ifstream file("../assets/json/" + filename + ".json");
+    ifstream file("../assets/json/Characters/" + filename + ".json");
     json data;
 
     if (file.is_open() == false)
