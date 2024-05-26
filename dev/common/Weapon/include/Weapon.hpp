@@ -41,7 +41,7 @@ class Weapon
         Weapon(const string &name);
 
         /* Destructor */
-        virtual ~Weapon();
+        virtual ~Weapon() = 0;
 
         uint32_t   getDamage()           const;
         uint32_t   getAccuracy()         const;

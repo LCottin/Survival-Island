@@ -52,7 +52,7 @@ class Character
         Character(const string &name);
 
         /* Destructor */
-        virtual ~Character();
+        virtual ~Character() = 0;
 
         /* Member functions (getters) */
         string          getName()             const;

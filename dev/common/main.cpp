@@ -1,11 +1,11 @@
 #include <iostream>
 #include "Board.hpp"
-#include "Character.hpp"
 #include "NPC.hpp"
 #include "Player.hpp"
 #include "ConfigDev.hpp"
 #include "ConfigUser.hpp"
 #include "ConfigNetwork.hpp"
+#include "Knife.hpp"
 
 using namespace std;
 using namespace sf;
@@ -29,31 +29,9 @@ int main()
     const VertexArray& vertices = board.getVertices();
     cout << "Vertices count: " << vertices.getVertexCount() << endl;
 
-    /* Testing Character class */
-    cout << "\nTesting Character class" << endl;
-    Character character("John");
-    character.sayHello();
-    character.presentation();
-    character.setPosition(Vector2f(10.f, 10.f));
-    cout << "Position: (" << character.getPosition().x << ", " << character.getPosition().y << ")" << endl;
-    cout << "Is alive? " << (character.isAlive() ? "Yes\n" : "No\n") << endl;
-    cout << "Current Health: " << character.getHealth() << endl;
-    character.takeDamage(10U);
-    cout << "After taking 10 damage, current health: " << character.getHealth() << endl;
-
     /* Testing NPC class */
     cout << "\nTesting NPC class" << endl;
-    string NPC_wrong_name = "NPC1";
     string NPC_valid_name = "NPC_1";
-    try
-    {
-        NPC npc1(NPC_wrong_name, "red");
-    }
-    catch(const exception& e)
-    {
-        cout << "Failed to init an NPC called " << NPC_wrong_name <<endl;
-        cout << "Creating another one called " << NPC_valid_name << endl;
-    }
     NPC npc(NPC_valid_name, "green");
     cout << "NPC created successfully" << endl;
     npc.sayHello();
@@ -68,12 +46,17 @@ int main()
     cout << "Money: " << player.getMoney() << endl;
     player.setPosition(Vector2f(20.f, 20.f), true);
     cout << "Position: (" << player.getPosition().x << ", " << player.getPosition().y << ")" << endl;
+    player.setPosition(Vector2f(10.f, 10.f));
+    cout << "Position: (" << player.getPosition().x << ", " << player.getPosition().y << ")" << endl;
+    cout << "Is alive? " << (player.isAlive() ? "Yes\n" : "No\n") << endl;
+    cout << "Current Health: " << player.getHealth() << endl;
+    player.takeDamage(10U);
+    cout << "After taking 10 damage, current health: " << player.getHealth() << endl;
 
     /* Testing attack functionality between characters */
-    Character enemy("Enemy");
-    cout << "Enemy Health before attack: " << enemy.getHealth() << endl;
-    player.attack(enemy);
-    cout << "Enemy Health after attack: " << enemy.getHealth() << endl;
+    cout << "Enemy Health before attack: " << npc.getHealth() << endl;
+    player.attack(npc);
+    cout << "Enemy Health after attack: " << npc.getHealth() << endl;
 
     /* Testing NPC interactions */
     npc.sayHello();
@@ -91,6 +74,8 @@ int main()
     player.setPosition(Vector2f(40.f, 40.f), true);
     cout << "Previous Position: (" << previousPos.x << ", " << previousPos.y << ")" << endl;
     cout << "New Position: (" << player.getPosition().x << ", " << player.getPosition().y << ")" << endl;
+
+    Knife knife;
 
     return 0;
 }
