@@ -22,5 +22,17 @@
         "Speed" : 10,
         "Position_x" : 1234,
         "Position_y" : 5678
+    },
+    "Alice":
+    {
+        "Age" : 22,
+        "Health" : 100,
+        "Level" : 1,
+        "Experience" : 0,
+        "Strength" : 100,
+        "Defense" : 10,
+        "Speed" : 10,
+        "Position_x" : 1234,
+        "Position_y" : 5678
     }
 }

@@ -3,6 +3,8 @@
 #include "ConfigDev.hpp"
 #include "Random.hpp"
 #include "BoardPub.hpp"
+#include "Knife.hpp"
+#include "Pistol.hpp"
 
 /* Constructors */
 Character::Character()
@@ -27,7 +29,7 @@ Character::~Character()
 json Character::_loadFromJson(const CharacterType type) const
 {
     const string filename = CharacterTypeString[static_cast<uint32_t>(type)];
-    ifstream file("../assets/json/" + filename + ".json");
+    ifstream file("../assets/json/Characters/" + filename + ".json");
     json data;
 
     if (file.is_open() == false)
@@ -82,6 +84,9 @@ void Character::_initCommon(const CharacterType type)
     _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : Random::getRandomFloat(0.0f, static_cast<float_t>(BoardSizeInTile::HEIGHT * ConfigDev::tileSize));
 
     _Sprite.setPosition(static_cast<Vector2f>(_Position));
+
+    _CurrentWeapon = make_unique<Knife>("Knife");
+    _CurrentWeapon->setPosition(_Position);
 
     _DamageTimer = seconds(1.0f);
     _DamageCooldown.restart();
@@ -250,6 +255,15 @@ Sprite& Character::getSprite()
 }
 
 /**
+ * @brief Get the weapon current sprite
+ *
+ */
+Sprite& Character::getWeaponSprite()
+{
+    return _CurrentWeapon->getSprite();
+}
+
+/**
  * @brief Get the healthBar
  *
  */
@@ -365,10 +379,7 @@ void Character::setPosition(const Vector2f position)
  */
 void Character::setPosition(const float_t x, const float_t y)
 {
-    _PreviousPosition = _Position;
-    _Position.x       = x;
-    _Position.y       = y;
-    _Sprite.setPosition(_Position);
+    setPosition(Vector2f(x, y));
 }
 
 /**

@@ -51,8 +51,12 @@ Among the parameters, you can modify:
 
 ## Credits
 
+Images are originally taken from the following sources but may be modified (resized, scaled) to suit the game needs.
+
 - Map: [Buch](https://opengameart.org/users/buch)
-- Player character: [sogomn](https://opengameart.org/users/sogomn)
+- Player : [sogomn](https://opengameart.org/users/sogomn)
+- NPC : [Buch](https://opengameart.org/users/buch)
+- Knife : [ghostbytedev](https://opengameart.org/users/ghostbytedev)
 
 ## Contribution guideline
 

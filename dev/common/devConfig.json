@@ -1,7 +1,10 @@
 {
     "tilesetImgPath"    : "../assets/images/tileset.png",
-    "playerImgPath"     : "../assets/images/player.png",
-    "NPCImgPath"        : "../assets/images/NPC.png",
+    "playerImgPath"     : "../assets/images/Characters/player.png",
+    "NPCImgPath"        : "../assets/images/Characters/NPC.png",
+
+    "knifeImgPath"      : "../assets/images/Weapons/Knife.png",
+    "pistolImgPath"     : "../assets/images/Weapons/Pistol.png",
 
     "fontPath"          : "../assets/fonts/Italic_text.ttf",
 

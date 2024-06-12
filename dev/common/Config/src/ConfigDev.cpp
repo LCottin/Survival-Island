@@ -7,6 +7,8 @@ namespace ConfigDev
     string   tilesetImgPath;
     string   playerImgPath;
     string   NPCImgPath;
+    string   knifeImgPath;
+    string   pistolImgPath;
     string   fontPath;
     int32_t  framerateLimit;
     uint32_t tileSize;
@@ -60,6 +62,24 @@ namespace ConfigDev
                 catch(const exception& e)
                 {
                     throw runtime_error("Failed to get NPC image path.");
+                }
+
+                try
+                {
+                    knifeImgPath = config["knifeImgPath"].get<string>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get knife image path.");
+                }
+
+                try
+                {
+                    pistolImgPath = config["pistolImgPath"].get<string>();
+                }
+                catch(const exception& e)
+                {
+                    throw runtime_error("Failed to get pistol image path.");
                 }
 
                 try

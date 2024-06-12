@@ -1,0 +1,14 @@
+{
+    "Default":
+    {
+        "Damage" : 10,
+        "Range" : 0,
+        "Accuracy" : 100
+    },
+    "Knife":
+    {
+        "Damage" : 10,
+        "Range" : 0,
+        "Accuracy" : 100
+    }
+}
