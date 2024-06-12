@@ -42,6 +42,7 @@ void Player::_initPlayer()
     /* Set initial animation state */
     _CurrentFrames     = &_DownFrames;
     _CurrentFrameIndex = 0;
+    _Direction         = DirectionType::DOWN;
 
     _Scale = Vector2u(3U, 3U);
     _Size  = Vector2u(PlayerSize::WIDTH * _Scale.x, PlayerSize::HEIGHT * _Scale.y);
@@ -89,7 +90,7 @@ void Player::setPosition(const Vector2f position, const bool hasMoved)
     _Position         = position;
     _Sprite.setPosition(_Position);
 
-    _setWeaponPosition();
+    _CurrentWeapon->updatePosition(_Position, _Direction, _CurrentFrameIndex);
 }
 
 /**
@@ -116,24 +117,25 @@ void Player::_updateFrame(const Vector2f newPosition)
     if (_Position.x < newPosition.x)
     {
         _CurrentFrames = &_RightFrames;
-        _CurrentWeapon->setFrame(DirectionType::RIGHT);
+        _Direction     = DirectionType::RIGHT;
     }
     else if (_Position.x > newPosition.x)
     {
         _CurrentFrames = &_LeftFrames;
-        _CurrentWeapon->setFrame(DirectionType::LEFT);
+        _Direction     = DirectionType::LEFT;
     }
     else if (_Position.y < newPosition.y)
     {
         _CurrentFrames = &_DownFrames;
-        _CurrentWeapon->setFrame(DirectionType::DOWN);
+        _Direction     = DirectionType::DOWN;
     }
     else if (_Position.y > newPosition.y)
     {
         _CurrentFrames = &_UpFrames;
-        _CurrentWeapon->setFrame(DirectionType::UP);
+        _Direction     = DirectionType::UP;
     }
 
     _CurrentFrameIndex = (_CurrentFrameIndex + 1U) % FRAMES_PER_DIRECTION;
     _Sprite.setTextureRect((*_CurrentFrames)[_CurrentFrameIndex]);
+    _CurrentWeapon->setFrame(_Direction);
 }

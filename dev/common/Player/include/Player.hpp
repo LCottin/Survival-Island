@@ -6,7 +6,8 @@
 class Player: public Character
 {
     private:
-        uint32_t _Money;
+        uint32_t      _Money;
+        DirectionType _Direction;
 
         void _initPlayer();
         void _updateFrame(const Vector2f newPosition);

@@ -11,6 +11,8 @@ class Knife : public Weapon
     public:
         Knife();
         Knife(const string &name);
+
+        void updatePosition(const Vector2f &playerPosition, const DirectionType &frameDirection, const uint32_t frameIndex) override;
 };
 
 #endif

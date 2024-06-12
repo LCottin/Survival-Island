@@ -429,7 +429,6 @@ void Game::_HandleShutdown()
     signal(SIGINT, [](int32_t signum)
     {
         (void)signum;
-        cout << "Received signal to stop server. Shutting down ... " << endl;
         _ServerRunning = false;
     });
 

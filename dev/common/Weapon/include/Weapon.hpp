@@ -53,6 +53,7 @@ class Weapon
         WeaponType getType()             const;
         Sprite&    getSprite();
 
+        virtual void updatePosition(const Vector2f &playerPosition, const DirectionType &frameDirection, const uint32_t frameIndex) = 0;
         void setPosition(const Vector2f position);
         void setPosition(const float_t x, const float_t y);
         void setFrame(const DirectionType direction);
