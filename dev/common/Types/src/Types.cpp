@@ -46,6 +46,8 @@ void outputCommands::serialize(Packet &packet) const
     packet << playerCommand.hasMoved;
     packet << playerCommand.position.x;
     packet << playerCommand.position.y;
+    packet << playerCommand.weaponPosition.x;
+    packet << playerCommand.weaponPosition.y;
 
     for (size_t i = 0; i < NPCsCommands.size(); i++)
     {
@@ -54,6 +56,8 @@ void outputCommands::serialize(Packet &packet) const
         packet << NPCsCommands[i].hasMoved;
         packet << NPCsCommands[i].position.x;
         packet << NPCsCommands[i].position.y;
+        packet << NPCsCommands[i].weaponPosition.x;
+        packet << NPCsCommands[i].weaponPosition.y;
     }
 }
 
@@ -73,6 +77,8 @@ void outputCommands::deserialize(Packet &packet)
     packet >> playerCommand.hasMoved;
     packet >> playerCommand.position.x;
     packet >> playerCommand.position.y;
+    packet >> playerCommand.weaponPosition.x;
+    packet >> playerCommand.weaponPosition.y;
 
     for (size_t i = 0; i < NPCsCommands.size(); i++)
     {
@@ -81,5 +87,7 @@ void outputCommands::deserialize(Packet &packet)
         packet >> NPCsCommands[i].hasMoved;
         packet >> NPCsCommands[i].position.x;
         packet >> NPCsCommands[i].position.y;
+        packet >> NPCsCommands[i].weaponPosition.x;
+        packet >> NPCsCommands[i].weaponPosition.y;
     }
 }

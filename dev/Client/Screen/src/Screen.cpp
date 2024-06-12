@@ -54,15 +54,18 @@ void Screen::_drawBoard(const Board &board)
  */
 void Screen::_drawPlayer(Player &player)
 {
-    Sprite& sprite = player.getSprite();
+    Sprite& playerSprite = player.getSprite();
+    Sprite& weaponSprite = player.getWeaponSprite();
 
     /* Draw player on the screen only if alive, otherwise move sprite away */
     if (player.isAlive() == false)
     {
-        sprite.setPosition(-1000.0f, -1000.0f);
+        playerSprite.setPosition(-1000.0f, -1000.0f);
+        weaponSprite.setPosition(-1000.0f, -1000.0f);
     }
 
-    _Window.draw(sprite);
+    _Window.draw(playerSprite);
+    _Window.draw(weaponSprite);
 }
 
 /**

@@ -3,6 +3,7 @@
 #include "ConfigDev.hpp"
 #include "Random.hpp"
 #include "BoardPub.hpp"
+#include "Knife.hpp"
 
 /* Constructors */
 Character::Character()
@@ -82,6 +83,9 @@ void Character::_initCommon(const CharacterType type)
     _Position.y = characterData.contains("Position_y") ? characterData["Position_y"].get<float_t>() : Random::getRandomFloat(0.0f, static_cast<float_t>(BoardSizeInTile::HEIGHT * ConfigDev::tileSize));
 
     _Sprite.setPosition(static_cast<Vector2f>(_Position));
+
+    _CurrentWeapon = make_unique<Knife>("Knife");
+    _CurrentWeapon->setPosition(_Position);
 
     _DamageTimer = seconds(1.0f);
     _DamageCooldown.restart();
@@ -250,6 +254,15 @@ Sprite& Character::getSprite()
 }
 
 /**
+ * @brief Get the weapon current sprite
+ *
+ */
+Sprite& Character::getWeaponSprite()
+{
+    return _CurrentWeapon->getSprite();
+}
+
+/**
  * @brief Get the healthBar
  *
  */
@@ -365,10 +378,84 @@ void Character::setPosition(const Vector2f position)
  */
 void Character::setPosition(const float_t x, const float_t y)
 {
-    _PreviousPosition = _Position;
-    _Position.x       = x;
-    _Position.y       = y;
-    _Sprite.setPosition(_Position);
+    setPosition(Vector2f(x, y));
+}
+
+/**
+ * @brief Set weapon position in character right hand
+ *
+ */
+void Character::_setWeaponPosition()
+{
+    Vector2f rightHandPosition = _Position;
+
+    if (_CurrentFrames == &_DownFrames)
+    {
+        rightHandPosition.x += 5.0f - (_Size.x / 2.0f);
+        rightHandPosition.y += _CurrentWeapon->getSize().y;
+
+        if (_CurrentFrameIndex == 1)
+        {
+            rightHandPosition.y -= 2.0f;
+        }
+        else if (_CurrentFrameIndex == 3)
+        {
+            rightHandPosition.x += 2.0f;
+            rightHandPosition.y -= 1.0f;
+        }
+    }
+
+    else if (_CurrentFrames == &_RightFrames)
+    {
+        rightHandPosition.x += (_CurrentWeapon->getSize().x / 2) - 3.0f;
+        rightHandPosition.y += (_CurrentWeapon->getSize().y / 2) + 3.0f;
+
+        if (_CurrentFrameIndex == 1)
+        {
+            rightHandPosition.x -= 3.0f;
+            rightHandPosition.y += 3.0f;
+        }
+        else if (_CurrentFrameIndex == 3)
+        {
+            rightHandPosition.x += 3.0f;
+            rightHandPosition.y += 3.0f;
+        }
+    }
+
+    else if (_CurrentFrames == &_LeftFrames)
+    {
+        rightHandPosition.x -= (_CurrentWeapon->getSize().x) / 2 - 3.0f;
+        rightHandPosition.y += (_CurrentWeapon->getSize().y) / 2 + 3.0f;
+
+        if (_CurrentFrameIndex == 1)
+        {
+            rightHandPosition.x += 3.0f;
+            rightHandPosition.y += 3.0f;
+        }
+        else if (_CurrentFrameIndex == 3)
+        {
+            rightHandPosition.x -= 3.0f;
+            rightHandPosition.y += 3.0f;
+        }
+    }
+
+    else if (_CurrentFrames == &_UpFrames)
+    {
+        rightHandPosition.x += (_Size.x / 2.0f) - 5.0f;
+        rightHandPosition.y += 6.0f;
+
+        if (_CurrentFrameIndex == 1)
+        {
+            rightHandPosition.y -= 2.0f;
+        }
+        else if (_CurrentFrameIndex == 3)
+        {
+            rightHandPosition.x -= 3.0f;
+            rightHandPosition.y -= 1.0f;
+        }
+    }
+
+    _CurrentWeapon->setPosition(rightHandPosition);
 }
 
 /**

@@ -33,14 +33,14 @@ void Player::_initPlayer()
     /* Initialize frame sequences for each direction */
     for (size_t i = 0; i < FRAMES_PER_DIRECTION; i++)
     {
-        _UpFrames.push_back(   IntRect(i * PlayerSize::WIDTH, 0 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
+        _DownFrames.push_back (IntRect(i * PlayerSize::WIDTH, 0 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
         _RightFrames.push_back(IntRect(i * PlayerSize::WIDTH, 1 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
-        _LeftFrames.push_back( IntRect(i * PlayerSize::WIDTH, 2 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
-        _DownFrames.push_back( IntRect(i * PlayerSize::WIDTH, 3 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
+        _LeftFrames.push_back (IntRect(i * PlayerSize::WIDTH, 2 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
+        _UpFrames.push_back   (IntRect(i * PlayerSize::WIDTH, 3 * PlayerSize::HEIGHT, PlayerSize::WIDTH, PlayerSize::HEIGHT));
     }
 
     /* Set initial animation state */
-    _CurrentFrames     = &_UpFrames;
+    _CurrentFrames     = &_DownFrames;
     _CurrentFrameIndex = 0;
 
     _Scale = Vector2u(3U, 3U);
@@ -88,6 +88,8 @@ void Player::setPosition(const Vector2f position, const bool hasMoved)
     _PreviousPosition = _Position;
     _Position         = position;
     _Sprite.setPosition(_Position);
+
+    _setWeaponPosition();
 }
 
 /**
@@ -100,15 +102,7 @@ void Player::setPosition(const Vector2f position, const bool hasMoved)
  */
 void Player::setPosition(const float_t x, const float_t y, const bool hasMoved)
 {
-    if (hasMoved == true)
-    {
-        _updateFrame(Vector2f(x, y));
-    }
-
-    _PreviousPosition = _Position;
-    _Position.x       = x;
-    _Position.y       = y;
-    _Sprite.setPosition(_Position);
+    setPosition(Vector2f(x, y), hasMoved);
 }
 
 /**
@@ -122,18 +116,22 @@ void Player::_updateFrame(const Vector2f newPosition)
     if (_Position.x < newPosition.x)
     {
         _CurrentFrames = &_RightFrames;
+        _CurrentWeapon->setFrame(DirectionType::RIGHT);
     }
     else if (_Position.x > newPosition.x)
     {
         _CurrentFrames = &_LeftFrames;
+        _CurrentWeapon->setFrame(DirectionType::LEFT);
     }
     else if (_Position.y < newPosition.y)
     {
-        _CurrentFrames = &_UpFrames;
+        _CurrentFrames = &_DownFrames;
+        _CurrentWeapon->setFrame(DirectionType::DOWN);
     }
     else if (_Position.y > newPosition.y)
     {
-        _CurrentFrames = &_DownFrames;
+        _CurrentFrames = &_UpFrames;
+        _CurrentWeapon->setFrame(DirectionType::UP);
     }
 
     _CurrentFrameIndex = (_CurrentFrameIndex + 1U) % FRAMES_PER_DIRECTION;

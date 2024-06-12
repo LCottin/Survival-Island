@@ -34,6 +34,7 @@ typedef struct
     uint32_t health;
     bool     hasMoved;
     Vector2f position;
+    Vector2f weaponPosition;
 } characterCommand;
 
 struct inputEvents

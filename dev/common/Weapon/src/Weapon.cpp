@@ -78,7 +78,7 @@ void Weapon::_initCommon(const WeaponType type)
     _LeftFrame  = IntRect(0 * WeaponSize::WIDTH, 1 * WeaponSize::HEIGHT, WeaponSize::WIDTH, WeaponSize::HEIGHT);
     _DownFrame  = IntRect(1 * WeaponSize::WIDTH, 1 * WeaponSize::HEIGHT, WeaponSize::WIDTH, WeaponSize::HEIGHT);
 
-    _CurrentFrame = &_UpFrame;
+    _CurrentFrame = &_DownFrame;
 
     _Scale = Vector2f(1.5f, 1.5f);
     _Size  = Vector2f(WeaponSize::WIDTH * _Scale.x, WeaponSize::HEIGHT * _Scale.y);
@@ -198,10 +198,7 @@ void Weapon::setPosition(const Vector2f position)
  */
 void Weapon::setPosition(const float_t x, const float_t y)
 {
-    _PreviousPosition = _Position;
-    _Position.x       = x;
-    _Position.y       = y;
-    _Sprite.setPosition(_Position);
+    setPosition(Vector2f(x, y));
 }
 
 /**

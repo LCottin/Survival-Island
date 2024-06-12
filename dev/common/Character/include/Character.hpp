@@ -43,6 +43,7 @@ class Character
         unique_ptr<Weapon>  _CurrentWeapon;
 
         void _initCommon(const CharacterType type);
+        void _setWeaponPosition();
         json _loadFromJson(const CharacterType type) const;
         void _restartTimer();
 
