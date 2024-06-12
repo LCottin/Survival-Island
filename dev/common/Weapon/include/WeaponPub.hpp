@@ -16,6 +16,7 @@ enum class WeaponType : uint32_t
 {
     DEFAULT,
     KNIFE,
+    PISTOL,
     COUNT,
 };
 

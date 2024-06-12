@@ -1,0 +1,14 @@
+{
+    "Default":
+    {
+        "Damage" : 10,
+        "Range" : 10,
+        "Accuracy" : 50
+    },
+    "Pistol":
+    {
+        "Damage" : 10,
+        "Range" : 10,
+        "Accuracy" : 50
+    }
+}
