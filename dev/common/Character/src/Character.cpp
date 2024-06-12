@@ -85,7 +85,7 @@ void Character::_initCommon(const CharacterType type)
 
     _Sprite.setPosition(static_cast<Vector2f>(_Position));
 
-    _CurrentWeapon = make_unique<Pistol>("Pistol");
+    _CurrentWeapon = make_unique<Knife>("Knife");
     _CurrentWeapon->setPosition(_Position);
 
     _DamageTimer = seconds(1.0f);
