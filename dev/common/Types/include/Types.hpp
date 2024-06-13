@@ -46,6 +46,7 @@ struct inputEvents
     bool movePlayerDown;
     bool movePlayerLeft;
     bool movePlayerRight;
+    bool playerAttack;
 
     void serialize(Packet &packet) const;
     void deserialize(Packet &packet);

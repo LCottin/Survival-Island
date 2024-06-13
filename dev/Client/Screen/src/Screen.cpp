@@ -6,8 +6,8 @@
 
 Screen::Screen(const string &title)
 {
-    _WindowTitle         = title;
-    _TileSize            = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
+    _WindowTitle = title;
+    _TileSize    = Vector2u(ConfigDev::tileSize, ConfigDev::tileSize);
 
     if (_TilesetTexture.loadFromFile(ConfigDev::tilesetImgPath) == false)
     {
@@ -128,6 +128,7 @@ void Screen::_drawInfoPanel()
 void Screen::catchEvents(inputEvents &inputEvent)
 {
     Event event;
+
     while (_Window.pollEvent(event))
     {
         /* Close window */
@@ -173,6 +174,12 @@ void Screen::catchEvents(inputEvents &inputEvent)
             {
                 inputEvent.movePlayerDown = true;
             }
+        }
+
+        /* Update attack status */
+        if ((event.type == Event::KeyPressed) && (Keyboard::isKeyPressed(ConfigUser::attackKey)))
+        {
+            inputEvent.playerAttack = true;
         }
     }
 }

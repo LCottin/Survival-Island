@@ -8,6 +8,7 @@ static inline constexpr Keyboard::Key  DEFAULT_DOWN_KEY       = Keyboard::Key::D
 static inline constexpr Keyboard::Key  DEFAULT_LEFT_KEY       = Keyboard::Key::Left;
 static inline constexpr Keyboard::Key  DEFAULT_RIGHT_KEY      = Keyboard::Key::Right;
 static inline constexpr Keyboard::Key  DEFAULT_PAUSE_KEY      = Keyboard::Key::Escape;
+static inline constexpr Keyboard::Key  DEFAULT_ATTACK_KEY     = Keyboard::Key::Space;
 
 static string toLowerCase(const string& str)
 {
@@ -67,6 +68,7 @@ namespace ConfigUser
     Keyboard::Key  leftKey;
     Keyboard::Key  rightKey;
     Keyboard::Key  pauseKey;
+    Keyboard::Key  attackKey;
     bool           configLoaded = false;
 
     bool loadConfig()
@@ -240,6 +242,31 @@ namespace ConfigUser
                     /* Not critical value, hardcoded default */
                     cerr << "Error: Failed to parse pauseKey. Using default." << endl;
                     pauseKey = DEFAULT_PAUSE_KEY;
+                    toReturn = false;
+                }
+
+                try
+                {
+                    string attackKeyString = toLowerCase(config["attackKey"].get<string>());
+
+                    auto key = keyMapping.find(attackKeyString);
+                    if (key != keyMapping.end())
+                    {
+                        attackKey = key->second;
+                    }
+                    else
+                    {
+                        /* Not critical value, hardcoded default */
+                        cerr << "Warning: Unknown key '" << attackKeyString << "'. Using default." << endl;
+                        attackKey = DEFAULT_ATTACK_KEY;
+                        toReturn = false;
+                    }
+                }
+                catch (const exception& e)
+                {
+                    /* Not critical value, hardcoded default */
+                    cerr << "Error: Failed to parse attackKey. Using default." << endl;
+                    attackKey = DEFAULT_ATTACK_KEY;
                     toReturn = false;
                 }
             }
