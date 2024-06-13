@@ -105,3 +105,24 @@ void Knife::updatePosition(const Vector2f &playerPosition, const DirectionType &
     _Position = rightHandPosition;
     _Sprite.setPosition(_Position);
 }
+
+/**
+ * @brief Perform an attack with the knife
+ *
+ * @param target The target of the attack
+ * @return true if the target survived the attack, false otherwise
+ */
+bool Knife::performAttack(Character &target)
+{
+    bool isStillAlive = target.isAlive();
+
+    if (isUsable() == true)
+    {
+        _Attributes.Durability -= 1U;
+
+        /* Attack opponent */
+        isStillAlive = target.takeDamage(_Attributes.Damage);
+    }
+
+    return isStillAlive;
+}

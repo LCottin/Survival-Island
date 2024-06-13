@@ -7,10 +7,13 @@
 #include <nlohmann/json.hpp>
 
 #include "WeaponPub.hpp"
+#include "Character.hpp"
 
 using namespace std;
 using namespace sf;
 using json = nlohmann::json;
+
+class Character;
 
 class Weapon
 {
@@ -32,7 +35,7 @@ class Weapon
         IntRect          _RightFrame;
         IntRect         *_CurrentFrame;
 
-        void _initCommon(const WeaponType type);
+        json _initCommon(const WeaponType type);
         json _loadFromJson(const WeaponType type) const;
 
     public:
@@ -57,6 +60,8 @@ class Weapon
         virtual bool isUsable() const;
 
         virtual void updatePosition(const Vector2f &playerPosition, const DirectionType &frameDirection, const uint32_t frameIndex) = 0;
+        virtual bool performAttack(Character &target) = 0;
+
         void setPosition(const Vector2f position);
         void setPosition(const float_t x, const float_t y);
         void setFrame(const DirectionType direction);

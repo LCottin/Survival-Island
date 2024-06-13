@@ -335,42 +335,19 @@ void Game::_HandleInteractions()
 {
     if (_GameStatus == GameStatus::PLAY)
     {
-        for (auto npc : *_NPCs)
+        if (_InputEvents.playerAttack == true)
         {
-            if (_AreClose(*_Player, *npc, ConfigDev::tileSize) == true)
+            for (auto npc : *_NPCs)
             {
-                npc->attack(*_Player);
+                _Player->attack(*npc);
+            }
+
+            if (_Player->isAlive() == false)
+            {
+                _GameStatus = GameStatus::STOP;
             }
         }
-
-        if (_Player->isAlive() == false)
-        {
-            _GameStatus = GameStatus::STOP;
-        }
     }
-}
-
-/**
- * @brief Indicate if player and NPC are close
- *
- * @param player Source of the distance
- * @param npc Npc to compute the distance with
- * @param threshold Threshold to determine of player and npc are close
- * @return true if they are close, else false
- *
- */
-bool Game::_AreClose(const Player &player, const NPC &npc, const uint32_t threshold) const
-{
-    const Vector2f playerPos = player.getPosition();
-    const Vector2f npcPos    = npc.getPosition();
-
-    const Vector2u playerSize = player.getSize();
-    const Vector2u npcSize    = npc.getSize();
-
-    const float_t distanceX = abs(playerPos.x - npcPos.x) - (playerSize.x + npcSize.x) / 2.0f;
-    const float_t distanceY = abs(playerPos.y - npcPos.y) - (playerSize.y + npcSize.y) / 2.0f;
-
-    return ((distanceX < threshold) && (distanceY < threshold));
 }
 
 /**
