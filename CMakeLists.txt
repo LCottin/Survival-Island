@@ -5,11 +5,11 @@ set(CMAKE_CXX_STANDARD 20)
 
 # Set the default build type to Debug if not specified
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
+    set(CMAKE_BUILD_TYPE release CACHE STRING "Choose the type of build (debug or release)" FORCE)
 endif()
 
 # Provide options for the build type
-set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "debug" "release")
 
 # Option to build the common binary
 option(BUILD_COMMON "Build common binary" OFF)
@@ -83,6 +83,7 @@ project(Survival-Island)
         ${DEV_COMMON_DIR}/Weapon/include/WeaponPub.hpp
         ${DEV_COMMON_DIR}/Knife/include/Knife.hpp
         ${DEV_COMMON_DIR}/Pistol/include/Pistol.hpp
+        ${DEV_COMMON_DIR}/Pistol/include/PistolPrv.hpp
         ${DEV_COMMON_DIR}/FastNoise/include/FastNoiseLite.hpp)
 
     # Collect client source files

@@ -110,18 +110,27 @@ void Knife::updatePosition(const Vector2f &playerPosition, const DirectionType &
  * @brief Perform an attack with the knife
  *
  * @param target The target of the attack
+ * @param mousePosition Position of the mouse relative to window
  * @return true if the target survived the attack, false otherwise
  */
-bool Knife::performAttack(Character &target)
+bool Knife::performAttack(Character &target, const Vector2f &mousePosition)
 {
+    (void)mousePosition;
+
     bool isStillAlive = target.isAlive();
 
     if (isUsable() == true)
     {
         _Attributes.Durability -= 1U;
 
-        /* Attack opponent */
-        isStillAlive = target.takeDamage(_Attributes.Damage);
+        /* Compute probability to fail */
+        const uint32_t failProbability = Random::getRandomInteger(0U, 100U);
+
+        /* Attack opponent if not fail */
+        if (failProbability < _Attributes.Accuracy)
+        {
+            isStillAlive = target.takeDamage(_Attributes.Damage);
+        }
     }
 
     return isStillAlive;

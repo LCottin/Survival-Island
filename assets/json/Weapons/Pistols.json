@@ -2,17 +2,17 @@
     "Default":
     {
         "Damage" : 10,
-        "Range" : 10,
-        "Accuracy" : 50,
+        "Range" : 300,
+        "Accuracy" : 90,
         "Durability" : 100,
         "Ammo" : 10
     },
     "Pistol":
     {
         "Damage" : 10,
-        "Range" : 10,
-        "Accuracy" : 50,
+        "Range" : 300,
+        "Accuracy" : 90,
         "Durability" : 100,
-        "Ammo" : 10
+        "Ammo" : 100
     }
 }

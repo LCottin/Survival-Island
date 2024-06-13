@@ -13,7 +13,7 @@ class Knife : public Weapon
         Knife(const string &name);
 
         void updatePosition(const Vector2f &playerPosition, const DirectionType &frameDirection, const uint32_t frameIndex) override;
-        bool performAttack(Character &target) override;
+        bool performAttack(Character &target, const Vector2f &mousePosition) override;
 };
 
 #endif

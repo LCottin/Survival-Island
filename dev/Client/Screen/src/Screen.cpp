@@ -182,6 +182,8 @@ void Screen::catchEvents(inputEvents &inputEvent)
             inputEvent.playerAttack = true;
         }
     }
+
+    inputEvent.mousePosition = _Window.mapPixelToCoords(Mouse::getPosition(_Window));
 }
 
 /**

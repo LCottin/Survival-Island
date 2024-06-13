@@ -233,21 +233,25 @@ void Weapon::setFrame(const DirectionType direction)
         case DirectionType::LEFT:
         {
             _CurrentFrame = &_LeftFrame;
+            _Direction    = DirectionType::LEFT;
             break;
         }
         case DirectionType::RIGHT:
         {
             _CurrentFrame = &_RightFrame;
+            _Direction    = DirectionType::RIGHT;
             break;
         }
         case DirectionType::UP:
         {
             _CurrentFrame = &_UpFrame;
+            _Direction    = DirectionType::UP;
             break;
         }
         case DirectionType::DOWN:
         {
             _CurrentFrame = &_DownFrame;
+            _Direction    = DirectionType::DOWN;
             break;
         }
     }

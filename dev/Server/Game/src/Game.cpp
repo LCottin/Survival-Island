@@ -339,7 +339,7 @@ void Game::_HandleInteractions()
         {
             for (auto npc : *_NPCs)
             {
-                _Player->attack(*npc);
+                _Player->attack(*npc, _InputEvents.mousePosition);
             }
 
             if (_Player->isAlive() == false)

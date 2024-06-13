@@ -29,6 +29,10 @@ class Weapon
         Vector2f         _Position;
         Vector2f         _PreviousPosition;
 
+        Clock            _DamageCooldown;
+        Time             _DamageTimer;
+
+        DirectionType    _Direction;
         IntRect          _UpFrame;
         IntRect          _DownFrame;
         IntRect          _LeftFrame;
@@ -60,7 +64,7 @@ class Weapon
         virtual bool isUsable() const;
 
         virtual void updatePosition(const Vector2f &playerPosition, const DirectionType &frameDirection, const uint32_t frameIndex) = 0;
-        virtual bool performAttack(Character &target) = 0;
+        virtual bool performAttack(Character &target, const Vector2f &mousePosition) = 0;
 
         void setPosition(const Vector2f position);
         void setPosition(const float_t x, const float_t y);

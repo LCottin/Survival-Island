@@ -85,7 +85,7 @@ void Character::_initCommon(const CharacterType type)
 
     _Sprite.setPosition(static_cast<Vector2f>(_Position));
 
-    _CurrentWeapon = make_unique<Knife>("Knife");
+    _CurrentWeapon = make_unique<Pistol>("Pistol");
     _CurrentWeapon->setPosition(_Position);
 
     _DamageTimer = seconds(1.0f);
@@ -406,10 +406,11 @@ void Character::presentation() const
  * @brief Attack someone, decrease both healths and update alive status
  *
  * @param defender Character attacked
+ * @param mousePosition Position of the mouse relative to window
  * @return true if the attacker survived, else false
  *
  */
-bool Character::attack(Character &defender)
+bool Character::attack(Character &defender, const Vector2f &mousePosition)
 {
     bool isStillAlive;
 
@@ -432,8 +433,8 @@ bool Character::attack(Character &defender)
     }
     else
     {
-        /* Check if the weapon is usable and the target is close enough */
-        if ((_CurrentWeapon->isUsable() == true) && (_isClose(defender, _CurrentWeapon->getRange()) == true))
+        /* Check if the weapon is usable */
+        if ((_CurrentWeapon->isUsable() == true))
         {
             switch (_CurrentWeapon->getType())
             {

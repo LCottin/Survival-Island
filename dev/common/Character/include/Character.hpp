@@ -90,7 +90,7 @@ class Character
         void sayHello() const;
         void presentation() const;
         void updateHealthBar();
-        bool attack(Character &defender);
+        bool attack(Character &defender, const Vector2f &mousePosition);
         bool takeDamage(const uint32_t damage);
 };
 
