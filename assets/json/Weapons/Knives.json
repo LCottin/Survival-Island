@@ -3,12 +3,14 @@
     {
         "Damage" : 10,
         "Range" : 0,
-        "Accuracy" : 100
+        "Accuracy" : 100,
+        "Durability" : 100
     },
     "Knife":
     {
         "Damage" : 10,
         "Range" : 0,
-        "Accuracy" : 100
+        "Accuracy" : 100,
+        "Durability" : 100
     }
 }

@@ -3,6 +3,7 @@
     {
         "Damage" : 10,
         "Range" : 10,
-        "Accuracy" : 10
+        "Accuracy" : 10,
+        "Durability" : 100
     }
 }

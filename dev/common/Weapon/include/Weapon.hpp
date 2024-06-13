@@ -46,12 +46,15 @@ class Weapon
         uint32_t   getDamage()           const;
         uint32_t   getAccuracy()         const;
         uint32_t   getRange()            const;
+        uint32_t   getDurability()       const;
         Vector2f   getPosition()         const;
         Vector2f   getPreviousPosition() const;
         Vector2f   getScale()            const;
         Vector2f   getSize()             const;
         WeaponType getType()             const;
         Sprite&    getSprite();
+
+        virtual bool isUsable() const;
 
         virtual void updatePosition(const Vector2f &playerPosition, const DirectionType &frameDirection, const uint32_t frameIndex) = 0;
         void setPosition(const Vector2f position);

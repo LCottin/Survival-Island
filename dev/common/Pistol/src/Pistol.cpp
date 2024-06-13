@@ -17,12 +17,35 @@ Pistol::Pistol(const string &name) : Weapon(name)
 void Pistol::_initPistol()
 {
     _Type = WeaponType::PISTOL;
-    _initCommon(_Type);
+
+    const json data       = _initCommon(_Type);
+    const auto weaponData = data[_Name];
+
+    _Ammo = weaponData.contains("Ammo") ? weaponData["Ammo"].get<uint32_t>() : 10U;
 
     if (_Texture.loadFromFile(ConfigDev::pistolImgPath) == false)
     {
         throw runtime_error("Error loading pistol texture.");
     }
+}
+
+/**
+ * @brief returns the ammo of the pistol
+ *
+ */
+uint32_t Pistol::getAmmo() const
+{
+    return _Ammo;
+}
+
+/**
+ * @brief Tells if the pistol can be used
+ *
+ * @return true if it can be used, false otherwise
+ */
+bool Pistol::isUsable() const
+{
+    return ((_Attributes.Durability > 0) && (_Ammo > 0U));
 }
 
 /**

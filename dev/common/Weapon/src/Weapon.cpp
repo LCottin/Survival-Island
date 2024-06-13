@@ -59,19 +59,17 @@ json Weapon::_loadFromJson(const WeaponType type) const
  * @warning This function only initializes the attributes that are common to all weapons
  *
  */
-void Weapon::_initCommon(const WeaponType type)
+json Weapon::_initCommon(const WeaponType type)
 {
     _Type = type;
 
     const json data = _loadFromJson(type);
 
-    const auto weaponData     = data[_Name];
-    _Attributes = { .Accuracy = weaponData.contains("Accuracy") ? weaponData["Accuracy"].get<uint32_t>() : 100U,
-                    .Damage   = weaponData.contains("Damage")   ? weaponData["Damage"].get<uint32_t>()   : 10U,
-                    .Range    = weaponData.contains("Range")    ? weaponData["Range"].get<uint32_t>()    : 100U };
-
-    _Position.x = weaponData.contains("Position_x") ? weaponData["Position_x"].get<float_t>() : Random::getRandomFloat(0.0f, static_cast<float_t>(BoardSizeInTile::WIDTH  * ConfigDev::tileSize));
-    _Position.y = weaponData.contains("Position_y") ? weaponData["Position_y"].get<float_t>() : Random::getRandomFloat(0.0f, static_cast<float_t>(BoardSizeInTile::HEIGHT * ConfigDev::tileSize));
+    const auto weaponData       = data[_Name];
+    _Attributes = { .Accuracy   = weaponData.contains("Accuracy")   ? weaponData["Accuracy"].get<uint32_t>()   : 100U,
+                    .Damage     = weaponData.contains("Damage")     ? weaponData["Damage"].get<uint32_t>()     :   0U,
+                    .Range      = weaponData.contains("Range")      ? weaponData["Range"].get<uint32_t>()      :   0U,
+                    .Durability = weaponData.contains("Durability") ? weaponData["Durability"].get<uint32_t>() :   0U };
 
     _UpFrame    = IntRect(0 * WeaponSize::WIDTH, 0 * WeaponSize::HEIGHT, WeaponSize::WIDTH, WeaponSize::HEIGHT);
     _RightFrame = IntRect(1 * WeaponSize::WIDTH, 0 * WeaponSize::HEIGHT, WeaponSize::WIDTH, WeaponSize::HEIGHT);
@@ -87,6 +85,8 @@ void Weapon::_initCommon(const WeaponType type)
     _Sprite.setTexture(_Texture);
     _Sprite.setScale(_Scale);
     _Sprite.setTextureRect(*_CurrentFrame);
+
+    return data;
 }
 
 /**
@@ -120,6 +120,15 @@ uint32_t Weapon::getAccuracy() const
 uint32_t Weapon::getRange() const
 {
     return _Attributes.Range;
+}
+
+/**
+ * @brief Get the current durability
+ *
+ */
+uint32_t Weapon::getDurability() const
+{
+    return _Attributes.Durability;
 }
 
 /**
@@ -174,6 +183,16 @@ WeaponType Weapon::getType() const
 Sprite& Weapon::getSprite()
 {
     return _Sprite;
+}
+
+/**
+ * @brief Tell if the weapon is usable
+ *
+ * @return true if the weapon is usable, false otherwise
+ */
+bool Weapon::isUsable() const
+{
+    return (_Attributes.Durability > 0);
 }
 
 /**

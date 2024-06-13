@@ -3,12 +3,16 @@
     {
         "Damage" : 10,
         "Range" : 10,
-        "Accuracy" : 50
+        "Accuracy" : 50,
+        "Durability" : 100,
+        "Ammo" : 10
     },
     "Pistol":
     {
         "Damage" : 10,
         "Range" : 10,
-        "Accuracy" : 50
+        "Accuracy" : 50,
+        "Durability" : 100,
+        "Ammo" : 10
     }
 }
