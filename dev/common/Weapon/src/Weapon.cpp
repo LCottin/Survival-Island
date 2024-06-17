@@ -86,7 +86,19 @@ json Weapon::_initCommon(const WeaponType type)
     _Sprite.setScale(_Scale);
     _Sprite.setTextureRect(*_CurrentFrame);
 
+    _DamageTimer = seconds(1.0f);
+    _DamageCooldown.restart();
+
     return data;
+}
+
+/**
+ * @brief Restart cooldown timer after being used
+ *
+ */
+void Weapon::_restartTimer()
+{
+    _DamageCooldown.restart();
 }
 
 /**

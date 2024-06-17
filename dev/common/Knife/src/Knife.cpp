@@ -119,7 +119,7 @@ bool Knife::performAttack(Character &target, const Vector2f &mousePosition)
 
     bool isStillAlive = target.isAlive();
 
-    if (isUsable() == true)
+    if ((isUsable() == true) && (_DamageCooldown.getElapsedTime() >= _DamageTimer))
     {
         _Attributes.Durability -= 1U;
 
@@ -131,6 +131,8 @@ bool Knife::performAttack(Character &target, const Vector2f &mousePosition)
         {
             isStillAlive = target.takeDamage(_Attributes.Damage);
         }
+
+        _restartTimer();
     }
 
     return isStillAlive;

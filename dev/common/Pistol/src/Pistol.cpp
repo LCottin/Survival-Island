@@ -154,7 +154,7 @@ bool Pistol::performAttack(Character &target, const Vector2f &mousePosition)
 {
     bool isStillAlive = target.isAlive();
 
-    if (isUsable() == true)
+    if ((isUsable() == true) && (_DamageCooldown.getElapsedTime() >= _DamageTimer))
     {
         const Vector2f targetPosition = target.getPosition();
 
@@ -209,6 +209,7 @@ bool Pistol::performAttack(Character &target, const Vector2f &mousePosition)
             _Ammo                  -= 1U;
 
             isStillAlive = target.takeDamage(_Attributes.Damage);
+            _restartTimer();
         }
     }
 

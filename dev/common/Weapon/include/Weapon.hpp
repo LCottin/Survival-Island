@@ -41,6 +41,7 @@ class Weapon
 
         json _initCommon(const WeaponType type);
         json _loadFromJson(const WeaponType type) const;
+        void _restartTimer();
 
     public:
         /* Constructors */
