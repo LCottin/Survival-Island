@@ -56,7 +56,7 @@ Images are originally taken from the following sources but may be modified (resi
 - Map: [Buch](https://opengameart.org/users/buch)
 - Player : [sogomn](https://opengameart.org/users/sogomn)
 - NPC : [Buch](https://opengameart.org/users/buch)
-- Knife : [ghostbytedev](https://opengameart.org/users/ghostbytedev)
+- Knife and Pistol : [ghostbytedev](https://opengameart.org/users/ghostbytedev)
 
 ## Contribution guideline
 
