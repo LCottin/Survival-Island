@@ -14,6 +14,8 @@ using namespace std;
 using namespace sf;
 using json = nlohmann::json;
 
+class Weapon;
+
 class Character
 {
     protected:
@@ -45,6 +47,8 @@ class Character
         void _initCommon(const CharacterType type);
         json _loadFromJson(const CharacterType type) const;
         void _restartTimer();
+        void _onAttack(const Character &target, const bool isStillAlive);
+        bool _isClose(const Character &character, const uint32_t threshold) const;
 
     public:
         /* Constructors */
@@ -86,7 +90,7 @@ class Character
         void sayHello() const;
         void presentation() const;
         void updateHealthBar();
-        bool attack(Character &defender);
+        bool attack(Character &defender, const Vector2f &mousePosition);
         bool takeDamage(const uint32_t damage);
 };
 

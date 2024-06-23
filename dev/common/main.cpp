@@ -55,7 +55,7 @@ int main()
 
     /* Testing attack functionality between characters */
     cout << "Enemy Health before attack: " << npc.getHealth() << endl;
-    player.attack(npc);
+    player.attack(npc, Vector2f(100.0f, 100.0f));
     cout << "Enemy Health after attack: " << npc.getHealth() << endl;
 
     /* Testing NPC interactions */
@@ -66,7 +66,7 @@ int main()
     npc.setPosition(Vector2f(30.f, 30.f));
     cout << "NPC Position: (" << npc.getPosition().x << ", " << npc.getPosition().y << ")" << endl;
     cout << "Player Position: (" << player.getPosition().x << ", " << player.getPosition().y << ")" << endl;
-    player.attack(npc);
+    player.attack(npc, Vector2f(100.0f, 100.0f));
     cout << "NPC Health after player attack: " << npc.getHealth() << endl;
 
     /* Test Player's movement and previous position */

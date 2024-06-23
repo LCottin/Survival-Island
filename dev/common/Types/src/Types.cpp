@@ -14,6 +14,9 @@ void inputEvents::serialize(Packet &packet) const
     packet << movePlayerDown;
     packet << movePlayerLeft;
     packet << movePlayerRight;
+    packet << playerAttack;
+    packet << mousePosition.x;
+    packet << mousePosition.y;
 }
 
 /**
@@ -30,6 +33,9 @@ void inputEvents::deserialize(Packet &packet)
     packet >> movePlayerDown;
     packet >> movePlayerLeft;
     packet >> movePlayerRight;
+    packet >> playerAttack;
+    packet >> mousePosition.x;
+    packet >> mousePosition.y;
 }
 
 /**

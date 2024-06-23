@@ -39,13 +39,15 @@ typedef struct
 
 struct inputEvents
 {
-    bool isGamePaused;
-    bool isWindowClosed;
-    bool isClientStopped;
-    bool movePlayerUp;
-    bool movePlayerDown;
-    bool movePlayerLeft;
-    bool movePlayerRight;
+    bool     isGamePaused;
+    bool     isWindowClosed;
+    bool     isClientStopped;
+    bool     movePlayerUp;
+    bool     movePlayerDown;
+    bool     movePlayerLeft;
+    bool     movePlayerRight;
+    bool     playerAttack;
+    Vector2f mousePosition;
 
     void serialize(Packet &packet) const;
     void deserialize(Packet &packet);

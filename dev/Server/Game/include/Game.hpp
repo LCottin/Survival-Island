@@ -33,7 +33,6 @@ class Game
         void _MovePlayer();
         void _MoveNPCs();
         void _HandleInteractions();
-        bool _AreClose(const Player &player, const NPC &npc, const uint32_t threshold) const;
 
         void _HandleShutdown();
 

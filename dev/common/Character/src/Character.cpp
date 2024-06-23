@@ -85,7 +85,7 @@ void Character::_initCommon(const CharacterType type)
 
     _Sprite.setPosition(static_cast<Vector2f>(_Position));
 
-    _CurrentWeapon = make_unique<Knife>("Knife");
+    _CurrentWeapon = make_unique<Pistol>("Pistol");
     _CurrentWeapon->setPosition(_Position);
 
     _DamageTimer = seconds(1.0f);
@@ -406,27 +406,89 @@ void Character::presentation() const
  * @brief Attack someone, decrease both healths and update alive status
  *
  * @param defender Character attacked
+ * @param mousePosition Position of the mouse relative to window
  * @return true if the attacker survived, else false
  *
  */
-bool Character::attack(Character &defender)
+bool Character::attack(Character &defender, const Vector2f &mousePosition)
 {
-    if (_DamageCooldown.getElapsedTime() >= _DamageTimer)
+    bool isStillAlive;
+
+    /* No weapon, use fist to fight */
+    if (_CurrentWeapon == nullptr)
     {
-        /* Attack opponent */
-        const uint32_t defense = defender.getDefense();
-        uint32_t damageToDeal  = 0U;
-
-        if (defense < _Attributes.Strength)
+        if (_isClose(defender, ConfigDev::tileSize) == true)
         {
-            damageToDeal = _Attributes.Strength - defense;
+            const uint32_t defense = defender.getDefense();
+            uint32_t damageToDeal  = 0U;
+
+            if (defense < _Attributes.Strength)
+            {
+                damageToDeal = _Attributes.Strength - defense;
+            }
+
+            isStillAlive = defender.takeDamage(damageToDeal);
+            _onAttack(defender, isStillAlive);
         }
-
-        const bool isStillAlive = defender.takeDamage(damageToDeal);
-
-        /* If opponent is still alive, take damage according to its defense */
-        if (isStillAlive == true)
+    }
+    else
+    {
+        /* Check if the weapon is usable */
+        if ((_CurrentWeapon->isUsable() == true))
         {
+            switch (_CurrentWeapon->getType())
+            {
+                case WeaponType::KNIFE:
+                {
+                    /* Check if the target is close enough to be touched */
+                    if (_isClose(defender, _CurrentWeapon->getRange()) == true)
+                    {
+                        isStillAlive = _CurrentWeapon->performAttack(defender, mousePosition);
+                        _onAttack(defender, isStillAlive);
+                    }
+                    break;
+                }
+
+                case WeaponType::PISTOL:
+                {
+                    isStillAlive = _CurrentWeapon->performAttack(defender, mousePosition);
+                    _onAttack(defender, isStillAlive);
+                    break;
+                }
+
+                default:
+                {
+                    throw runtime_error("Wrong weapon in action.");
+                }
+            }
+        }
+        else
+        {
+            cout << "Weapon is not usable." << endl;
+        }
+    }
+
+    return _IsAlive;
+}
+
+/**
+ * @brief Update damage taking after opponent reply to attack
+ *
+ */
+void Character::_onAttack(const Character &target, const bool isStillAlive)
+{
+    if ((isStillAlive == true) && (_DamageCooldown.getElapsedTime() >= _DamageTimer))
+    {
+        /* Opponent can only reply when close enough */
+        const Vector2f targetPosition = target.getPosition();
+        const float_t dxTarget        = targetPosition.x - _Position.x;
+        const float_t dyTarget        = targetPosition.y - _Position.y;
+
+        const float_t distanceToTarget = sqrtf(dxTarget * dxTarget + dyTarget * dyTarget);
+
+        if (distanceToTarget < (5U * ConfigDev::tileSize))
+        {
+            const uint32_t defense = target.getDefense();
             if (_Attributes.Health <= defense)
             {
                 _Attributes.Health = 0U;
@@ -436,13 +498,12 @@ bool Character::attack(Character &defender)
             {
                 _Attributes.Health -= defense;
             }
+
+            updateHealthBar();
         }
 
-        updateHealthBar();
         _restartTimer();
     }
-
-    return _IsAlive;
 }
 
 /**
@@ -474,4 +535,23 @@ void Character::updateHealthBar()
     {
         _HealthBar.setFillColor(Color::Green);
     }
+}
+
+/**
+ * @brief Indicate if player and NPC are close
+ *
+ * @param character Character to compare
+ * @param threshold Threshold to determine if player and npc are close
+ * @return true if they are close, else false
+ *
+ */
+bool Character::_isClose(const Character &character, const uint32_t threshold) const
+{
+    const Vector2f characterPos  = character.getPosition();
+    const Vector2u characterSize = character.getSize();
+
+    const float_t distanceX = abs(characterPos.x - _Position.x) - (characterSize.x + _Size.x) / 2.0f;
+    const float_t distanceY = abs(characterPos.y - _Position.y) - (characterSize.y + _Size.y) / 2.0f;
+
+    return ((distanceX < threshold) && (distanceY < threshold));
 }

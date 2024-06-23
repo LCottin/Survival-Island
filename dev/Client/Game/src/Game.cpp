@@ -90,6 +90,7 @@ void Game::_ResetInputEvent()
     _InputEvents.movePlayerUp    = false;
     _InputEvents.movePlayerLeft  = false;
     _InputEvents.movePlayerRight = false;
+    _InputEvents.playerAttack    = false;
 }
 
 /**

@@ -9,5 +9,6 @@
     "downKey"       : "Down",
     "leftKey"       : "Left",
     "rightKey"      : "Right",
-    "pauseKey"      : "Esc"
+    "pauseKey"      : "Esc",
+    "attackKey"     : "Space"
 }

@@ -10,6 +10,7 @@ typedef struct
     uint32_t Damage;
     uint32_t Accuracy;
     uint32_t Range;
+    uint32_t Durability;
 } WeaponAttributes;
 
 enum class WeaponType : uint32_t
